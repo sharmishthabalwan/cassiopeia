@@ -1,61 +1,85 @@
-# Cassiopeia — session handoff
+# Cassiopeia — session handoff & progress tracker
 
-*Last updated: 2026-07-06, after the Foundation polish round. This file is the warm-start
-for the next Claude Code session — read it together with `CONTRACTS.md` (contracts) and
-`README.md` (status). Delete sections as they become stale.*
+*Last updated: 2026-07-06 (morning), just before the Phase 2 fan-out was due to launch.
+This is THE resume doc — read it with `CONTRACTS.md` (contracts) and `README.md` (overview).
+To resume, tell Claude: **"Read HANDOFF.md and start/continue the fan-out."***
 
-## Where we are
+## Progress tracker
 
-**Phase 1 (Foundation) is complete, polished, and verified in the browser.** Dark + light,
-7 distinct tab hues, liquid FAB, hash router, IndexedDB via `db.ts`, first-run import done
-(52 bags / 6 brews+ratings / 11 ideas / 4 recipes / 9 brewers / 1 grinder / self person).
-`tsc` clean, `vite build` ~13 kB gzip. Phase 2 fan-out has NOT started.
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 0 | Contracts + skeleton | ✅ done | |
+| 1 | Foundation (db, radar, catalog, shell, FAB, theme, import) | ✅ done | polished after user feedback: clickable fallbacks, FAB spacing, 7 distinct hues |
+| 1b | App logo + icons | ✅ done | bubble extracted with true alpha (`Logo-bubble.png`), favicon/PWA/iOS icons in `public/` |
+| 2a | **Bags tab agent** | 🔜 NOT STARTED | wave 1, parallel with 2b — brief below |
+| 2b | **Brews tab agent** | 🔜 NOT STARTED | wave 1, parallel with 2a — brief below |
+| 3 | Home tab agent | ⏳ waits on wave 1 | |
+| 4 | Insights + Wrapped agent | ⏳ waits on 3 | |
+| 5a/5b | Ideas ∥ Recipes agents | ⏳ waits on 4 | |
+| 6 | Friends + PWA + Supabase + iCloud mirror | ⏳ last | icons ready for manifest |
 
-## How to run
+**Every tab currently renders a Foundation fallback screen** (raw-but-clickable lists,
+expandable rows, working radar/catalog/theme demos). The real internal pages are exactly
+what Phases 2–5 build, one agent per `src/tabs/<id>/` folder.
 
-```bash
-npm run dev   # http://localhost:5173  (Node v22 at ~/.local/node if not on PATH)
-```
+Git: repo on `main`, clean at last update — commits `2a553ea` (Foundation), `48f2c5a`
+(logo), `fd02e24` (bubble extraction). User sign-off given for wave 1 fan-out.
 
-To regenerate `public/seed-data.json` from the workspace xlsx/csv (one level up):
-`python3 scripts/convert_seed.py` — needs openpyxl (use a venv; system python3 lacks it).
+## Fan-out procedure (approved plan)
 
-## Key mechanisms the next session must know
+Spawn one Fable agent per tab, `isolation: worktree`, waves:
+`(bags ∥ brews) → home → insights+wrapped → (ideas ∥ recipes) → friends/PWA/Supabase/mirror`.
+Integration owner (main session) reviews each agent's diff, merges the worktree, runs the
+app, and gates the next wave on the user's review.
 
-- **Tabs ship via default export**: `main.tsx` lazy-loads `src/tabs/<id>/index.tsx`; a tab
-  agent just adds `export default function Screen() {…}`. Until then `src/fallback.tsx`
-  (Foundation-owned, temporary) renders that tab's raw-but-clickable screen.
-- **Appearance loop**: `db.setAppearance()` dispatches `APPEARANCE_EVENT`; the shell in
-  `main.tsx` listens and re-applies `<html data-mode>` / `uniform-hue` / `--u1,--u2`.
-- **`CatalogProps.onFacetChange?`** was added to the contract (chips had no change callback).
-- **FAB tuning**: stack spacing 74px, goo blur stdDeviation 5 (`app.css` + `GooFilter` in
-  `main.tsx`). Circles must NOT touch at rest; goo shows only during transit.
-- Import is idempotent (seeds only when bags+brews+ideas are all empty). To re-import:
-  DevTools → Application → IndexedDB → delete `cassiopeia` DB → reload.
+Every agent brief must include: read `/CONTRACTS.md` + `/HANDOFF.md` first; own ONLY
+`src/tabs/<id>/`; ship by **default-exporting the screen component** from
+`src/tabs/<id>/index.tsx` (main.tsx lazy-loads it — never edit main.tsx); data via
+`db.ts` only; colours via theme vars only; `npm install` in the worktree, verify with
+`npx tsc --noEmit` + `npm run build`; don't start a dev server on port 5173 (integration
+session may hold it); report acceptance checks; if a contract must change, STOP and
+report back instead of editing contract-owned files.
+
+### Wave-1 agent briefs (ready to use)
+
+**Bags (2a)** — bag cards with photo + all fields; add/edit form; finished / frozen
+(reveals amount + freeze date) / peak-window toggles; photo upload resized to ~1000px
+WebP + thumbnail (store as data-URL string in `Bag.photo`; seed rows may hold plain
+filenames → resolve to `/photos/<name>`, missing files = text-only card).
+Photo files: `../coffee-app/photos/` has only `PHOTO_MANIFEST.txt` (expected filenames);
+actual photos not yet supplied by user — build the upload path, don't block on files.
+Acceptance: finished bags vanish from Brews' coffee dropdown (via `listBags()` default),
+frozen fields persist, thumbnails in grid, full-size on tap.
+
+**Brews (2b)** — the daily logger: dropdowns fed by `listBags()` (excludes finished),
+brewers, grinders; all Brew fields; 9 rating sliders **each labeled with its direction**
+(see RATING_AXES); tasting-note words; notes/learnings; per-brew radar via `lib/radar.tsx`.
+Acceptance: a full brew + rating logs and persists offline (reload survives), radar
+renders the reversed axes correctly.
+
+## Key mechanisms (unchanged from Foundation)
+
+- Tabs ship via default export; fallback screens live in `src/fallback.tsx` (Foundation-owned).
+- `db.setAppearance()` dispatches `APPEARANCE_EVENT`; shell re-themes. Default: dark, per-tab hues.
+- `CatalogProps.onFacetChange?` exists (added in Foundation; Recipes agent take note).
+- FAB: spacing 74px, goo blur stdDeviation 5 — circles must not touch at rest.
+- Import is idempotent (seeds only when bags+brews+ideas all empty). Re-import: delete the
+  `cassiopeia` IndexedDB in DevTools → reload. Regenerate seed JSON: `scripts/convert_seed.py`
+  (needs openpyxl venv; system python3 lacks it).
+- Dev server: `npm run dev` → :5173 (Node v22 at `~/.local/node` if not on PATH). Preview
+  launch config: `/Users/mauve/Claude-Banana/.claude/launch.json`.
 
 ## Data judgment calls already made (don't re-litigate)
 
-- Bags xlsx: **bold coffee-name = active bag**, everything else imported `finished: true`.
-  Col C font colour → `Bag.color` legend. Frozen = Frozen Serves / Freeze Date present.
-- CSV `Method` → brewer heuristic: "flat*"→Flatground, "*switch*"→V60 Switch, "*v60*"→V60.
-- `NEEDS_CONFIRMATION` rating cells are skipped (that's why the 2026-06-04 radar is sparse).
-- Brew Ideas' "Why / effect" column is appended into `steps` as a `Why:` line (BrewIdea has no `why`).
-
-## Next steps (user-approved plan)
-
-1. User signs off on Foundation (booted + reviewed).
-2. Fan out **one Fable agent per tab in git worktrees**:
-   `(bags ∥ brews) → home → insights+wrapped → (ideas ∥ recipes) → friends/PWA/Supabase/mirror`.
-   Each agent: reads CONTRACTS.md, owns only `src/tabs/<x>/`, data via `db.ts` only,
-   colours via theme vars only, reports acceptance checks. Integration owner merges + gates.
-3. Known deferred items: brew logger CTA (Brews agent, 2b), Home peak-window flags (3),
-   Wrapped (4), pro names in Recipes fallback show raw ids (Recipes agent, 5b), photo
-   files for bags not yet copied into the app (Bags agent, 2a).
-4. App logo: `Logo.png` (repo root, 2048², source asset). Derived icons live in `public/`
-   (favicon.png 32, icon-192/512 transparent, apple-touch-icon.png 180 flattened onto
-   #08070A) and are linked from index.html. The Phase 6 PWA agent should reference
-   icon-192/512 in the manifest (mark 512 maskable after checking safe-zone padding).
+- Bags xlsx: bold coffee-name = active bag; others `finished: true`. Col C font colour →
+  `Bag.color`. Frozen = Frozen Serves / Freeze Date present.
+- CSV Method → brewer heuristic: flat*→Flatground, *switch*→V60 Switch, *v60*→V60.
+- `NEEDS_CONFIRMATION` rating cells skipped (2026-06-04 radar is sparse on purpose).
+- Brew Ideas "Why / effect" column appended into `steps` as a `Why:` line.
+- Logo: source `Logo.png` had checkerboard baked in; `Logo-bubble.png` is the true-alpha
+  extraction (dual-background matting). Icons derive from the bubble.
 
 ## Open questions for the user
 
-- None blocking. Radar direction labels and reversed axes were user-specified and verified.
+- Bag photos: 31 files listed in `../coffee-app/photos/PHOTO_MANIFEST.txt` are not yet
+  in the workspace — drop them there (or into `public/photos/`) when convenient.
