@@ -51,6 +51,10 @@ To regenerate `public/seed-data.json` from the workspace xlsx/csv (one level up)
 3. Known deferred items: brew logger CTA (Brews agent, 2b), Home peak-window flags (3),
    Wrapped (4), pro names in Recipes fallback show raw ids (Recipes agent, 5b), photo
    files for bags not yet copied into the app (Bags agent, 2a).
+4. App logo: `Logo.png` (repo root, 2048², source asset). Derived icons live in `public/`
+   (favicon.png 32, icon-192/512 transparent, apple-touch-icon.png 180 flattened onto
+   #08070A) and are linked from index.html. The Phase 6 PWA agent should reference
+   icon-192/512 in the manifest (mark 512 maskable after checking safe-zone padding).
 
 ## Open questions for the user
 
