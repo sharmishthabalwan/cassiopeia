@@ -40,22 +40,46 @@ Every agent brief must include: read `/CONTRACTS.md` + `/HANDOFF.md` first; own 
 session may hold it); report acceptance checks; if a contract must change, STOP and
 report back instead of editing contract-owned files.
 
+### Delivery model (user-specified)
+
+- **Parallelism across tabs, features within a tab.** One agent owns one tab folder;
+  inside its chat it works through the ordered feature checklist below. Never split one
+  tab across parallel agents (same-folder collisions).
+- **Each feature = one small deliverable**: app runnable after it, one git commit in the
+  worktree per feature (`bags: F2 bag detail` style). Review/merge is possible mid-tab.
+- Phase 6 (friends, PWA, Supabase, iCloud mirror) is cross-cutting → done LAST,
+  sequentially, by the main/integration agent. Not a sub-agent task.
+
 ### Wave-1 agent briefs (ready to use)
 
-**Bags (2a)** — bag cards with photo + all fields; add/edit form; finished / frozen
-(reveals amount + freeze date) / peak-window toggles; photo upload resized to ~1000px
-WebP + thumbnail (store as data-URL string in `Bag.photo`; seed rows may hold plain
-filenames → resolve to `/photos/<name>`, missing files = text-only card).
-Photo files: `../coffee-app/photos/` has only `PHOTO_MANIFEST.txt` (expected filenames);
-actual photos not yet supplied by user — build the upload path, don't block on files.
-Acceptance: finished bags vanish from Brews' coffee dropdown (via `listBags()` default),
-frozen fields persist, thumbnails in grid, full-size on tap.
+**Bags (2a)** — feature checklist, in order:
+1. **F1 Bag list** — replace the fallback: card grid of all bags (name, roaster, colour
+   legend dot, finished/frozen badges); finished bags visually muted; sensible sort.
+2. **F2 Bag detail** — tap a card → full detail view with all ~20 fields in a sane
+   hierarchy (hero: name/roaster/photo; then origin block, roast block, freezer block).
+3. **F3 Add / edit bag** — form for all fields, validation-light, `upsertBag` via db.
+4. **F4 State toggles** — finished, frozen (reveals amount + freeze date), peak-window
+   display (derived from roastDate). Acceptance: finished bags vanish from Brews'
+   coffee dropdown (`listBags()` default already excludes them); frozen fields persist.
+5. **F5 Photos** — upload → resize ~1000px WebP + thumbnail (canvas), stored as data-URL
+   in `Bag.photo`; thumbnails in grid, full-size on tap; seed rows holding plain
+   filenames resolve to `/photos/<name>`, missing file = text-only card. Photo files
+   aren't in the workspace yet (`../coffee-app/photos/PHOTO_MANIFEST.txt` lists the 31
+   expected names) — build the path, don't block on the files.
 
-**Brews (2b)** — the daily logger: dropdowns fed by `listBags()` (excludes finished),
-brewers, grinders; all Brew fields; 9 rating sliders **each labeled with its direction**
-(see RATING_AXES); tasting-note words; notes/learnings; per-brew radar via `lib/radar.tsx`.
-Acceptance: a full brew + rating logs and persists offline (reload survives), radar
-renders the reversed axes correctly.
+**Brews (2b)** — feature checklist, in order:
+1. **F1 Brew log list** — replace the fallback: reverse-chron list, each row date /
+   coffee / brewer / dose chip.
+2. **F2 Brew detail** — tap a row → every Brew field + the per-brew radar
+   (`lib/radar.tsx`) of its ratings.
+3. **F3 New brew form** — dropdowns fed by `listBags()` (excludes finished), brewers,
+   grinders; all logger fields (filter, dose, water, temp, time, grind, pour technique,
+   notes, learnings); roastDate auto-fills from the picked bag; save → appears in list.
+4. **F4 Ratings** — 9 sliders **each labeled with its direction** (RATING_AXES),
+   0.5 steps, tasting-note words; saves as the self Person's Rating; live radar preview
+   while sliding. Acceptance: full brew + rating survives a reload (IndexedDB), radar
+   renders reversed axes as-is.
+5. **F5 Edit + polish** — edit an existing brew/rating, empty states, `tsc`/build clean.
 
 ## Key mechanisms (unchanged from Foundation)
 
