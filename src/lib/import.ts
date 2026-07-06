@@ -19,7 +19,7 @@ interface SeedData {
 export async function seedFromFiles(): Promise<void> {
   if (!(await _internal.isEmpty())) return;
 
-  const res = await fetch("/seed-data.json");
+  const res = await fetch(`${import.meta.env.BASE_URL}seed-data.json`);
   if (!res.ok) throw new Error(`seed-data.json fetch failed: ${res.status}`);
   const data: SeedData = await res.json();
 
