@@ -1,0 +1,68 @@
+/* Cassiopeia — design tokens (CONTRACT-OWNED, do not fork in tabs).
+   Aurora frosted-glass system. Dark + light modes via [data-mode].
+   Per-tab hue via a `hue-<tab>` class on the screen root; each sets --a1/--a2
+   plus the .body aurora background (see per-tab rules at the bottom). */
+
+:root {
+  /* expanded palette (Pantone-derived) */
+  --p-ruby:#7B2E3C; --p-berry:#A85A72; --p-oxblood:#4C1D28; --p-mauve:#9F5E70;
+  --p-lime:#97992E; --p-cardamom:#6E6B2F; --p-dblue:#8E9DAD;
+  --p-cream:#E6E1AC; --p-lemon:#E7E3C4;
+  --radius:16px; --radius-card:22px;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+/* mode tokens */
+[data-mode="dark"]{
+  --base:#08070A; --text:#F4EEF0; --muted:#A99BA0;
+  --card:rgba(255,255,255,.065); --brd:rgba(255,255,255,.13);
+  --field:rgba(255,255,255,.07); --line:rgba(255,255,255,.10);
+}
+[data-mode="light"]{
+  --base:#FFFFFF; --text:#241019; --muted:#7C6B72;
+  --card:rgba(255,255,255,.5); --brd:rgba(255,255,255,.75);
+  --field:rgba(255,255,255,.6); --line:rgba(40,20,30,.09);
+}
+
+/* per-tab accent pairs (used for buttons, active pills, sliders, "you" radar).
+   All SEVEN pairs are distinct — no repeats across tabs. */
+.hue-home{--a1:#B0475F;--a2:#5A1E32}      /* ruby */
+.hue-brews{--a1:#A66E4F;--a2:#4A2B1D}     /* roasted coffee brown */
+.hue-bags{--a1:#A3A63A;--a2:#4E5020}      /* olive lime */
+.hue-ideas{--a1:#C05C90;--a2:#55224B}     /* magenta */
+.hue-insights{--a1:#7E97B0;--a2:#45564A}  /* steel blue-green */
+.hue-recipes{--a1:#C4A03C;--a2:#6E3A48}   /* gold over wine */
+.hue-settings{--a1:#A29486;--a2:#4E453D}  /* warm stone */
+
+/* When Appearance = Uniform, JS sets --a1/--a2 on :root and adds .uniform-hue
+   to <html>, which overrides the per-tab pairs below. */
+html.uniform-hue .hue-home,html.uniform-hue .hue-brews,html.uniform-hue .hue-bags,
+html.uniform-hue .hue-ideas,html.uniform-hue .hue-insights,html.uniform-hue .hue-recipes,
+html.uniform-hue .hue-settings{--a1:var(--u1);--a2:var(--u2)}
+
+/* aurora backgrounds — dark */
+[data-mode="dark"] .hue-home .body{background:radial-gradient(135% 58% at 50% 113%,#A83E58 0%,#4C1D28 30%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 12% 106%,rgba(168,90,114,.5),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-brews .body{background:radial-gradient(135% 58% at 50% 113%,#8A5638 0%,#3C2314 32%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 85% 104%,rgba(166,110,79,.45),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-bags .body{background:radial-gradient(135% 58% at 50% 113%,#9DA033 0%,#3E441C 32%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 12% 104%,rgba(110,107,47,.5),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-ideas .body{background:radial-gradient(135% 58% at 50% 113%,#A84E7E 0%,#471C3E 32%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 85% 104%,rgba(192,92,144,.45),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-insights .body{background:radial-gradient(135% 60% at 50% 113%,#6F8AA6 0%,#3B4A44 34%,rgba(8,7,10,0) 66%),radial-gradient(80% 45% at 15% 104%,rgba(110,107,47,.4),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-recipes .body{background:radial-gradient(135% 58% at 50% 113%,#B8963B 0%,#5A2E3C 33%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 85% 104%,rgba(159,94,112,.45),transparent 60%),var(--base)}
+[data-mode="dark"] .hue-settings .body{background:radial-gradient(135% 55% at 50% 113%,#877A6C 0%,#3B342C 32%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 15% 104%,rgba(162,148,134,.4),transparent 60%),var(--base)}
+/* aurora backgrounds — light */
+[data-mode="light"] .hue-home .body{background:radial-gradient(135% 58% at 50% 114%,rgba(168,90,114,.34),transparent 60%),radial-gradient(70% 42% at 85% 105%,rgba(230,225,172,.4),transparent 60%),var(--base)}
+[data-mode="light"] .hue-brews .body{background:radial-gradient(135% 58% at 50% 114%,rgba(166,110,79,.30),transparent 60%),radial-gradient(70% 42% at 12% 105%,rgba(231,227,196,.4),transparent 60%),var(--base)}
+[data-mode="light"] .hue-bags .body{background:radial-gradient(135% 58% at 50% 114%,rgba(151,153,46,.26),transparent 60%),radial-gradient(70% 42% at 85% 105%,rgba(231,227,196,.45),transparent 60%),var(--base)}
+[data-mode="light"] .hue-ideas .body{background:radial-gradient(135% 58% at 50% 114%,rgba(192,92,144,.26),transparent 60%),radial-gradient(70% 42% at 12% 105%,rgba(230,225,172,.35),transparent 60%),var(--base)}
+[data-mode="light"] .hue-insights .body{background:radial-gradient(135% 60% at 50% 114%,rgba(142,157,173,.30),transparent 60%),radial-gradient(75% 42% at 85% 105%,rgba(151,153,46,.22),transparent 60%),var(--base)}
+[data-mode="light"] .hue-recipes .body{background:radial-gradient(135% 58% at 50% 114%,rgba(196,160,60,.24),transparent 60%),radial-gradient(70% 42% at 12% 105%,rgba(159,94,112,.24),transparent 60%),var(--base)}
+[data-mode="light"] .hue-settings .body{background:radial-gradient(135% 55% at 50% 114%,rgba(162,148,134,.26),transparent 60%),radial-gradient(70% 42% at 85% 105%,rgba(231,227,196,.4),transparent 60%),var(--base)}
+
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);background:var(--base);color:var(--text)}
+
+/* shared primitives (tabs extend, never redefine) */
+.glass{position:relative;border-radius:var(--radius-card);padding:15px;margin-bottom:12px;background:var(--card);border:1px solid var(--brd);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);overflow:hidden}
+.glass::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(155deg,rgba(255,255,255,.18),transparent 42%)}
+.glass.hero{color:#fff;border:1px solid rgba(255,255,255,.28);background:linear-gradient(145deg,var(--a1),var(--a2))}
+.btn{display:flex;align-items:center;gap:10px;width:100%;border:none;border-radius:var(--radius);padding:14px 16px;font:500 15px var(--font-sans);color:#fff;background:linear-gradient(140deg,var(--a1),var(--a2));box-shadow:0 10px 22px rgba(0,0,0,.25);cursor:pointer}
+.btn.ghost{background:var(--card);border:1px solid var(--brd);color:var(--text)}

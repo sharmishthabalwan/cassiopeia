@@ -1,0 +1,36 @@
+[
+  {
+    "id": "hoffmann-ultimate-v60", "name": "Ultimate V60 technique",
+    "proId": "hoffmann", "style": "pour-over", "brewer": "V60",
+    "dose": "30g", "ratio": "1:16", "grind": "medium-fine", "temp": "95°C",
+    "targetTime": "3:30",
+    "steps": "Bloom 60g/45s; pour to 150g by 1:15; to 250g by 1:45; gentle swirl; drawdown by 3:30.",
+    "why": "Two-pour structure for clarity and even extraction; forgiving on grind.",
+    "source": "YouTube", "sourceConfidence": "high", "author": "James Hoffmann"
+  },
+  {
+    "id": "hoffmann-aerocano", "name": "Aerocano (improved iced americano)",
+    "proId": "hoffmann", "style": "iced", "brewer": "Espresso Machine",
+    "dose": "18g", "ratio": "espresso", "temp": "—", "targetTime": "0:25",
+    "steps": "Pull espresso over ice + water; steam/aerate briefly.",
+    "why": "Chilled, aromatic iced americano.",
+    "source": "YouTube", "sourceConfidence": "high", "author": "James Hoffmann"
+  },
+  {
+    "id": "kasuya-46", "name": "4:6 Method",
+    "proId": "kasuya", "style": "pour-over", "brewer": "V60",
+    "dose": "20g", "ratio": "1:15", "grind": "6.5–7.5 (K-Ultra)", "temp": "90°C",
+    "targetTime": "3:30",
+    "steps": "First 40% in two pours controls sweetness/acidity; last 60% in 3 pours controls strength.",
+    "why": "Tunable balance of sweetness vs. strength.",
+    "source": "Book/Video", "sourceConfidence": "high", "author": "Tetsu Kasuya"
+  },
+  {
+    "id": "hedrick-gongfu-switch", "name": "Gong Fu with Hario Switch",
+    "proId": "hedrick", "style": "immersion-percolation", "brewer": "V60 Switch",
+    "dose": "15g", "ratio": "1:16", "grind": "medium", "temp": "90°C",
+    "steps": "Multi-stage immersion + percolation hybrid for sweetness and clarity.",
+    "why": "High sweetness, clarity, consistent extraction.",
+    "source": "YouTube", "sourceConfidence": "high", "author": "Lance Hedrick"
+  }
+]

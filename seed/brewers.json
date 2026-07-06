@@ -1,0 +1,10 @@
+[
+  { "id": "v60", "name": "V60" },
+  { "id": "v60-switch", "name": "V60 Switch" },
+  { "id": "deep27", "name": "Deep 27" },
+  { "id": "flatground", "name": "Flatground" },
+  { "id": "chemex", "name": "Chemex" },
+  { "id": "origami", "name": "Origami" },
+  { "id": "hario-cold", "name": "Cold Brew Hario" },
+  { "id": "aeropress", "name": "AeroPress" }
+]
