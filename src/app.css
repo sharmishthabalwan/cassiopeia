@@ -73,3 +73,30 @@
 .raw-kv span:last-child { white-space: pre-wrap; }
 .seg { display: flex; gap: 8px; margin: 10px 0 4px; }
 .seg .btn { width: auto; padding: 10px 16px; }
+
+/* ==== responsive (tablet ≥768px, desktop ≥1100px) — added by responsive agent ====
+   Mobile (<768px) is untouched: everything below sits behind min-width queries.
+   Trick: instead of a capped max-width column (which clips the aurora .body
+   background to a 560px strip on wide screens), the .body goes full-width and
+   the content column is carved out with computed side padding — the gradient
+   spans the whole viewport while text stays centered at 720px / 840px. */
+
+@media (min-width: 768px) {
+  .screen .body {
+    max-width: none;
+    padding-top: max(28px, env(safe-area-inset-top));
+    padding-left: max(24px, calc((100% - 720px) / 2));
+    padding-right: max(24px, calc((100% - 720px) / 2));
+  }
+  .screen h1 { font-size: 30px; margin: 8px 0 20px; }
+  .screen .sub { font-size: 14px; }
+}
+
+@media (min-width: 1100px) {
+  .screen .body {
+    padding-top: max(36px, env(safe-area-inset-top));
+    padding-left: max(32px, calc((100% - 840px) / 2));
+    padding-right: max(32px, calc((100% - 840px) / 2));
+  }
+  .screen h1 { font-size: 33px; margin: 10px 0 24px; }
+}
