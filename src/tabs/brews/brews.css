@@ -1,0 +1,25 @@
+/* Brews tab — styles scoped under .hue-brews. Extends theme primitives
+   (.glass/.btn); tokens only, no hardcoded colours. */
+
+.hue-brews .brew-log-btn { justify-content: center; font-weight: 600; margin-bottom: 14px; }
+
+/* ---- log list ---- */
+.hue-brews .brew-list { padding-top: 6px; padding-bottom: 6px; }
+.hue-brews .brew-row {
+  display: flex; align-items: baseline; gap: 10px;
+  width: 100%; padding: 12px 0;
+  border: none; border-bottom: 1px solid var(--line);
+  background: none; color: var(--text);
+  font: 400 14.5px var(--font-sans); text-align: left; cursor: pointer;
+}
+.hue-brews .brew-row:last-child { border-bottom: none; }
+.hue-brews .brew-date { color: var(--muted); font-size: 12.5px; flex: 0 0 64px; }
+.hue-brews .brew-name {
+  flex: 1 1 auto; min-width: 0; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hue-brews .chip {
+  flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
+  border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
+  white-space: nowrap;
+}
