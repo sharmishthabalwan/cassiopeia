@@ -99,4 +99,14 @@
     padding-right: max(32px, calc((100% - 840px) / 2));
   }
   .screen h1 { font-size: 33px; margin: 10px 0 24px; }
+
+  /* home fallback: hero + counts card side by side, footnote spans both */
+  .fb-home { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; align-items: start; }
+  .fb-home > .sub { grid-column: 1 / -1; }
+
+  /* long fallback lists (bags): two columns of rows inside the one glass card */
+  .fb-cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-content: start; }
+  /* row-major 2-col: the item with nothing below it in the other column also
+     drops its divider (matches .raw-expand:last-child) */
+  .fb-cols > .raw-expand:nth-last-child(2) { border-bottom: none; }
 }

@@ -34,6 +34,19 @@ function useData(): Data | null {
 
 const Loading = () => <div class="sub">Loading…</div>;
 
+/** Desktop breakpoint hook (local to the fallback screens — layout only).
+ *  Lets us pass a bigger Radar `size` on wide screens without touching lib/radar. */
+function useDesktop(): boolean {
+  const [desktop, setDesktop] = useState(() => matchMedia("(min-width: 1100px)").matches);
+  useEffect(() => {
+    const mq = matchMedia("(min-width: 1100px)");
+    const onChange = (e: MediaQueryListEvent) => setDesktop(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return desktop;
+}
+
 /** Key/value detail block shown inside an expanded row. */
 function Detail({ rows }: { rows: [string, string | number | undefined][] }) {
   return (
@@ -70,7 +83,7 @@ function HomeFallback() {
     ["Brewers", d.brewers.length, "settings"], ["People", d.people.length, "settings"],
   ];
   return (
-    <div>
+    <div class="fb-home">
       <div class="glass hero">
         <div style="font:600 18px var(--font-sans)">Foundation is up ☕</div>
         <div style="font:400 13px var(--font-sans);opacity:.85;margin:4px 0 12px">
@@ -99,7 +112,7 @@ function BagsFallback() {
   const d = useData();
   if (!d) return <Loading />;
   return (
-    <div class="glass">
+    <div class="glass fb-cols">
       {d.bags.map((b) => (
         <ExpandRow
           summary={
@@ -128,6 +141,7 @@ function BagsFallback() {
 
 function BrewRadar({ brew, people }: { brew: Brew; people: Person[] }) {
   const [ratings, setRatings] = useState<Rating[] | null>(null);
+  const desktop = useDesktop();
   useEffect(() => { db.ratingsForBrew(brew.id).then(setRatings); }, [brew.id]);
   if (!ratings) return <Loading />;
   if (!ratings.length) return <div class="sub">No ratings for this brew.</div>;
@@ -135,7 +149,7 @@ function BrewRadar({ brew, people }: { brew: Brew; people: Person[] }) {
     const p = people.find((p) => p.id === r.personId);
     return { name: p?.name ?? "You", color: p?.color ?? "#A85A72", scores: r.scores };
   });
-  return <div style="display:flex;justify-content:center"><Radar series={series} size={190} /></div>;
+  return <div style="display:flex;justify-content:center"><Radar series={series} size={desktop ? 250 : 190} /></div>;
 }
 
 function BrewsFallback() {
@@ -271,6 +285,7 @@ function RecipesFallback() {
 function InsightsFallback() {
   const d = useData();
   const [ratings, setRatings] = useState<Rating[] | null>(null);
+  const desktop = useDesktop();
   const latest = d?.brews[0];
   useEffect(() => {
     if (latest) db.ratingsForBrew(latest.id).then(setRatings);
@@ -285,7 +300,7 @@ function InsightsFallback() {
   return (
     <div class="glass" style="display:flex;flex-direction:column;align-items:center">
       <div class="sub" style="align-self:flex-start">Latest brew — {latest.date} · {bag?.coffeeName}</div>
-      <Radar series={series} size={200} />
+      <Radar series={series} size={desktop ? 300 : 200} />
     </div>
   );
 }
