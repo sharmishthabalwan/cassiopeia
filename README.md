@@ -1,6 +1,10 @@
-# Cassiopeia
+# <img src="Logo-bubble.png" width="40" alt="" align="top"> Cassiopeia
 
 Personal coffee brew tracker — a lightweight dark/light aurora PWA for iPhone + Mac. Log daily brews, rate them on 9 axes (with friends), track bags, borrow recipes, and see insights + a yearly "Coffee Wrapped."
+
+**Live demo → [sharmishthabalwan.com/cassiopeia](https://www.sharmishthabalwan.com/cassiopeia/)** · seeded with my real brew journal · no backend, everything lives in your browser's IndexedDB
+
+Built with [Claude Code](https://claude.com/claude-code) using a contracts-first, multi-agent workflow: a Foundation phase lays down the data layer, shared components and app shell, then one agent per tab builds its screen inside a git worktree against [`CONTRACTS.md`](./CONTRACTS.md). Progress log: [`HANDOFF.md`](./HANDOFF.md).
 
 > **Read [`CONTRACTS.md`](./CONTRACTS.md) before writing any code.** It's the source of truth for schema, tokens, components, file ownership, and phase order.
 
