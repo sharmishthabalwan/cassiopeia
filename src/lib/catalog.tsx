@@ -26,6 +26,16 @@ const CSS = `
 .catalog-save{flex:0 0 32px;width:32px;height:32px;border-radius:50%;border:1px solid var(--brd);background:var(--field);color:var(--text);font:400 18px/1 var(--font-sans);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .catalog-save:active{background:linear-gradient(140deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
 .catalog-empty{color:var(--muted);font:400 14px var(--font-sans);text-align:center;padding:24px 0}
+/* responsive (desktop) — added by responsive agent: item cards flow into 2 columns */
+@media (min-width:1100px){
+  .catalog{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;align-items:start}
+  .catalog-chips,.catalog-empty{grid-column:1/-1}
+}
+@media (hover:hover) and (pointer:fine){
+  .catalog-chip{transition:filter .15s ease,background .15s ease}
+  .catalog-chip:hover{filter:brightness(1.15)}
+  .catalog-save:hover{background:linear-gradient(140deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
+}
 `;
 
 export function Catalog({ facets, activeFacet, items, onOpen, onQuickSave, onFacetChange }: CatalogProps) {
