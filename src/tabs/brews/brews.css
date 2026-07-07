@@ -23,3 +23,24 @@
   border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
   white-space: nowrap;
 }
+
+/* ---- detail ---- */
+.hue-brews .brew-back { width: auto; margin-bottom: 14px; padding: 9px 14px; }
+.hue-brews .brew-hero-name { font: 600 20px var(--font-sans); }
+.hue-brews .brew-hero-sub { font: 400 13.5px var(--font-sans); opacity: .85; margin-top: 2px; }
+.hue-brews .brew-hero-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hue-brews .hero-chip { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.14); }
+.hue-brews .stat-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 6px;
+}
+.hue-brews .stat {
+  background: var(--field); border: 1px solid var(--brd);
+  border-radius: var(--radius); padding: 9px 6px; text-align: center;
+}
+.hue-brews .stat-v { font: 600 15px var(--font-sans); }
+.hue-brews .stat-k { color: var(--muted); font: 400 11px var(--font-sans); margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+.hue-brews .brew-kv { padding: 8px 0 2px; }
+.hue-brews .brew-kv-k { color: var(--muted); font: 500 11.5px var(--font-sans); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+.hue-brews .brew-kv-v { font: 400 14px var(--font-sans); white-space: pre-wrap; line-height: 1.45; }
+.hue-brews .brew-radar-card { display: flex; flex-direction: column; align-items: center; }

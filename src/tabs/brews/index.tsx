@@ -6,6 +6,7 @@ import { useState } from "preact/hooks";
 import type { ID } from "../../lib/types";
 import { useBrewsData } from "./data";
 import { BrewList } from "./list";
+import { BrewDetail } from "./detail";
 import "./brews.css";
 
 type View =
@@ -21,16 +22,16 @@ export default function BrewsScreen() {
 
   const toList = () => setView({ kind: "list" });
 
-  if (view.kind === "detail" || view.kind === "form") {
-    // Stubs — brew detail lands with F2, the logger form with F3.
+  if (view.kind === "detail") {
+    return <BrewDetail data={data} brewId={view.brewId} onBack={toList} />;
+  }
+
+  if (view.kind === "form") {
+    // Stub — the logger form lands with F3.
     return (
       <div>
-        <button class="btn ghost" style="width:auto;margin-bottom:14px" onClick={toList}>‹ Back</button>
-        <div class="glass">
-          <div class="sub">
-            {view.kind === "detail" ? "Brew detail lands next (F2)." : "The brew logger form lands with F3."}
-          </div>
-        </div>
+        <button class="btn ghost brew-back" onClick={toList}>‹ Back</button>
+        <div class="glass"><div class="sub">The brew logger form lands with F3.</div></div>
       </div>
     );
   }
