@@ -7,6 +7,7 @@ import type { ID } from "../../lib/types";
 import { useBrewsData } from "./data";
 import { BrewList } from "./list";
 import { BrewDetail } from "./detail";
+import { BrewForm } from "./form";
 import "./brews.css";
 
 type View =
@@ -15,7 +16,7 @@ type View =
   | { kind: "form"; brewId?: ID }; // brewId set = edit
 
 export default function BrewsScreen() {
-  const { data } = useBrewsData();
+  const { data, refresh } = useBrewsData();
   const [view, setView] = useState<View>({ kind: "list" });
 
   if (!data) return <div class="sub">Loading…</div>;
@@ -27,12 +28,14 @@ export default function BrewsScreen() {
   }
 
   if (view.kind === "form") {
-    // Stub — the logger form lands with F3.
+    const existing = view.brewId ? data.brews.find((b) => b.id === view.brewId) : undefined;
     return (
-      <div>
-        <button class="btn ghost brew-back" onClick={toList}>‹ Back</button>
-        <div class="glass"><div class="sub">The brew logger form lands with F3.</div></div>
-      </div>
+      <BrewForm
+        data={data}
+        existing={existing}
+        onCancel={toList}
+        onSaved={async () => { await refresh(); toList(); }}
+      />
     );
   }
 

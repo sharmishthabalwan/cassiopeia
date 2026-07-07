@@ -44,3 +44,25 @@
 .hue-brews .brew-kv-k { color: var(--muted); font: 500 11.5px var(--font-sans); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
 .hue-brews .brew-kv-v { font: 400 14px var(--font-sans); white-space: pre-wrap; line-height: 1.45; }
 .hue-brews .brew-radar-card { display: flex; flex-direction: column; align-items: center; }
+
+/* ---- form ---- */
+.hue-brews .f-section {
+  display: flex; align-items: center; gap: 8px;
+  font: 600 13px var(--font-sans); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin: 2px 0 10px;
+}
+.hue-brews .f-ratio { color: var(--text); font-weight: 600; }
+.hue-brews .f-field { display: block; margin-bottom: 10px; min-width: 0; }
+.hue-brews .f-label { display: block; color: var(--muted); font: 500 12px var(--font-sans); margin-bottom: 5px; }
+.hue-brews .f-hint { font-weight: 400; opacity: .8; }
+.hue-brews .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hue-brews .f-input {
+  width: 100%; display: block;
+  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  color: var(--text); padding: 10px 12px; font: 400 14px var(--font-sans);
+  -webkit-appearance: none; appearance: none;
+}
+.hue-brews textarea.f-input { resize: vertical; line-height: 1.45; }
+.hue-brews .f-input:focus { outline: none; border-color: var(--a1); }
+.hue-brews select.f-input option { color: initial; }
+.hue-brews .brew-log-btn:disabled { opacity: .5; cursor: default; }
