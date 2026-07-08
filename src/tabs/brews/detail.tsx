@@ -27,10 +27,11 @@ function TextBlock({ label, value }: { label: string; value?: string }) {
   );
 }
 
-export function BrewDetail({ data, brewId, onBack }: {
+export function BrewDetail({ data, brewId, onBack, onRate }: {
   data: BrewsData;
   brewId: ID;
   onBack: () => void;
+  onRate: () => void;
 }) {
   const brew = data.brews.find((b) => b.id === brewId);
   const [ratings, setRatings] = useState<Rating[] | null>(null);
@@ -53,6 +54,8 @@ export function BrewDetail({ data, brewId, onBack }: {
     const p = data.people.find((p) => p.id === r.personId);
     return { name: p?.name ?? "You", color: p?.color ?? "var(--a1)", scores: r.scores };
   });
+  const self = data.people.find((p) => p.isSelf);
+  const hasSelfRating = !!(self && ratings?.some((r) => r.personId === self.id));
 
   return (
     <div>
@@ -101,6 +104,10 @@ export function BrewDetail({ data, brewId, onBack }: {
         ) : (
           <Radar series={series} size={200} />
         )}
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit my rating" : "★ Rate this brew"}</button>
       </div>
     </div>
   );

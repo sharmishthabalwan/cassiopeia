@@ -8,12 +8,14 @@ import { useBrewsData } from "./data";
 import { BrewList } from "./list";
 import { BrewDetail } from "./detail";
 import { BrewForm } from "./form";
+import { RateBrew } from "./ratings";
 import "./brews.css";
 
 type View =
   | { kind: "list" }
   | { kind: "detail"; brewId: ID }
-  | { kind: "form"; brewId?: ID }; // brewId set = edit
+  | { kind: "form"; brewId?: ID } // brewId set = edit
+  | { kind: "rate"; brewId: ID };
 
 export default function BrewsScreen() {
   const { data, refresh } = useBrewsData();
@@ -24,7 +26,14 @@ export default function BrewsScreen() {
   const toList = () => setView({ kind: "list" });
 
   if (view.kind === "detail") {
-    return <BrewDetail data={data} brewId={view.brewId} onBack={toList} />;
+    return (
+      <BrewDetail
+        data={data}
+        brewId={view.brewId}
+        onBack={toList}
+        onRate={() => setView({ kind: "rate", brewId: view.brewId })}
+      />
+    );
   }
 
   if (view.kind === "form") {
@@ -34,9 +43,18 @@ export default function BrewsScreen() {
         data={data}
         existing={existing}
         onCancel={toList}
-        onSaved={async () => { await refresh(); toList(); }}
+        onSaved={async (brewId) => {
+          await refresh();
+          // New brews flow straight into rating; edits return to the list.
+          setView(existing ? { kind: "list" } : { kind: "rate", brewId });
+        }}
       />
     );
+  }
+
+  if (view.kind === "rate") {
+    const toDetail = () => setView({ kind: "detail", brewId: view.brewId });
+    return <RateBrew data={data} brewId={view.brewId} onDone={toDetail} onCancel={toDetail} />;
   }
 
   return (
