@@ -109,7 +109,7 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
         {bag?.roaster && <div class="brew-hero-sub">{bag.roaster}</div>}
         <div class="brew-hero-meta">
           <span class="chip hero-chip">{fmtDate(brew.date)}</span>
-          <span class="chip hero-chip">{brewerLabel(data.brewers, brew.brewerId)}</span>
+          {brew.brewerId && <span class="chip hero-chip">{brewerLabel(data.brewers, brew.brewerId)}</span>}
           {grinder && <span class="chip hero-chip">{grinder.name}</span>}
           {idea && <span class="chip hero-chip">✦ {idea.name}</span>}
         </div>

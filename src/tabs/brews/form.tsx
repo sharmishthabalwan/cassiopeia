@@ -107,7 +107,8 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
   };
 
   const liveRatio = ratioOf(num(d.doseG), num(d.waterG));
-  const canSave = !!(d.date && d.bagId && d.brewerId) && !saving;
+  // Only the coffee is required — everything else is optional (winging-it friendly).
+  const canSave = !!d.bagId && !saving;
 
   const save = async () => {
     if (!canSave) return;
@@ -171,7 +172,7 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
         <div class="f-row">
           <Field label="Brewer">
             <select class="f-input" value={d.brewerId} onChange={input("brewerId")}>
-              <option value="" disabled>Pick…</option>
+              <option value="">None</option>
               {data.brewers.map((b) => <option value={b.id}>{b.name}</option>)}
             </select>
           </Field>
@@ -217,10 +218,10 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
         <Field label="Pour technique">
           <textarea class="f-input pour-input" rows={6} placeholder="60g bloom @0:00, slow spirals toward 150g by 1:15, 250g by 1:45, drawdown by 3:30…" value={d.pourTechnique} onInput={input("pourTechnique")} />
         </Field>
-        <Field label="Notes" hint="about the recipe / method">
+        <Field label="Recipe notes" hint="about the method">
           <textarea class="f-input" rows={3} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
         </Field>
-        <Field label="Learnings" hint="what to change in the method next time">
+        <Field label="Recipe learnings" hint="what to change next time">
           <textarea class="f-input" rows={3} placeholder="e.g. go coarser, hotter — one lever at a time…" value={d.learnings} onInput={input("learnings")} />
         </Field>
       </div>

@@ -9,7 +9,10 @@ import { Radar } from "../../lib/radar";
 import { RATING_AXES, type ID, type Rating, type Scores } from "../../lib/types";
 import { bagLabel, fmtDate, type BrewsData } from "./data";
 
-const DEFAULT_SCORE = 3;
+// Axes start UNSET — an axis you never touch stays unrated ("—") and is omitted
+// from the saved scores, rather than being forced to a number you didn't mean.
+// NEUTRAL is only the resting thumb position for an unset slider.
+const NEUTRAL = 3;
 
 export function RateBrew({ data, brewId, onDone, onCancel }: {
   data: BrewsData;
@@ -34,9 +37,8 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
       if (!live) return;
       const mine = self ? ratings.find((r) => r.personId === self.id) : undefined;
       setExisting(mine ?? null);
-      const init: Scores = {};
-      for (const a of RATING_AXES) init[a.key] = mine?.scores[a.key] ?? DEFAULT_SCORE;
-      setScores(init);
+      // Only carry forward axes the rating actually had — unrated stay unset.
+      setScores({ ...(mine?.scores ?? {}) });
       setNotes(mine?.tastingNotes ?? []);
       setLearnings(mine?.learnings ?? "");
     })();
@@ -87,28 +89,44 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
         <div class="f-section">
           Rate — {brew ? `${bagLabel(data.allBags, brew.bagId)} · ${fmtDate(brew.date)}` : "brew"}
         </div>
-        {RATING_AXES.map((axis) => (
-          <div class="rate-row" key={axis.key}>
-            <div class="rate-head">
-              <span class="rate-label">{axis.label}</span>
-              <span class="rate-dir">{axis.dir}</span>
-              <span class="rate-val">{(scores[axis.key] ?? DEFAULT_SCORE).toFixed(1)}</span>
+        <div class="rate-hint">Slide only the aspects you tasted for — leave the rest as “—”.</div>
+        {RATING_AXES.map((axis) => {
+          const v = scores[axis.key];
+          const isSet = v !== undefined;
+          return (
+            <div class={`rate-row${isSet ? "" : " unset"}`} key={axis.key}>
+              <div class="rate-head">
+                <span class="rate-label">{axis.label}</span>
+                <span class="rate-dir">{axis.dir}</span>
+                <span class="rate-right">
+                  {isSet && (
+                    <button
+                      class="rate-clear"
+                      aria-label={`Clear ${axis.label}`}
+                      onClick={() => setScores((s) => { const n = { ...s }; delete n[axis.key]; return n; })}
+                    >
+                      ×
+                    </button>
+                  )}
+                  <span class="rate-val">{isSet ? v.toFixed(1) : "—"}</span>
+                </span>
+              </div>
+              <input
+                class="rate-slider"
+                type="range"
+                min={1}
+                max={5}
+                step={0.5}
+                value={isSet ? v : NEUTRAL}
+                aria-label={`${axis.label} (${axis.dir})`}
+                onInput={(e) => {
+                  const nv = parseFloat((e.currentTarget as HTMLInputElement).value);
+                  setScores((s) => ({ ...s, [axis.key]: nv }));
+                }}
+              />
             </div>
-            <input
-              class="rate-slider"
-              type="range"
-              min={1}
-              max={5}
-              step={0.5}
-              value={scores[axis.key] ?? DEFAULT_SCORE}
-              aria-label={`${axis.label} (${axis.dir})`}
-              onInput={(e) => {
-                const v = parseFloat((e.currentTarget as HTMLInputElement).value);
-                setScores((s) => ({ ...s, [axis.key]: v }));
-              }}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div class="glass">
@@ -142,7 +160,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
           }}
           onBlur={() => addNote(noteInput)}
         />
-        <div class="f-label" style="margin-top:14px">Learnings <span class="f-hint">· what the tasting taught you</span></div>
+        <div class="f-label" style="margin-top:14px">Cup learnings <span class="f-hint">· what the tasting taught you</span></div>
         <textarea
           class="f-input"
           rows={3}

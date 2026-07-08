@@ -70,11 +70,17 @@
 .hue-brews .brew-log-btn:disabled { opacity: .5; cursor: default; }
 
 /* ---- ratings ---- */
+.hue-brews .rate-hint { color: var(--muted); font: 400 12.5px var(--font-sans); margin-bottom: 12px; }
 .hue-brews .rate-row { margin-bottom: 12px; }
 .hue-brews .rate-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
 .hue-brews .rate-label { font: 500 14px var(--font-sans); }
 .hue-brews .rate-dir { color: var(--muted); font: 400 11.5px var(--font-sans); }
-.hue-brews .rate-val { margin-left: auto; font: 600 13.5px var(--font-sans); color: var(--a1); font-variant-numeric: tabular-nums; }
+.hue-brews .rate-right { margin-left: auto; display: flex; align-items: baseline; gap: 6px; }
+.hue-brews .rate-val { font: 600 13.5px var(--font-sans); color: var(--a1); font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; }
+.hue-brews .rate-clear { background: none; border: none; color: var(--muted); font-size: 15px; line-height: 1; cursor: pointer; padding: 0; }
+/* unset axis: greyed slider + muted "—" until the user engages it */
+.hue-brews .rate-row.unset .rate-slider { opacity: .38; }
+.hue-brews .rate-row.unset .rate-val { color: var(--muted); }
 .hue-brews .rate-slider {
   width: 100%; margin: 0; display: block; accent-color: var(--a1);
   -webkit-appearance: none; appearance: none; height: 26px; background: transparent;

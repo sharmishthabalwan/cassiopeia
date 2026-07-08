@@ -25,7 +25,7 @@ export function BrewList({ data, onOpen, onNew }: {
                 <span class="brew-name" style={bag?.color ? `color:${bag.color}` : undefined}>
                   {bagLabel(data.allBags, b.bagId)}
                 </span>
-                <span class="chip">{brewerLabel(data.brewers, b.brewerId)}</span>
+                {b.brewerId && <span class="chip">{brewerLabel(data.brewers, b.brewerId)}</span>}
                 {b.doseG != null && <span class="chip">{b.doseG}g</span>}
               </button>
             );
