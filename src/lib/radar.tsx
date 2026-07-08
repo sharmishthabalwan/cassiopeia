@@ -64,23 +64,31 @@ export function Radar({ series, size = 180 }: RadarProps) {
           </g>
         );
       })}
-      {/* one polygon per person, in their colour */}
+      {/* one shape per person, in their colour. UNRATED axes are SKIPPED (not
+         plotted at centre) — a missing score means "not tasted for", and on the
+         reversed axes a centre point would falsely read as e.g. very acidic. */}
       {series.map((s) => {
-        const values = RATING_AXES.map((a) => s.scores[a.key] ?? 0);
+        const rated = RATING_AXES
+          .map((a, i) => ({ i, v: s.scores[a.key] }))
+          .filter((x): x is { i: number; v: number } => x.v !== undefined);
+        const pts = rated.map(({ i, v }) => pt(c, c, r, i, v));
+        const pointsStr = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
         return (
           <g>
-            <polygon
-              points={poly(c, c, r, values)}
-              fill={s.color}
-              fill-opacity="0.25"
-              stroke={s.color}
-              stroke-width="1.6"
-              stroke-linejoin="round"
-            />
-            {values.map((v, i) => {
-              const [x, y] = pt(c, c, r, i, v);
-              return <circle cx={x} cy={y} r="2" fill={s.color} />;
-            })}
+            {pts.length >= 3 && (
+              <polygon
+                points={pointsStr}
+                fill={s.color}
+                fill-opacity="0.25"
+                stroke={s.color}
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+            )}
+            {pts.length === 2 && (
+              <polyline points={pointsStr} fill="none" stroke={s.color} stroke-width="1.6" />
+            )}
+            {pts.map(([x, y]) => <circle cx={x} cy={y} r="2.5" fill={s.color} />)}
           </g>
         );
       })}

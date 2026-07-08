@@ -61,7 +61,7 @@ Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a
 
 ## Shared components (contract props; Foundation implements)
 
-- `Radar` (`src/lib/radar.tsx`) — `RadarProps { series: {name,color,scores}[], size? }`. One polygon per person in their colour; grid rings 1..5; axis labels with direction.
+- `Radar` (`src/lib/radar.tsx`) — `RadarProps { series: {name,color,scores}[], size? }`. One polygon per person in their colour; grid rings 1..5; axis labels with direction. **Unrated axes (score `undefined`) are SKIPPED, not plotted at centre** — a missing score means "not tasted for", and on reversed axes a centre point would falsely read as e.g. very acidic (≥3 rated → filled polygon; 2 → line; 1 → dot).
 - `Catalog` (`src/lib/catalog.tsx`) — `CatalogProps { facets, activeFacet, items, onOpen, onQuickSave?, onFacetChange? }`. ONE component powers Recipes' Coffee Pros / Brewers / Styles / Roasters. Row `+` = `onQuickSave` (quick-save to ideas); tapping a row = `onOpen` (drill in); tapping a chip = `onFacetChange` (parent swaps `items`) — *added in Foundation; Recipes agent take note*. Adding a facet/entry is data, not UI.
 
 ---

@@ -19,15 +19,19 @@ This is THE resume doc — read it with `CONTRACTS.md` (contracts) and `README.m
 | 5a/5b | Ideas ∥ Recipes | ⏳ | |
 | 6 | Friends + PWA + Supabase + iCloud mirror | ⏳ last | icons ready for manifest |
 
-**Deferred UI polish (user-requested, not yet done):**
-- Aurora gradient tablet-gap fix (see resp row above) — small app.css change.
-- **FAB feels bare on desktop.** User wants alternatives researched (done: navigation
-  rail is the recommended desktop pattern — narrow vertical icon+label sidebar that the
-  FAB anchors to the top of; bottom bar/FAB are discouraged on desktop). Proposal: keep
-  the liquid FAB on mobile (`hover:none`), swap to a left navigation rail on desktop
-  (`min-width:1100px`) reading the same `nav.config.ts`.
-- **Persistent top-left Cassiopeia logo** (transparent `Logo-bubble.png`) that links to
-  Home — on every tab. Would live in the app shell (`main.tsx` + `app.css`).
+**Desktop-chrome pass — ✅ DONE (2026-07-09, pushed):**
+- Aurora tablet-gap fixed: `.screen .body` is now full-width at every size with a
+  centered reading column via padding (560→720→840). No phone-width strip anymore.
+- Desktop nav-rail (`≥1100px`): left sidebar (logo + 7 tabs from nav.config, active
+  highlighted in the tab's hue) in `main.tsx` `NavRail`; the FAB is hidden at that width.
+- Persistent top-left logo (`icon-192.png`) routes Home — floating on mobile/tablet
+  (`AppLogo`), and as the rail's crown on desktop.
+- Radar now SKIPS unrated axes (see CONTRACTS §components) instead of plotting centre.
+
+⚠️ **Testing caution:** the preview at :5173 uses the user's REAL IndexedDB. Logging a
+brew there persists to their journal, and re-rating an existing brew overwrites it. When
+verifying flows, clean up test brews AND restore any touched rating by re-fetching
+`/seed-data.json` and `put`-ting `brews`+`ratings` back. Prefer read-only navigation.
 
 **Relational model (cross-tab references — build lazily, don't pre-fetch):**
 Everything links by id through `db.ts`. `Brew.bagId`→Bag, `Brew.brewerId`→Brewer,

@@ -116,6 +116,46 @@ function Fab({ current }: { current: string }) {
   );
 }
 
+// ---- persistent logo (always) + desktop nav-rail --------------------------
+
+const LOGO_SRC = `${import.meta.env.BASE_URL}icon-192.png`;
+
+/** Top-left Cassiopeia mark — always a one-tap route Home. Hidden on desktop
+ *  (the nav-rail carries its own logo there). */
+function AppLogo() {
+  return (
+    <button class="app-logo" aria-label="Cassiopeia — home" onClick={() => go("home")}>
+      <img src={LOGO_SRC} alt="" width="34" height="34" />
+    </button>
+  );
+}
+
+/** Desktop-only left navigation rail (>=1100px). Reads nav.config like the FAB;
+ *  the FAB is hidden at that width. Logo on top routes Home. */
+function NavRail({ current }: { current: string }) {
+  return (
+    <nav class="nav-rail" aria-label="Primary">
+      <button class="rail-logo" aria-label="Cassiopeia — home" onClick={() => go("home")}>
+        <img src={LOGO_SRC} alt="" width="40" height="40" />
+        <span class="rail-wordmark">Cassiopeia</span>
+      </button>
+      <div class="rail-tabs">
+        {TABS.filter((t) => t.enabled).map((t) => (
+          <button
+            key={t.id}
+            class={`rail-item hue-${t.id}${t.id === current ? " active" : ""}`}
+            aria-current={t.id === current ? "page" : undefined}
+            onClick={() => go(t.id)}
+          >
+            <span class="rail-icon">{t.icon}</span>
+            <span class="rail-label">{t.label}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 // ---- app ------------------------------------------------------------------
 
 function App({ initialAppearance }: { initialAppearance: Appearance }) {
@@ -138,6 +178,8 @@ function App({ initialAppearance }: { initialAppearance: Appearance }) {
 
   return (
     <div class={`screen hue-${tab}`} style={hueStyle}>
+      <NavRail current={tab} />
+      <AppLogo />
       <div class="body">
         <h1>{def.label}</h1>
         {Screen && <Screen />}
