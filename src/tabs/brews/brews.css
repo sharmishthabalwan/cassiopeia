@@ -1,0 +1,97 @@
+/* Brews tab — styles scoped under .hue-brews. Extends theme primitives
+   (.glass/.btn); tokens only, no hardcoded colours. */
+
+.hue-brews .brew-log-btn { justify-content: center; font-weight: 600; margin-bottom: 14px; }
+
+/* ---- log list ---- */
+.hue-brews .brew-list { padding-top: 6px; padding-bottom: 6px; }
+.hue-brews .brew-row {
+  display: flex; align-items: baseline; gap: 10px;
+  width: 100%; padding: 12px 0;
+  border: none; border-bottom: 1px solid var(--line);
+  background: none; color: var(--text);
+  font: 400 14.5px var(--font-sans); text-align: left; cursor: pointer;
+}
+.hue-brews .brew-row:last-child { border-bottom: none; }
+.hue-brews .brew-date { color: var(--muted); font-size: 12.5px; flex: 0 0 64px; }
+.hue-brews .brew-name {
+  flex: 1 1 auto; min-width: 0; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hue-brews .chip {
+  flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
+  border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
+  white-space: nowrap;
+}
+
+/* ---- detail ---- */
+.hue-brews .brew-back { width: auto; margin-bottom: 14px; padding: 9px 14px; }
+.hue-brews .brew-hero-name { font: 600 20px var(--font-sans); }
+.hue-brews .brew-hero-sub { font: 400 13.5px var(--font-sans); opacity: .85; margin-top: 2px; }
+.hue-brews .brew-hero-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hue-brews .hero-chip { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.14); }
+.hue-brews .stat-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 6px;
+}
+.hue-brews .stat {
+  background: var(--field); border: 1px solid var(--brd);
+  border-radius: var(--radius); padding: 9px 6px; text-align: center;
+}
+.hue-brews .stat-v { font: 600 15px var(--font-sans); }
+.hue-brews .stat-k { color: var(--muted); font: 400 11px var(--font-sans); margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+.hue-brews .brew-kv { padding: 8px 0 2px; }
+.hue-brews .brew-kv-k { color: var(--muted); font: 500 11.5px var(--font-sans); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+.hue-brews .brew-kv-v { font: 400 14px var(--font-sans); white-space: pre-wrap; line-height: 1.45; }
+.hue-brews .brew-radar-card { display: flex; flex-direction: column; align-items: center; }
+
+/* ---- form ---- */
+.hue-brews .f-section {
+  display: flex; align-items: center; gap: 8px;
+  font: 600 13px var(--font-sans); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin: 2px 0 10px;
+}
+.hue-brews .f-ratio { color: var(--text); font-weight: 600; }
+.hue-brews .f-field { display: block; margin-bottom: 10px; min-width: 0; }
+.hue-brews .f-label { display: block; color: var(--muted); font: 500 12px var(--font-sans); margin-bottom: 5px; }
+.hue-brews .f-hint { font-weight: 400; opacity: .8; }
+.hue-brews .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hue-brews .f-input {
+  width: 100%; display: block;
+  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  color: var(--text); padding: 10px 12px; font: 400 14px var(--font-sans);
+  -webkit-appearance: none; appearance: none;
+}
+.hue-brews textarea.f-input { resize: vertical; line-height: 1.45; }
+.hue-brews .f-input:focus { outline: none; border-color: var(--a1); }
+.hue-brews select.f-input option { color: initial; }
+.hue-brews .brew-log-btn:disabled { opacity: .5; cursor: default; }
+
+/* ---- ratings ---- */
+.hue-brews .rate-row { margin-bottom: 12px; }
+.hue-brews .rate-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+.hue-brews .rate-label { font: 500 14px var(--font-sans); }
+.hue-brews .rate-dir { color: var(--muted); font: 400 11.5px var(--font-sans); }
+.hue-brews .rate-val { margin-left: auto; font: 600 13.5px var(--font-sans); color: var(--a1); font-variant-numeric: tabular-nums; }
+.hue-brews .rate-slider {
+  width: 100%; margin: 0; display: block; accent-color: var(--a1);
+  -webkit-appearance: none; appearance: none; height: 26px; background: transparent;
+}
+.hue-brews .rate-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--line); }
+.hue-brews .rate-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; margin-top: -7px;
+  border-radius: 50%; border: none;
+  background: linear-gradient(140deg, var(--a1), var(--a2));
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+.hue-brews .rate-slider::-moz-range-track { height: 4px; border-radius: 2px; background: var(--line); }
+.hue-brews .rate-slider::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; border: none;
+  background: linear-gradient(140deg, var(--a1), var(--a2));
+}
+.hue-brews .note-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.hue-brews .note-chip { background: var(--field); color: var(--text); cursor: pointer; padding: 5px 11px; font-size: 12.5px; border: 1px solid var(--brd); border-radius: 999px; }
+
+/* ---- detail action row ---- */
+.hue-brews .detail-actions { display: flex; gap: 8px; margin: 2px 0 12px; }
+.hue-brews .detail-actions .btn { width: auto; flex: 1; justify-content: center; padding: 11px 14px; }
