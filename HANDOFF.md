@@ -1,29 +1,39 @@
 # Cassiopeia — session handoff & progress tracker
 
-*Last updated: 2026-07-06 (morning), just before the Phase 2 fan-out was due to launch.
+*Last updated: 2026-07-09. Brews tab complete + merged; deployed to Pages.
 This is THE resume doc — read it with `CONTRACTS.md` (contracts) and `README.md` (overview).
-To resume, tell Claude: **"Read HANDOFF.md and start/continue the fan-out."***
 
 ## Progress tracker
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 0 | Contracts + skeleton | ✅ done | |
-| 1 | Foundation (db, radar, catalog, shell, FAB, theme, import) | ✅ done | polished after user feedback: clickable fallbacks, FAB spacing, 7 distinct hues |
-| 1b | App logo + icons | ✅ done | bubble extracted with true alpha (`Logo-bubble.png`), favicon/PWA/iOS icons in `public/` |
-| 2a | **Bags tab agent** | 🔜 NOT STARTED | wave 1, parallel with 2b — brief below |
-| 2b | **Brews tab agent** | 🔜 NOT STARTED | wave 1, parallel with 2a — brief below |
-| 3 | Home tab agent | ⏳ waits on wave 1 | |
-| 4 | Insights + Wrapped agent | ⏳ waits on 3 | |
-| 5a/5b | Ideas ∥ Recipes agents | ⏳ waits on 4 | |
+| 1 | Foundation (db, radar, catalog, shell, FAB, theme, import) | ✅ done | clickable fallbacks, FAB spacing, 7 distinct hues |
+| 1b | App logo + icons | ✅ done | true-alpha bubble (`Logo-bubble.png`), icons in `public/` |
+| 1c | Publish: GitHub repo + Pages deploy | ✅ done | live at sharmishthabalwan.github.io/cassiopeia; Actions auto-deploy on push to main |
+| resp | Desktop responsive | ✅ merged | wide column + grids + FAB hover. KNOWN GAP: aurora gradient is phone-width in the 561–767px tablet band (fix: unify `.screen .body` to always full-width + centered-column padding in app.css) |
+| 2b | **Brews tab** | ✅ DONE + merged | F1 list · F2 detail+radar · F3 logger · F4 9-slider ratings (direction-labeled, as-is) · F5 edit+empty states. Verified end-to-end: log→rate→persist→reload→edit; scores stored un-inverted. Branch `brews` merged to main (not yet pushed pending user test). |
+| 2a | **Bags tab** | 🟡 F1–F4 done | list, detail, add/edit, state toggles+peak — committed on branch `bags`, NOT merged. **F5 photo upload (canvas→WebP + thumb) NOT built.** Render path (`photoSrc`/`BagPhoto`) already exists. Finish F5, verify, merge. |
+| 3 | Home tab | ⏳ next after bags | |
+| 4 | Insights + Wrapped | ⏳ | |
+| 5a/5b | Ideas ∥ Recipes | ⏳ | |
 | 6 | Friends + PWA + Supabase + iCloud mirror | ⏳ last | icons ready for manifest |
 
-**Every tab currently renders a Foundation fallback screen** (raw-but-clickable lists,
-expandable rows, working radar/catalog/theme demos). The real internal pages are exactly
-what Phases 2–5 build, one agent per `src/tabs/<id>/` folder.
+**Deferred UI polish (user-requested, not yet done):**
+- Aurora gradient tablet-gap fix (see resp row above) — small app.css change.
+- **FAB feels bare on desktop.** User wants alternatives researched (done: navigation
+  rail is the recommended desktop pattern — narrow vertical icon+label sidebar that the
+  FAB anchors to the top of; bottom bar/FAB are discouraged on desktop). Proposal: keep
+  the liquid FAB on mobile (`hover:none`), swap to a left navigation rail on desktop
+  (`min-width:1100px`) reading the same `nav.config.ts`.
+- **Persistent top-left Cassiopeia logo** (transparent `Logo-bubble.png`) that links to
+  Home — on every tab. Would live in the app shell (`main.tsx` + `app.css`).
 
-Git: repo on `main`, clean at last update — commits `2a553ea` (Foundation), `48f2c5a`
-(logo), `fd02e24` (bubble extraction). User sign-off given for wave 1 fan-out.
+Git: repo on `main`. Tab agents commit per-feature inside `worktrees/<tab>/`; the
+integration owner (main session) reviews, commits any finished-but-uncommitted work,
+merges, verifies, and gates pushes on the user's test. Branch `bags` still unmerged.
+Workflow note: the two wave-1 agents each hit the **monthly spend cap** mid-task (billing,
+not code) — per-feature commits meant no work was lost.
 
 ## Fan-out procedure (approved plan)
 
