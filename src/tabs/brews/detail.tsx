@@ -1,10 +1,12 @@
-// Brews tab — F2 brew detail: every Brew field + the per-brew taste radar
-// (one series per person who rated, each in their Person.color).
+// Brews tab — F2 brew detail: brew params, a collapsible Recipe accordion
+// (pour technique + the brew idea it followed + recipe notes/learnings), and
+// the per-brew taste radar with the cup's tasting notes + learnings.
 
 import { useEffect, useState } from "preact/hooks";
 import { db } from "../../lib/db";
 import { Radar } from "../../lib/radar";
-import type { ID, Rating } from "../../lib/types";
+import type { ComponentChildren } from "preact";
+import type { BrewIdea, ID, Rating } from "../../lib/types";
 import { brewerLabel, findBag, fmtDate, ratioOf, type BrewsData } from "./data";
 
 function Stat({ label, value }: { label: string; value?: string | number }) {
@@ -23,6 +25,42 @@ function TextBlock({ label, value }: { label: string; value?: string }) {
     <div class="brew-kv">
       <div class="brew-kv-k">{label}</div>
       <div class="brew-kv-v">{value}</div>
+    </div>
+  );
+}
+
+/** Collapsible section — content mounts only when open (nothing pre-rendered). */
+function Accordion({ title, subtitle, children }: {
+  title: string; subtitle?: string; children: ComponentChildren;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div class={`glass brew-acc${open ? " open" : ""}`}>
+      <button class="brew-acc-head" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <span class="brew-acc-title">{title}</span>
+        {subtitle && <span class="brew-acc-sub">{subtitle}</span>}
+        <span class="brew-acc-chev" aria-hidden="true">{open ? "▾" : "▸"}</span>
+      </button>
+      {open && <div class="brew-acc-body">{children}</div>}
+    </div>
+  );
+}
+
+/** The recipe a brew followed, if any — shown inside the Recipe accordion. */
+function FollowedRecipe({ idea }: { idea: BrewIdea }) {
+  return (
+    <div class="brew-idea-block">
+      <div class="brew-idea-name">✦ Followed: {idea.name}</div>
+      <div class="stat-grid">
+        <Stat label="brewer" value={idea.brewer} />
+        <Stat label="dose" value={idea.dose} />
+        <Stat label="ratio" value={idea.ratio} />
+        <Stat label="grind" value={idea.grind} />
+        <Stat label="temp" value={idea.temp} />
+        <Stat label="target" value={idea.targetTime} />
+      </div>
+      <TextBlock label="Method" value={idea.steps} />
+      <TextBlock label="Source" value={[idea.author, idea.source].filter(Boolean).join(" · ") || undefined} />
     </div>
   );
 }
@@ -55,7 +93,10 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
     return { name: p?.name ?? "You", color: p?.color ?? "var(--a1)", scores: r.scores };
   });
   const self = data.people.find((p) => p.isSelf);
-  const hasSelfRating = !!(self && ratings?.some((r) => r.personId === self.id));
+  const selfRating = self ? ratings?.find((r) => r.personId === self.id) : undefined;
+  const hasSelfRating = !!selfRating;
+
+  const hasRecipe = !!(brew.pourTechnique || idea || brew.notes || brew.learnings);
 
   return (
     <div>
@@ -85,14 +126,15 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
         </div>
         <TextBlock label="Filter" value={brew.filter} />
         <TextBlock label="Roast date" value={brew.roastDate && fmtDate(brew.roastDate)} />
-        <TextBlock label="Pour technique" value={brew.pourTechnique} />
       </div>
 
-      {(brew.notes || brew.learnings) && (
-        <div class="glass">
-          <TextBlock label="Notes" value={brew.notes} />
-          <TextBlock label="Learnings" value={brew.learnings} />
-        </div>
+      {hasRecipe && (
+        <Accordion title="Recipe" subtitle={idea ? `followed ✦ ${idea.name}` : "manual"}>
+          {idea && <FollowedRecipe idea={idea} />}
+          <TextBlock label="Pour technique" value={brew.pourTechnique} />
+          <TextBlock label="Recipe notes" value={brew.notes} />
+          <TextBlock label="Recipe learnings" value={brew.learnings} />
+        </Accordion>
       )}
 
       <div class="glass brew-radar-card">
@@ -104,7 +146,18 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
         ) : (
           <Radar series={series} size={200} />
         )}
+        {selfRating?.tastingNotes?.length ? (
+          <div class="note-chips" style="margin-top:12px;align-self:stretch">
+            {selfRating.tastingNotes.map((w) => <span class="chip note-chip">{w}</span>)}
+          </div>
+        ) : null}
       </div>
+
+      {selfRating?.learnings && (
+        <div class="glass">
+          <TextBlock label="Cup learnings" value={selfRating.learnings} />
+        </div>
+      )}
 
       <div class="detail-actions">
         <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit my rating" : "★ Rate this brew"}</button>

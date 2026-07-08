@@ -62,7 +62,9 @@
   color: var(--text); padding: 10px 12px; font: 400 14px var(--font-sans);
   -webkit-appearance: none; appearance: none;
 }
-.hue-brews textarea.f-input { resize: vertical; line-height: 1.45; }
+.hue-brews textarea.f-input { resize: vertical; line-height: 1.45; min-height: 76px; }
+.hue-brews textarea.pour-input { min-height: 150px; }
+.hue-brews .note-input { padding: 13px 14px; font-size: 15px; }
 .hue-brews .f-input:focus { outline: none; border-color: var(--a1); }
 .hue-brews select.f-input option { color: initial; }
 .hue-brews .brew-log-btn:disabled { opacity: .5; cursor: default; }
@@ -91,6 +93,20 @@
 }
 .hue-brews .note-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .hue-brews .note-chip { background: var(--field); color: var(--text); cursor: pointer; padding: 5px 11px; font-size: 12.5px; border: 1px solid var(--brd); border-radius: 999px; }
+
+/* ---- recipe accordion (detail) ---- */
+.hue-brews .brew-acc { padding: 0; overflow: hidden; }
+.hue-brews .brew-acc-head {
+  display: flex; align-items: baseline; gap: 10px; width: 100%;
+  background: none; border: none; color: var(--text); cursor: pointer;
+  padding: 15px; font-family: var(--font-sans); text-align: left;
+}
+.hue-brews .brew-acc-title { font: 600 13px var(--font-sans); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.hue-brews .brew-acc-sub { font: 400 12.5px var(--font-sans); color: var(--muted); opacity: .8; }
+.hue-brews .brew-acc-chev { margin-left: auto; color: var(--muted); font-size: 13px; }
+.hue-brews .brew-acc-body { padding: 0 15px 15px; }
+.hue-brews .brew-idea-block { border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 4px; }
+.hue-brews .brew-idea-name { font: 500 13.5px var(--font-sans); color: var(--a1); margin-bottom: 10px; }
 
 /* ---- detail action row ---- */
 .hue-brews .detail-actions { display: flex; gap: 8px; margin: 2px 0 12px; }

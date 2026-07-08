@@ -57,6 +57,8 @@ export interface Rating {
   personId: ID;               // Person.id — self or a friend
   scores: Scores;
   tastingNotes?: string[];    // free-text words
+  learnings?: string;         // "cup learnings" — what the TASTING taught (distinct from
+                              // Brew.learnings = "recipe learnings" captured while brewing)
 }
 
 export interface Brew {

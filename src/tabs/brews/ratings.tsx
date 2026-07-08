@@ -24,6 +24,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
   const [scores, setScores] = useState<Scores | null>(null);
   const [notes, setNotes] = useState<string[]>([]);
   const [noteInput, setNoteInput] = useState("");
+  const [learnings, setLearnings] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
       for (const a of RATING_AXES) init[a.key] = mine?.scores[a.key] ?? DEFAULT_SCORE;
       setScores(init);
       setNotes(mine?.tastingNotes ?? []);
+      setLearnings(mine?.learnings ?? "");
     })();
     return () => { live = false; };
   }, [brewId, self?.id]);
@@ -71,6 +73,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
       personId: self.id,
       scores, // stored as-is: reversed axes stay reversed
       tastingNotes: notes.length ? notes : undefined,
+      learnings: learnings.trim() || undefined, // cup learnings (from tasting)
     };
     await db.upsertRating(rating);
     onDone();
@@ -109,7 +112,8 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
       </div>
 
       <div class="glass">
-        <div class="f-section">Tasting notes</div>
+        <div class="f-section">Cup</div>
+        <div class="f-label">Tasting notes</div>
         {notes.length > 0 && (
           <div class="note-chips">
             {notes.map((w) => (
@@ -125,7 +129,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
           </div>
         )}
         <input
-          class="f-input"
+          class="f-input note-input"
           type="text"
           placeholder="fig, strawberry, creamy — comma or enter adds"
           value={noteInput}
@@ -137,6 +141,14 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
             if (e.key === "Enter") { e.preventDefault(); addNote(noteInput); }
           }}
           onBlur={() => addNote(noteInput)}
+        />
+        <div class="f-label" style="margin-top:14px">Learnings <span class="f-hint">· what the tasting taught you</span></div>
+        <textarea
+          class="f-input"
+          rows={3}
+          placeholder="e.g. 92°C rounded the acidity; body still thin — try 1:15 next time"
+          value={learnings}
+          onInput={(e) => setLearnings((e.currentTarget as HTMLTextAreaElement).value)}
         />
       </div>
 

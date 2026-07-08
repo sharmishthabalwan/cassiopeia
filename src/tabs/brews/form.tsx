@@ -210,18 +210,18 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
             <input class="f-input" type="text" placeholder="4:16" value={d.totalTime} onInput={input("totalTime")} />
           </Field>
         </div>
-        <Field label="Pour technique">
-          <textarea class="f-input" rows={3} placeholder="60g bloom @0:00, slow spirals…" value={d.pourTechnique} onInput={input("pourTechnique")} />
-        </Field>
       </div>
 
       <div class="glass">
-        <div class="f-section">Cup</div>
-        <Field label="Notes">
-          <textarea class="f-input" rows={3} placeholder="How was the cup?" value={d.notes} onInput={input("notes")} />
+        <div class="f-section">Recipe</div>
+        <Field label="Pour technique">
+          <textarea class="f-input pour-input" rows={6} placeholder="60g bloom @0:00, slow spirals toward 150g by 1:15, 250g by 1:45, drawdown by 3:30…" value={d.pourTechnique} onInput={input("pourTechnique")} />
         </Field>
-        <Field label="Learnings">
-          <textarea class="f-input" rows={2} placeholder="What to try next time?" value={d.learnings} onInput={input("learnings")} />
+        <Field label="Notes" hint="about the recipe / method">
+          <textarea class="f-input" rows={3} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
+        </Field>
+        <Field label="Learnings" hint="what to change in the method next time">
+          <textarea class="f-input" rows={3} placeholder="e.g. go coarser, hotter — one lever at a time…" value={d.learnings} onInput={input("learnings")} />
         </Field>
       </div>
 

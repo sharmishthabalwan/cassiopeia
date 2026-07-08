@@ -35,6 +35,8 @@ GlobalRecipe ──(saveRecipeAsIdea, row-copy)──> BrewIdea
 **Rating axes keep direction — 5 is not always best:**
 `flavour/fragrance/sweetness/balance/aftertaste/mouthfeel` 5 = highest · `acidity` 5 = lowest · `bitterness` 5 = lowest · `body` 5 = lightest. Every slider is labeled with its direction. Radar reads scores as-is (a "good" cup is not a big regular polygon — that's expected).
 
+**Two kinds of notes/learnings (don't conflate):** `Brew.notes` + `Brew.learnings` are the **recipe/method** record (captured while brewing — the Brews logger "Recipe" section). `Rating.tastingNotes` + `Rating.learnings` are the **cup** record (captured while tasting — the Brews "Cup"/rating step). `Rating.learnings` was added in Phase 2b; it is additive & optional — Insights/friends radars ignore it.
+
 **Canonical Recipe shape** is shared by `BrewIdea` and `GlobalRecipe`, so save→promote→brew is a row-copy, never a transform.
 
 **Supabase schema (later):** one table per entity mirroring the interfaces; `ratings` FK `brew_id` + `person_id`; RLS `user_id = auth.uid()`. Adding it must not change `db.ts` signatures.
