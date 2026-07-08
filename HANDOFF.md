@@ -29,6 +29,16 @@ This is THE resume doc — read it with `CONTRACTS.md` (contracts) and `README.m
 - **Persistent top-left Cassiopeia logo** (transparent `Logo-bubble.png`) that links to
   Home — on every tab. Would live in the app shell (`main.tsx` + `app.css`).
 
+**Relational model (cross-tab references — build lazily, don't pre-fetch):**
+Everything links by id through `db.ts`. `Brew.bagId`→Bag, `Brew.brewerId`→Brewer,
+`Brew.grinderId`→Grinder, `Brew.recipeId`→BrewIdea (the recipe followed),
+`Rating.brewId`→Brew + `Rating.personId`→Person, GlobalRecipe→BrewIdea via
+`saveRecipeAsIdea` (row-copy). Brews-tab detail already shows the brew→recipe
+direction (Recipe accordion). The reverse — **Ideas tab (5a): under a brew idea,
+an accordion "Brews that used this" = `db.listBrews()` filtered by `recipeId`,
+loaded only when opened**; Recipes tab (5b) reaches brews through its saved ideas.
+No new db methods needed — filter the existing list calls on open.
+
 Git: repo on `main`. Tab agents commit per-feature inside `worktrees/<tab>/`; the
 integration owner (main session) reviews, commits any finished-but-uncommitted work,
 merges, verifies, and gates pushes on the user's test. Branch `bags` still unmerged.
