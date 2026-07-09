@@ -96,7 +96,16 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
   const selfRating = self ? ratings?.find((r) => r.personId === self.id) : undefined;
   const hasSelfRating = !!selfRating;
 
-  const hasRecipe = !!(brew.pourTechnique || idea || brew.notes || brew.learnings);
+  const hasDetails = !!(
+    brew.doseG != null || brew.waterG != null || brew.tempC != null || brew.totalTime ||
+    brew.grind || brew.filter || brew.roastDate || idea || brew.pourTechnique ||
+    brew.notes || brew.learnings
+  );
+  // Collapsed teaser: the key numbers at a glance without expanding.
+  const teaser = idea
+    ? `✦ ${idea.name}`
+    : [brew.doseG != null ? `${brew.doseG}g` : null, ratioOf(brew.doseG, brew.waterG),
+       brew.tempC != null ? `${brew.tempC}°C` : null].filter(Boolean).join(" · ");
 
   return (
     <div>
@@ -115,21 +124,18 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
         </div>
       </div>
 
-      <div class="glass">
-        <div class="stat-grid">
-          <Stat label="dose" value={brew.doseG != null ? `${brew.doseG}g` : undefined} />
-          <Stat label="water" value={brew.waterG != null ? `${brew.waterG}g` : undefined} />
-          <Stat label="ratio" value={ratioOf(brew.doseG, brew.waterG)} />
-          <Stat label="temp" value={brew.tempC != null ? `${brew.tempC}°C` : undefined} />
-          <Stat label="time" value={brew.totalTime} />
-          <Stat label="grind" value={brew.grind} />
-        </div>
-        <TextBlock label="Filter" value={brew.filter} />
-        <TextBlock label="Roast date" value={brew.roastDate && fmtDate(brew.roastDate)} />
-      </div>
-
-      {hasRecipe && (
-        <Accordion title="Recipe" subtitle={idea ? `followed ✦ ${idea.name}` : "manual"}>
+      {hasDetails && (
+        <Accordion title="Recipe" subtitle={teaser || undefined}>
+          <div class="stat-grid">
+            <Stat label="dose" value={brew.doseG != null ? `${brew.doseG}g` : undefined} />
+            <Stat label="water" value={brew.waterG != null ? `${brew.waterG}g` : undefined} />
+            <Stat label="ratio" value={ratioOf(brew.doseG, brew.waterG)} />
+            <Stat label="temp" value={brew.tempC != null ? `${brew.tempC}°C` : undefined} />
+            <Stat label="time" value={brew.totalTime} />
+            <Stat label="grind" value={brew.grind} />
+          </div>
+          <TextBlock label="Filter" value={brew.filter} />
+          <TextBlock label="Roast date" value={brew.roastDate && fmtDate(brew.roastDate)} />
           {idea && <FollowedRecipe idea={idea} />}
           <TextBlock label="Pour technique" value={brew.pourTechnique} />
           <TextBlock label="Recipe notes" value={brew.notes} />
