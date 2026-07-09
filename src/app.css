@@ -7,12 +7,13 @@
      Keeps the .body aurora background full-bleed at EVERY width (no phone-width
      strip in the tablet band). Column: 560 (base) → 720 (>=768) → 840 (>=1100). */
   min-height: 100dvh;
-  padding-top: calc(env(safe-area-inset-top) + 54px); /* clears the top-left logo */
+  padding-top: max(18px, env(safe-area-inset-top));
   padding-bottom: calc(120px + env(safe-area-inset-bottom));
   padding-left: max(16px, calc((100% - 560px) / 2));
   padding-right: max(16px, calc((100% - 560px) / 2));
 }
-.screen h1 { font: 600 26px var(--font-sans); margin: 6px 0 16px; }
+.screen-head { display: flex; align-items: center; gap: 10px; margin: 6px 0 16px; }
+.screen h1 { font: 600 26px var(--font-sans); margin: 0; }
 .screen .sub { color: var(--muted); font: 400 13.5px var(--font-sans); }
 
 /* ---- liquid FAB: collapsed "+" → vertical gooey stack of tab circles ---- */
@@ -78,13 +79,14 @@
 .seg { display: flex; gap: 8px; margin: 10px 0 4px; }
 .seg .btn { width: auto; padding: 10px 16px; }
 
-/* ---- persistent top-left logo (mobile/tablet; hidden on desktop) ---- */
+/* ---- persistent logo, inline to the LEFT of the heading (mobile/tablet;
+   hidden on desktop where the nav-rail carries its own logo) ---- */
 .app-logo {
-  position: fixed; top: max(12px, env(safe-area-inset-top)); left: 14px; z-index: 45;
-  width: 40px; height: 40px; padding: 3px; border: none; background: none; cursor: pointer;
+  flex: 0 0 auto; width: 36px; height: 36px; padding: 3px;
+  border: none; background: none; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.app-logo img { width: 34px; height: 34px; display: block; filter: drop-shadow(0 2px 8px rgba(0,0,0,.4)); }
+.app-logo img { width: 30px; height: 30px; display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 
 /* ---- desktop navigation rail (shown >=1100px via the media query below) ---- */
 .nav-rail {

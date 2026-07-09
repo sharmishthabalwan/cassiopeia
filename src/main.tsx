@@ -120,12 +120,13 @@ function Fab({ current }: { current: string }) {
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}icon-192.png`;
 
-/** Top-left Cassiopeia mark — always a one-tap route Home. Hidden on desktop
+/** Cassiopeia mark beside the screen heading — always a one-tap route Home.
+ *  Sits inline to the LEFT of <h1> on mobile/tablet; hidden on desktop
  *  (the nav-rail carries its own logo there). */
 function AppLogo() {
   return (
     <button class="app-logo" aria-label="Cassiopeia — home" onClick={() => go("home")}>
-      <img src={LOGO_SRC} alt="" width="34" height="34" />
+      <img src={LOGO_SRC} alt="" width="30" height="30" />
     </button>
   );
 }
@@ -179,9 +180,11 @@ function App({ initialAppearance }: { initialAppearance: Appearance }) {
   return (
     <div class={`screen hue-${tab}`} style={hueStyle}>
       <NavRail current={tab} />
-      <AppLogo />
       <div class="body">
-        <h1>{def.label}</h1>
+        <div class="screen-head">
+          <AppLogo />
+          <h1>{def.label}</h1>
+        </div>
         {Screen && <Screen />}
       </div>
       <GooFilter />
