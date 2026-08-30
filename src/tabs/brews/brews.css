@@ -77,10 +77,12 @@
 .hue-brews .rate-dir { color: var(--muted); font: 400 11.5px var(--font-sans); }
 .hue-brews .rate-right { margin-left: auto; display: flex; align-items: baseline; gap: 6px; }
 .hue-brews .rate-val { font: 600 13.5px var(--font-sans); color: var(--a1); font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; }
+/* --a1 as text on paper — several hues fail AA; flagged until new palette. */
+[data-mode="light"] .hue-brews .rate-val { background: #FFE566; box-shadow: 0 0 0 3px #FFE566; border-radius: 4px; padding: 0 4px; }
 .hue-brews .rate-clear { background: none; border: none; color: var(--muted); font-size: 15px; line-height: 1; cursor: pointer; padding: 0; }
 /* unset axis: greyed slider + muted "—" until the user engages it */
 .hue-brews .rate-row.unset .rate-slider { opacity: .38; }
-.hue-brews .rate-row.unset .rate-val { color: var(--muted); }
+.hue-brews .rate-row.unset .rate-val { color: var(--muted); background: none; box-shadow: none; padding: 0; }
 .hue-brews .rate-slider {
   width: 100%; margin: 0; display: block; accent-color: var(--a1);
   -webkit-appearance: none; appearance: none; height: 26px; background: transparent;
@@ -113,6 +115,7 @@
 .hue-brews .brew-acc-body { padding: 0 15px 15px; }
 .hue-brews .brew-idea-block { border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 4px; }
 .hue-brews .brew-idea-name { font: 500 13.5px var(--font-sans); color: var(--a1); margin-bottom: 10px; }
+[data-mode="light"] .hue-brews .brew-idea-name { background: #FFE566; box-shadow: 0 0 0 3px #FFE566; border-radius: 4px; padding: 0 4px; display: inline-block; }
 
 /* ---- detail action row ---- */
 .hue-brews .detail-actions { display: flex; gap: 8px; margin: 2px 0 12px; }

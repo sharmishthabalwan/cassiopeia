@@ -61,7 +61,7 @@ export function newId(): ID {
   return crypto.randomUUID();
 }
 
-const DEFAULT_APPEARANCE: Appearance = { mode: "dark", hueMode: "perTab" };
+const DEFAULT_APPEARANCE: Appearance = { mode: "light", hueMode: "perTab" };
 
 // Fired after setAppearance persists, so the app shell re-applies the theme
 // without tabs needing any channel beyond this module.
@@ -111,7 +111,9 @@ export const db: DB = {
   upsertPerson: (p) => upsert("people", p),
 
   async getAppearance() {
-    return (await get<Appearance>("appearance", store)) ?? DEFAULT_APPEARANCE;
+    const saved = (await get<Appearance>("appearance", store)) ?? DEFAULT_APPEARANCE;
+    // App is light-mode only; coerce any previously persisted dark setting.
+    return saved.mode === "light" ? saved : { ...saved, mode: "light" };
   },
   async setAppearance(a) {
     await set("appearance", a, store);

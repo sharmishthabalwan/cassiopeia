@@ -1,7 +1,9 @@
 /* Cassiopeia — design tokens (CONTRACT-OWNED, do not fork in tabs).
-   Aurora frosted-glass system. Dark + light modes via [data-mode].
-   Per-tab hue via a `hue-<tab>` class on the screen root; each sets --a1/--a2
-   plus the .body aurora background (see per-tab rules at the bottom). */
+   Aurora frosted-glass system. The app is light-mode only; [data-mode="light"]
+   is forced at boot. Dark tokens remain so a later palette pass can restore
+   a toggle without rewriting surfaces. Per-tab hue via a `hue-<tab>` class
+   on the screen root; each sets --a1/--a2 plus the .body aurora background.
+   --a1/--a2 (primary/secondary) are unchanged — a new palette is incoming. */
 
 :root {
   /* expanded palette (Pantone-derived) */
@@ -19,9 +21,12 @@
   --field:rgba(255,255,255,.07); --line:rgba(255,255,255,.10);
 }
 [data-mode="light"]{
-  --base:#FFFFFF; --text:#241019; --muted:#7C6B72;
-  --card:rgba(255,255,255,.5); --brd:rgba(255,255,255,.75);
-  --field:rgba(255,255,255,.6); --line:rgba(40,20,30,.09);
+  /* Surfaces only — body/muted text keep the existing light-mode tokens.
+     Paper page + solid white cards so glass reads on a light canvas
+     (the old 50% white card / white border vanished on --base #fff). */
+  --base:#F5F1EB; --text:#241019; --muted:#7C6B72;
+  --card:#FFFFFF; --brd:rgba(36,16,25,.14);
+  --field:#EFEAE4; --line:rgba(40,20,30,.10);
 }
 
 /* per-tab accent pairs (used for buttons, active pills, sliders, "you" radar).
@@ -58,10 +63,23 @@ html.uniform-hue .hue-settings{--a1:var(--u1);--a2:var(--u2)}
 [data-mode="light"] .hue-settings .body{background:radial-gradient(135% 55% at 50% 114%,rgba(162,148,134,.26),transparent 60%),radial-gradient(70% 42% at 85% 105%,rgba(231,227,196,.4),transparent 60%),var(--base)}
 
 *{box-sizing:border-box}
+html{color-scheme:light}
 body{margin:0;font-family:var(--font-sans);background:var(--base);color:var(--text)}
+
+/* Temporary review mark: text whose current colour fails WCAG AA on the
+   light surface it sits on (per-item legend colours, accent-as-text).
+   Keep the original colour so the incoming palette can replace it. */
+.contrast-flag{
+  background:#FFE566;
+  box-shadow:0 0 0 3px #FFE566;
+  border-radius:4px;
+  padding:0 4px;
+}
 
 /* shared primitives (tabs extend, never redefine) */
 .glass{position:relative;border-radius:var(--radius-card);padding:15px;margin-bottom:12px;background:var(--card);border:1px solid var(--brd);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);overflow:hidden}
+[data-mode="light"] .glass{box-shadow:0 8px 24px rgba(36,16,25,.06)}
+[data-mode="light"] .glass.hero{box-shadow:0 12px 28px rgba(36,16,25,.16)}
 .glass::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(155deg,rgba(255,255,255,.18),transparent 42%)}
 .glass.hero{color:#fff;border:1px solid rgba(255,255,255,.28);background:linear-gradient(145deg,var(--a1),var(--a2))}
 .btn{display:flex;align-items:center;gap:10px;width:100%;border:none;border-radius:var(--radius);padding:14px 16px;font:500 15px var(--font-sans);color:#fff;background:linear-gradient(140deg,var(--a1),var(--a2));box-shadow:0 10px 22px rgba(0,0,0,.25);cursor:pointer}

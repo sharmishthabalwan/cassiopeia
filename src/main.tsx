@@ -22,7 +22,7 @@ import { Fallback } from "./fallback";
 
 function applyAppearance(a: Appearance) {
   const html = document.documentElement;
-  html.dataset.mode = a.mode;
+  html.dataset.mode = "light";
   html.classList.toggle("uniform-hue", a.hueMode === "uniform");
   if (a.hueMode === "uniform" && a.uniform) {
     html.style.setProperty("--u1", a.uniform.a1);

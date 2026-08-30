@@ -1,6 +1,7 @@
 // Brews tab — F1 reverse-chron brew log list.
 
 import type { ID } from "../../lib/types";
+import { contrastFlagClass } from "../../lib/contrast";
 import { bagLabel, brewerLabel, findBag, fmtDate, type BrewsData } from "./data";
 
 export function BrewList({ data, onOpen, onNew }: {
@@ -22,7 +23,7 @@ export function BrewList({ data, onOpen, onNew }: {
             return (
               <button key={b.id} class="brew-row" onClick={() => onOpen(b.id)}>
                 <span class="brew-date">{fmtDate(b.date)}</span>
-                <span class="brew-name" style={bag?.color ? `color:${bag.color}` : undefined}>
+                <span class={`brew-name${contrastFlagClass(bag?.color)}`} style={bag?.color ? `color:${bag.color}` : undefined}>
                   {bagLabel(data.allBags, b.bagId)}
                 </span>
                 {b.brewerId && <span class="chip">{brewerLabel(data.brewers, b.brewerId)}</span>}
