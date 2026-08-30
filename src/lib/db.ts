@@ -111,9 +111,7 @@ export const db: DB = {
   upsertPerson: (p) => upsert("people", p),
 
   async getAppearance() {
-    const saved = (await get<Appearance>("appearance", store)) ?? DEFAULT_APPEARANCE;
-    // App is light-mode only; coerce any previously persisted dark setting.
-    return saved.mode === "light" ? saved : { ...saved, mode: "light" };
+    return (await get<Appearance>("appearance", store)) ?? DEFAULT_APPEARANCE;
   },
   async setAppearance(a) {
     await set("appearance", a, store);

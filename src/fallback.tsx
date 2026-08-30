@@ -12,7 +12,6 @@ import { go } from "./router";
 import { Radar } from "./lib/radar";
 import { Catalog } from "./lib/catalog";
 import type { Bag, Brew, BrewIdea, GlobalRecipe, Brewer, Grinder, Person, Rating, Appearance } from "./lib/types";
-import { contrastFlagClass } from "./lib/contrast";
 
 interface Data {
   bags: Bag[]; brews: Brew[]; ideas: BrewIdea[]; recipes: GlobalRecipe[];
@@ -119,7 +118,7 @@ function BagsFallback() {
           summary={
             <>
               <span class="k">{b.roaster}</span>
-              <span class={contrastFlagClass(b.color)} style={b.color ? `color:${b.color}` : undefined}>{b.coffeeName}</span>
+              <span style={b.color ? `color:${b.color}` : undefined}>{b.coffeeName}</span>
               {b.finished && <span class="flag">finished</span>}
               {b.frozen && <span class="flag">frozen{b.frozenAmount ? ` · ${b.frozenAmount}` : ""}</span>}
             </>
@@ -195,7 +194,7 @@ function IdeasFallback() {
         <ExpandRow
           summary={
             <>
-              <span class={contrastFlagClass(i.color)} style={i.color ? `color:${i.color}` : undefined}>{i.name}</span>
+              <span style={i.color ? `color:${i.color}` : undefined}>{i.name}</span>
               {i.brewer && <span class="k">{i.brewer}</span>}
               {i.tried && <span class="flag">tried</span>}
             </>
@@ -317,7 +316,12 @@ function SettingsFallback() {
   return (
     <div>
       <div class="glass">
-        <div class="sub">Hue</div>
+        <div class="sub">Mode</div>
+        <div class="seg">
+          <button class={`btn${app.mode === "dark" ? "" : " ghost"}`} onClick={() => save({ ...app, mode: "dark" })}>Dark</button>
+          <button class={`btn${app.mode === "light" ? "" : " ghost"}`} onClick={() => save({ ...app, mode: "light" })}>Light</button>
+        </div>
+        <div class="sub" style="margin-top:12px">Hue</div>
         <div class="seg">
           <button class={`btn${app.hueMode === "perTab" ? "" : " ghost"}`} onClick={() => save({ ...app, hueMode: "perTab" })}>Per-tab</button>
           <button

@@ -1,9 +1,8 @@
 /* Cassiopeia — design tokens (CONTRACT-OWNED, do not fork in tabs).
-   Aurora frosted-glass system. The app is light-mode only; [data-mode="light"]
-   is forced at boot. Dark tokens remain so a later palette pass can restore
-   a toggle without rewriting surfaces. Per-tab hue via a `hue-<tab>` class
-   on the screen root; each sets --a1/--a2 plus the .body aurora background.
-   --a1/--a2 (primary/secondary) are unchanged — a new palette is incoming. */
+   Aurora frosted-glass system. Dark + light modes via [data-mode].
+   Default mode is light (paper surfaces). Per-tab hue via a `hue-<tab>`
+   class on the screen root; each sets --a1/--a2 plus the .body aurora
+   background (see per-tab rules at the bottom). */
 
 :root {
   /* expanded palette (Pantone-derived) */
@@ -64,17 +63,8 @@ html.uniform-hue .hue-settings{--a1:var(--u1);--a2:var(--u2)}
 
 *{box-sizing:border-box}
 html{color-scheme:light}
+[data-mode="dark"]{color-scheme:dark}
 body{margin:0;font-family:var(--font-sans);background:var(--base);color:var(--text)}
-
-/* Temporary review mark: text whose current colour fails WCAG AA on the
-   light surface it sits on (per-item legend colours, accent-as-text).
-   Keep the original colour so the incoming palette can replace it. */
-.contrast-flag{
-  background:#FFE566;
-  box-shadow:0 0 0 3px #FFE566;
-  border-radius:4px;
-  padding:0 4px;
-}
 
 /* shared primitives (tabs extend, never redefine) */
 .glass{position:relative;border-radius:var(--radius-card);padding:15px;margin-bottom:12px;background:var(--card);border:1px solid var(--brd);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);overflow:hidden}

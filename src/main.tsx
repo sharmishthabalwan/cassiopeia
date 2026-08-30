@@ -22,7 +22,10 @@ import { Fallback } from "./fallback";
 
 function applyAppearance(a: Appearance) {
   const html = document.documentElement;
-  html.dataset.mode = "light";
+  html.dataset.mode = a.mode;
+  html.style.colorScheme = a.mode;
+  const theme = document.querySelector('meta[name="theme-color"]');
+  if (theme) theme.setAttribute("content", a.mode === "light" ? "#F5F1EB" : "#08070A");
   html.classList.toggle("uniform-hue", a.hueMode === "uniform");
   if (a.hueMode === "uniform" && a.uniform) {
     html.style.setProperty("--u1", a.uniform.a1);

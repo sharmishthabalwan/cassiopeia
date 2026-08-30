@@ -51,12 +51,11 @@ Tabs import `{ db }` from `src/lib/db.ts` and use its async methods (see the `DB
 
 ## Design tokens & theme (`src/theme.css`)
 
-Aurora frosted-glass. The app is **light-mode only** (`<html data-mode="light">` is forced at boot). Dark tokens remain in `theme.css` for a later palette pass. **Per-tab hue** via a `hue-<tab>` class on the screen root (sets `--a1/--a2` + the `.body` aurora background). Palette (Pantone-derived) and hue pairs are defined in `theme.css` — use the CSS variables, never hardcode hex in components. `--a1/--a2` are unchanged pending an updated primary/secondary palette.
+Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a `hue-<tab>` class on the screen root (sets `--a1/--a2` + the `.body` aurora background). Palette (Pantone-derived) and hue pairs are defined in `theme.css` — use the CSS variables, never hardcode hex in components.
 
 - Shared primitives already in `theme.css`: `.glass`, `.glass.hero`, `.btn`, `.btn.ghost`. Tabs extend, never redefine.
-- **Appearance control:** `Appearance.mode` is coerced to `light`. `Appearance.hueMode` (`uniform` | `perTab`) still applies. Uniform sets `--u1/--u2` on `:root` and adds `html.uniform-hue`; per-tab uses the `hue-*` classes. Persist locally.
+- **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform sets `--u1/--u2` on `:root` and adds `html.uniform-hue`; per-tab uses the `hue-*` classes. Persist locally.
 - Default mode = **light**.
-- `.contrast-flag` marks text whose current colour fails WCAG AA on the light paper surface — review aid until the new palette lands. Hero/button text sits on unchanged accent fills and is not flagged.
 
 ---
 
