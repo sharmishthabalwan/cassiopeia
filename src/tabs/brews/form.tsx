@@ -28,11 +28,12 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-export function BrewForm({ data, existing, onSaved, onCancel }: {
+export function BrewForm({ data, existing, onSaved, onCancel, onUseLog }: {
   data: BrewsData;
   existing?: Brew;
   onSaved: (brewId: ID) => void;
   onCancel: () => void;
+  onUseLog?: () => void;
 }) {
   // Coffee dropdown: the contract's default listBags() call (no finished bags).
   const [activeBags, setActiveBags] = useState<Bag[] | null>(null);
@@ -140,6 +141,11 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
   return (
     <div>
       <button class="btn ghost brew-back" onClick={onCancel}>‹ Cancel</button>
+      {onUseLog && (
+        <button type="button" class="log-switch" onClick={onUseLog} style="margin-top:-6px">
+          or upload / paste a brew log
+        </button>
+      )}
 
       <div class="glass">
         <div class="f-section">Coffee</div>

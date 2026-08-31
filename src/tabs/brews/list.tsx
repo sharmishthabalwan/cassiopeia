@@ -3,17 +3,19 @@
 import type { ID } from "../../lib/types";
 import { bagLabel, brewerLabel, findBag, fmtDate, type BrewsData } from "./data";
 
-export function BrewList({ data, onOpen, onNew }: {
+export function BrewList({ data, onOpen, onNew, onForm }: {
   data: BrewsData;
   onOpen: (brewId: ID) => void;
   onNew: () => void;
+  onForm: () => void;
 }) {
   return (
     <div>
-      <button class="btn brew-log-btn" onClick={onNew}>☕ Log a brew</button>
+      <button class="btn brew-log-btn" onClick={onNew}>Upload or paste a brew log</button>
+      <button class="btn ghost brew-form-btn" onClick={onForm}>Fill the form</button>
       {data.brews.length === 0 ? (
         <div class="glass">
-          <div class="sub">No brews yet — tap “Log a brew” to record your first cup.</div>
+          <div class="sub">No brews yet — tap “Log a brew” to upload a daily log or fill the form.</div>
         </div>
       ) : (
         <div class="glass brew-list">
