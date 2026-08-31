@@ -27,7 +27,7 @@ function selfOf(ratings: Rating[] | undefined, data: BrewsData): Rating | undefi
 
 function peakAxes(scores: Scores) {
   return RATING_AXES
-    .filter((a) => PEAK_KEYS.has(a.key) && scores[a.key] != null)
+    .filter((a) => PEAK_KEYS.has(a.key) && scores[a.key] != null && scores[a.key]! > 0)
     .sort((a, b) => (scores[b.key]! - scores[a.key]!) || a.label.localeCompare(b.label))
     .slice(0, 3);
 }
