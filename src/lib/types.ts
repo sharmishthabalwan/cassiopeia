@@ -76,8 +76,9 @@ export interface Brew {
   totalTime?: string;         // "4:16"
   grind?: string;
   pourTechnique?: string;
-  notes?: string;
+  notes?: string;             // recipe/method notes (not the full uploaded log)
   learnings?: string;
+  journalNote?: string;       // original uploaded/pasted brew note, shown at the end
   withFriends: boolean;
   friendIds: ID[];            // Person ids present at this brew
   // ratings live in Rating[] keyed by brewId (self + each friend)

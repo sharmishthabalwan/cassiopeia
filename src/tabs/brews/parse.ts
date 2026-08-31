@@ -41,8 +41,10 @@ export interface ParsedBrew {
   totalTime?: string;
   grind?: string;
   pourTechnique?: string;
-  /** Full original note — always stored on Brew.notes so prose isn’t lost. */
+  recipeId?: ID;
+  /** Full original note — stored on Brew.journalNote, not mixed into recipe notes. */
   sourceText?: string;
+  parsedBy?: "ai" | "heuristic";
   notes?: string;
   learnings?: string;
   scores: Scores;
@@ -212,7 +214,7 @@ function editDist(a: string, b: string): number {
   return dp[n];
 }
 
-function matchBag(coffeeHint: string | undefined, roasterHint: string | undefined, bags: Bag[]): {
+export function matchBag(coffeeHint: string | undefined, roasterHint: string | undefined, bags: Bag[]): {
   bagId?: ID;
   confidence: ParsedBrew["bagConfidence"];
   candidates: BagMatch[];
@@ -266,7 +268,7 @@ function matchBag(coffeeHint: string | undefined, roasterHint: string | undefine
   };
 }
 
-function matchNamed<T extends { id: ID; name: string }>(raw: string | undefined, items: T[]): T | undefined {
+export function matchNamed<T extends { id: ID; name: string }>(raw: string | undefined, items: T[]): T | undefined {
   if (!raw) return undefined;
   const hay = norm(raw);
   const ranked = items
@@ -486,6 +488,7 @@ export function parseBrewLog(raw: string, catalog: Catalog, sourceName?: string)
     tastingNotes,
     cupLearnings,
     warnings,
+    parsedBy: "heuristic",
   };
 }
 

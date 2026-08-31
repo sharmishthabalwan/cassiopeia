@@ -4,9 +4,11 @@
 import { useMemo, useRef, useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { db } from "../../lib/db";
+import { AiParseError, getOpenAiKey, setOpenAiKey } from "../../lib/openai";
 import { RATING_AXES, type Bag, type Brew, type ID, type Rating } from "../../lib/types";
 import { ratioOf, todayISO, type BrewsData } from "./data";
 import { emptyScores, parseBrewLog, parseHasSignal, type ParsedBrew } from "./parse";
+import { mergeParsed, parseBrewLogWithAi } from "./parse-ai";
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ComponentChildren }) {
   return (
@@ -50,6 +52,9 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
   const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<ParsedBrew[] | null>(null);
   const [saving, setSaving] = useState(false);
+  const [parsing, setParsing] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [needKey, setNeedKey] = useState(() => !getOpenAiKey());
 
   const catalog = useMemo(
     () => ({ bags: data.allBags, brewers: data.brewers, grinders: data.grinders }),
@@ -61,23 +66,50 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
     [data.allBags],
   );
 
-  const parseSources = (sources: { name?: string; text: string }[]) => {
-    const parsed = sources
-      .map((s) => parseBrewLog(s.text, catalog, s.name))
-      .filter(parseHasSignal);
-    if (!parsed.length) {
-      setDrafts(null);
-      setError("Couldn’t read a brew from that. Check it’s a daily log, or fill the form instead.");
-      return;
-    }
+  const parseSources = async (sources: { name?: string; text: string }[]) => {
+    if (apiKey.trim()) setOpenAiKey(apiKey);
+    setParsing(true);
     setError(null);
-    setDrafts(parsed.map((p) => ({ ...p, date: p.date || todayISO() })));
+    try {
+      const parsed: ParsedBrew[] = [];
+      for (const s of sources) {
+        const heuristic = parseBrewLog(s.text, catalog, s.name);
+        let next = heuristic;
+        try {
+          const ai = await parseBrewLogWithAi(s.text, catalog, { sourceName: s.name, ideas: data.ideas });
+          next = mergeParsed(heuristic, ai);
+        } catch (e) {
+          if (e instanceof AiParseError && e.code === "no_key") {
+            setNeedKey(true);
+            setDrafts(null);
+            setError("Add an OpenAI API key (saved on this device) so AI can fill the brew fields.");
+            return;
+          }
+          const msg = e instanceof Error ? e.message : "AI parse failed.";
+          next = {
+            ...heuristic,
+            warnings: [`${msg} Filled what the local reader could.`, ...heuristic.warnings],
+          };
+        }
+        next.sourceText = s.text.trim() || next.sourceText;
+        if (parseHasSignal(next)) parsed.push({ ...next, date: next.date || todayISO() });
+      }
+      if (!parsed.length) {
+        setDrafts(null);
+        setError("Couldn’t read a brew from that. Check it’s a daily log, or fill the form instead.");
+        return;
+      }
+      setNeedKey(false);
+      setDrafts(parsed);
+    } finally {
+      setParsing(false);
+    }
   };
 
   const onFiles = async (list: FileList | File[] | null) => {
     if (!list || list.length === 0) return;
     try {
-      parseSources(await readDropped(list));
+      await parseSources(await readDropped(list));
     } catch (e) {
       setDrafts(null);
       setError(e instanceof Error ? e.message : "Couldn’t read that file.");
@@ -89,7 +121,7 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
       setError("Paste a brew log, or upload a file.");
       return;
     }
-    parseSources([{ name: "pasted notes", text: paste }]);
+    void parseSources([{ name: "pasted notes", text: paste }]);
   };
 
   const patch = (i: number, fields: Partial<ParsedBrew>) => {
@@ -138,8 +170,10 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
           totalTime: d.totalTime,
           grind: d.grind,
           pourTechnique: d.pourTechnique,
-          notes: d.sourceText || d.notes,
+          recipeId: d.recipeId,
+          notes: d.notes,
           learnings: d.learnings,
+          journalNote: d.sourceText,
           withFriends: false,
           friendIds: [],
         };
@@ -174,6 +208,18 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
         <>
           <div class="glass">
             <div class="f-section">New brew</div>
+            {needKey && (
+              <Field label="OpenAI API key" hint="saved on this device only — used to fill the journal fields">
+                <input
+                  class="f-input"
+                  type="password"
+                  autocomplete="off"
+                  placeholder="sk-…"
+                  value={apiKey}
+                  onInput={(e) => setApiKey((e.currentTarget as HTMLInputElement).value)}
+                />
+              </Field>
+            )}
             <input
               ref={fileRef}
               class="log-file-input"
@@ -185,6 +231,7 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
             <button
               type="button"
               class={`log-drop${over ? " over" : ""}`}
+              disabled={parsing}
               onClick={() => fileRef.current?.click()}
               onDragEnter={(e) => { e.preventDefault(); setOver(true); }}
               onDragOver={(e) => { e.preventDefault(); setOver(true); }}
@@ -196,7 +243,7 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
               }}
             >
               <div class="log-drop-title">Upload a brew log</div>
-              <div class="sub">Drop a .md or .txt file here, or tap to choose. Several days at once is fine.</div>
+              <div class="sub">{parsing ? "Reading with AI…" : "Drop a .md or .txt file here, or tap to choose. Several days at once is fine."}</div>
             </button>
 
             <div class="log-or">or paste</div>
@@ -206,10 +253,21 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
               placeholder="Paste today’s brew notes — coffee, dose, pours, tasting scores…"
               value={paste}
               onInput={(e) => setPaste((e.currentTarget as HTMLTextAreaElement).value)}
+              disabled={parsing}
             />
-            <button class="btn brew-log-btn" style="margin-top:12px;margin-bottom:0" onClick={onPasteParse} disabled={!paste.trim()}>
-              Log this brew
+            <button
+              class="btn brew-log-btn"
+              style="margin-top:12px;margin-bottom:0"
+              onClick={onPasteParse}
+              disabled={parsing || !paste.trim()}
+            >
+              {parsing ? "Reading your note…" : "Log this brew"}
             </button>
+            {!needKey && (
+              <button type="button" class="log-switch" onClick={() => setNeedKey(true)}>
+                Change AI key
+              </button>
+            )}
           </div>
 
           <div class="log-switch-row">
@@ -228,6 +286,7 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
             <div class="glass" key={p.sourceName ?? i}>
               <div class="f-section">
                 {drafts.length > 1 ? `Brew ${i + 1}` : "Ready to log"}
+                {p.parsedBy === "ai" && <span class="f-hint"> · filled by AI</span>}
                 {p.sourceName && <span class="f-hint"> · {p.sourceName}</span>}
               </div>
               <Field label="Coffee" hint={p.bagConfidence === "high" ? "matched from the log" : "pick a bag"}>
@@ -291,15 +350,40 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
                   {p.tastingNotes.map((n) => <span class="chip note-chip">{n}</span>)}
                 </div>
               )}
-              {p.sourceText && (
+              {p.notes && (
                 <div class="brew-kv">
-                  <div class="brew-kv-k">Brew note — saved in full</div>
-                  <div class="brew-kv-v log-source">{p.sourceText}</div>
+                  <div class="brew-kv-k">Recipe notes</div>
+                  <div class="brew-kv-v">{p.notes}</div>
+                </div>
+              )}
+              {p.learnings && (
+                <div class="brew-kv">
+                  <div class="brew-kv-k">Ponderings / learnings</div>
+                  <div class="brew-kv-v">{p.learnings}</div>
+                </div>
+              )}
+              {p.cupLearnings && (
+                <div class="brew-kv">
+                  <div class="brew-kv-k">Cup notes</div>
+                  <div class="brew-kv-v">{p.cupLearnings}</div>
                 </div>
               )}
               {p.warnings.map((w) => <div class="log-warn">{w}</div>)}
             </div>
           ))}
+
+          {drafts.some((p) => p.sourceText) && (
+            <div class="glass">
+              <div class="f-section">Brew note</div>
+              <div class="sub" style="margin-bottom:10px">Your original uploaded or written note, stored as-is.</div>
+              {drafts.map((p, i) => p.sourceText ? (
+                <div class="brew-kv" key={p.sourceName ?? i}>
+                  {drafts.length > 1 && <div class="brew-kv-k">{p.sourceName ?? `Brew ${i + 1}`}</div>}
+                  <div class="brew-kv-v log-source">{p.sourceText}</div>
+                </div>
+              ) : null)}
+            </div>
+          )}
 
           <button class="btn brew-log-btn" disabled={missingBag || saving} onClick={save}>
             {saving ? "Saving…" : drafts.length > 1 ? `Log ${drafts.length} brews` : "Log this brew"}

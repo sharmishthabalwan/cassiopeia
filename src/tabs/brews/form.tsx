@@ -7,12 +7,13 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { db } from "../../lib/db";
 import type { Bag, Brew, ID } from "../../lib/types";
-import { ratioOf, todayISO, type BrewsData } from "./data";
+import { ratioOf, todayISO, brewJournalNote, brewRecipeNotes, type BrewsData } from "./data";
 
 interface Draft {
   date: string; bagId: string; brewerId: string; grinderId: string; recipeId: string;
   filter: string; roastDate: string; doseG: string; waterG: string; tempC: string;
   totalTime: string; grind: string; pourTechnique: string; notes: string; learnings: string;
+  journalNote: string;
 }
 
 const num = (s: string) => { const n = parseFloat(s); return Number.isFinite(n) ? n : undefined; };
@@ -53,8 +54,9 @@ export function BrewForm({ data, existing, onSaved, onCancel, onUseLog }: {
     totalTime: existing?.totalTime ?? "",
     grind: existing?.grind ?? "",
     pourTechnique: existing?.pourTechnique ?? "",
-    notes: existing?.notes ?? "",
+    notes: brewRecipeNotes(existing?.notes, existing?.journalNote) ?? "",
     learnings: existing?.learnings ?? "",
+    journalNote: brewJournalNote(existing?.notes, existing?.journalNote) ?? "",
   }));
   const [saving, setSaving] = useState(false);
 
@@ -131,6 +133,7 @@ export function BrewForm({ data, existing, onSaved, onCancel, onUseLog }: {
       pourTechnique: trimmed(d.pourTechnique),
       notes: trimmed(d.notes),
       learnings: trimmed(d.learnings),
+      journalNote: trimmed(d.journalNote),
       withFriends: existing?.withFriends ?? false, // friends land in Phase 6
       friendIds: existing?.friendIds ?? [],
     };
@@ -226,11 +229,18 @@ export function BrewForm({ data, existing, onSaved, onCancel, onUseLog }: {
         <Field label="Pour technique">
           <textarea class="f-input pour-input" rows={6} placeholder="60g bloom @0:00, slow spirals toward 150g by 1:15, 250g by 1:45, drawdown by 3:30…" value={d.pourTechnique} onInput={input("pourTechnique")} />
         </Field>
-        <Field label="Brew notes" hint="full log, ponderings, method — editable">
-          <textarea class="f-input pour-input" rows={existing?.notes && existing.notes.length > 180 ? 12 : 4} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
+        <Field label="Recipe notes" hint="about the method">
+          <textarea class="f-input" rows={3} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
         </Field>
-        <Field label="Ponderings / learnings" hint="what to change next time, weekly notes">
+        <Field label="Ponderings / learnings" hint="what to change next time">
           <textarea class="f-input" rows={existing?.learnings && existing.learnings.length > 180 ? 8 : 3} placeholder="e.g. go coarser, hotter — one lever at a time…" value={d.learnings} onInput={input("learnings")} />
+        </Field>
+      </div>
+
+      <div class="glass">
+        <div class="f-section">Brew note</div>
+        <Field label="Original note" hint="uploaded or written — stored separately">
+          <textarea class="f-input pour-input" rows={8} placeholder="Paste or keep the full daily note here." value={d.journalNote} onInput={input("journalNote")} />
         </Field>
       </div>
 

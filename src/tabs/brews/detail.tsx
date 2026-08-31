@@ -7,7 +7,7 @@ import { db } from "../../lib/db";
 import { Radar } from "../../lib/radar";
 import type { ComponentChildren } from "preact";
 import type { BrewIdea, ID, Rating } from "../../lib/types";
-import { brewerLabel, findBag, fmtDate, ratioOf, type BrewsData } from "./data";
+import { brewerLabel, brewJournalNote, brewRecipeNotes, findBag, fmtDate, ratioOf, type BrewsData } from "./data";
 
 function Stat({ label, value }: { label: string; value?: string | number }) {
   if (value === undefined || value === "") return null;
@@ -96,11 +96,12 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
   const self = data.people.find((p) => p.isSelf);
   const selfRating = self ? ratings?.find((r) => r.personId === self.id) : undefined;
   const hasSelfRating = !!selfRating;
+  const journal = brewJournalNote(brew.notes, brew.journalNote);
 
   const hasDetails = !!(
     brew.doseG != null || brew.waterG != null || brew.tempC != null || brew.totalTime ||
     brew.grind || brew.filter || brew.roastDate || idea || brew.pourTechnique ||
-    brew.notes || brew.learnings
+    brewRecipeNotes(brew.notes, brew.journalNote) || brew.learnings
   );
   // Collapsed teaser: the key numbers at a glance without expanding.
   const teaser = idea
@@ -139,7 +140,7 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
           <TextBlock label="Roast date" value={brew.roastDate && fmtDate(brew.roastDate)} />
           {idea && <FollowedRecipe idea={idea} />}
           <TextBlock label="Pour technique" value={brew.pourTechnique} />
-          <TextBlock label="Brew notes" value={brew.notes} />
+          <TextBlock label="Recipe notes" value={brewRecipeNotes(brew.notes, brew.journalNote)} />
           <TextBlock label="Ponderings / learnings" value={brew.learnings} />
         </Accordion>
       )}
@@ -163,6 +164,12 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
       {selfRating?.learnings && (
         <div class="glass">
           <TextBlock label="Cup learnings" value={selfRating.learnings} />
+        </div>
+      )}
+
+      {journal && (
+        <div class="glass">
+          <TextBlock label="Brew note" value={journal} />
         </div>
       )}
 
