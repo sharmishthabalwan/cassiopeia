@@ -127,3 +127,8 @@ export interface Appearance {
   uniform?: { a1: string; a2: string };
   perTab?: Record<string, { a1: string; a2: string }>;
 }
+
+/** Home-tab ruby/pink — default uniform accent for every tab. */
+export const HOME_HUE = { a1: "#B0475F", a2: "#5A1E32" } as const;
+
+export const APP_NAME = "Sam Caffeinated";

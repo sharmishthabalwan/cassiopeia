@@ -108,7 +108,7 @@ report back instead of editing contract-owned files.
 ## Key mechanisms (unchanged from Foundation)
 
 - Tabs ship via default export; fallback screens live in `src/fallback.tsx` (Foundation-owned).
-- `db.setAppearance()` dispatches `APPEARANCE_EVENT`; shell re-themes. Default: dark, per-tab hues.
+- `db.setAppearance()` dispatches `APPEARANCE_EVENT`; shell re-themes. Default: light, uniform home-pink hue.
 - `CatalogProps.onFacetChange?` exists (added in Foundation; Recipes agent take note).
 - FAB: spacing 74px, goo blur stdDeviation 5 — circles must not touch at rest.
 - Import is idempotent (seeds only when bags+brews+ideas all empty). Re-import: delete the

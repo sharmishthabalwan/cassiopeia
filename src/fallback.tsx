@@ -11,6 +11,7 @@ import { db } from "./lib/db";
 import { go } from "./router";
 import { Radar } from "./lib/radar";
 import { Catalog } from "./lib/catalog";
+import { HOME_HUE } from "./lib/types";
 import type { Bag, Brew, BrewIdea, GlobalRecipe, Brewer, Grinder, Person, Rating, Appearance } from "./lib/types";
 
 interface Data {
@@ -326,7 +327,7 @@ function SettingsFallback() {
           <button class={`btn${app.hueMode === "perTab" ? "" : " ghost"}`} onClick={() => save({ ...app, hueMode: "perTab" })}>Per-tab</button>
           <button
             class={`btn${app.hueMode === "uniform" ? "" : " ghost"}`}
-            onClick={() => save({ ...app, hueMode: "uniform", uniform: app.uniform ?? { a1: "#B0475F", a2: "#5A1E32" } })}
+            onClick={() => save({ ...app, hueMode: "uniform", uniform: app.uniform ?? { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } })}
           >
             Uniform
           </button>

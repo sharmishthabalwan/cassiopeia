@@ -1,9 +1,9 @@
 {
-  "name": "cassiopeia",
+  "name": "sam-caffeinated",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Cassiopeia — personal coffee brew tracker (PWA). See CONTRACTS.md.",
+  "description": "Sam Caffeinated — personal coffee brew tracker (PWA). See CONTRACTS.md.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

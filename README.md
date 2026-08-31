@@ -1,4 +1,4 @@
-# <img src="Logo-bubble.png" width="40" alt="" align="top"> Cassiopeia
+# <img src="Logo-bubble.png" width="40" alt="" align="top"> Sam Caffeinated
 
 Personal coffee brew tracker — a lightweight dark/light aurora PWA for iPhone + Mac. Log daily brews, rate them on 9 axes (with friends), track bags, borrow recipes, and see insights + a yearly "Coffee Wrapped."
 
