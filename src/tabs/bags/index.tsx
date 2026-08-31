@@ -40,6 +40,7 @@ export default function BagsScreen() {
     const existing = view.bagId ? data.bags.find((b) => b.id === view.bagId) : undefined;
     return (
       <BagForm
+        key={existing?.id ?? "new"}
         data={data}
         existing={existing}
         onCancel={existing ? () => setView({ kind: "detail", bagId: existing.id }) : toList}
