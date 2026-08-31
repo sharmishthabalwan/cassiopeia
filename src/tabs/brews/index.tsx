@@ -1,6 +1,6 @@
 // Cassiopeia — Brews tab screen (owned by the Brews agent).
 // Renders inside .screen.hue-brews > .body; <h1>Brews</h1> already above.
-// View state machine: list → detail | form (new/edit) — all in-tab state.
+// View state machine: list → detail | log (upload/paste) | form (new/edit) | rate.
 
 import { useState } from "preact/hooks";
 import type { ID } from "../../lib/types";
@@ -8,13 +8,15 @@ import { useBrewsData } from "./data";
 import { BrewList } from "./list";
 import { BrewDetail } from "./detail";
 import { BrewForm } from "./form";
+import { BrewLogImport } from "./log";
 import { RateBrew } from "./ratings";
 import "./brews.css";
 
 type View =
   | { kind: "list" }
   | { kind: "detail"; brewId: ID }
-  | { kind: "form"; brewId?: ID } // brewId set = edit
+  | { kind: "log" }              // upload / paste a daily log (default new-brew path)
+  | { kind: "form"; brewId?: ID } // brewId set = edit; no brewId = blank form
   | { kind: "rate"; brewId: ID };
 
 export default function BrewsScreen() {
@@ -32,6 +34,23 @@ export default function BrewsScreen() {
         brewId={view.brewId}
         onBack={toList}
         onRate={() => setView({ kind: "rate", brewId: view.brewId })}
+        onEdit={() => setView({ kind: "form", brewId: view.brewId })}
+      />
+    );
+  }
+
+  if (view.kind === "log") {
+    return (
+      <BrewLogImport
+        data={data}
+        onCancel={toList}
+        onUseForm={() => setView({ kind: "form" })}
+        onSaved={async (brewId, info) => {
+          await refresh();
+          if (info.count > 1) setView({ kind: "list" });
+          else if (info.rated) setView({ kind: "detail", brewId });
+          else setView({ kind: "rate", brewId });
+        }}
       />
     );
   }
@@ -42,11 +61,12 @@ export default function BrewsScreen() {
       <BrewForm
         data={data}
         existing={existing}
-        onCancel={toList}
+        onCancel={existing ? () => setView({ kind: "detail", brewId: existing.id }) : toList}
+        onUseLog={existing ? undefined : () => setView({ kind: "log" })}
         onSaved={async (brewId) => {
           await refresh();
-          // New brews flow straight into rating; edits return to the list.
-          setView(existing ? { kind: "list" } : { kind: "rate", brewId });
+          // New brews flow into rating; edits return to that brew’s detail.
+          setView(existing ? { kind: "detail", brewId } : { kind: "rate", brewId });
         }}
       />
     );
@@ -61,7 +81,8 @@ export default function BrewsScreen() {
     <BrewList
       data={data}
       onOpen={(brewId) => setView({ kind: "detail", brewId })}
-      onNew={() => setView({ kind: "form" })}
+      onNew={() => setView({ kind: "log" })}
+      onForm={() => setView({ kind: "form" })}
     />
   );
 }

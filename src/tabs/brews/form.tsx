@@ -28,11 +28,12 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-export function BrewForm({ data, existing, onSaved, onCancel }: {
+export function BrewForm({ data, existing, onSaved, onCancel, onUseLog }: {
   data: BrewsData;
   existing?: Brew;
   onSaved: (brewId: ID) => void;
   onCancel: () => void;
+  onUseLog?: () => void;
 }) {
   // Coffee dropdown: the contract's default listBags() call (no finished bags).
   const [activeBags, setActiveBags] = useState<Bag[] | null>(null);
@@ -140,6 +141,13 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
   return (
     <div>
       <button class="btn ghost brew-back" onClick={onCancel}>‹ Cancel</button>
+      {onUseLog && (
+        <div class="log-switch-row">
+          <button type="button" class="log-switch" onClick={onUseLog}>
+            📄 or upload / paste a brew log
+          </button>
+        </div>
+      )}
 
       <div class="glass">
         <div class="f-section">Coffee</div>
@@ -218,11 +226,11 @@ export function BrewForm({ data, existing, onSaved, onCancel }: {
         <Field label="Pour technique">
           <textarea class="f-input pour-input" rows={6} placeholder="60g bloom @0:00, slow spirals toward 150g by 1:15, 250g by 1:45, drawdown by 3:30…" value={d.pourTechnique} onInput={input("pourTechnique")} />
         </Field>
-        <Field label="Recipe notes" hint="about the method">
-          <textarea class="f-input" rows={3} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
+        <Field label="Brew notes" hint="full log, ponderings, method — editable">
+          <textarea class="f-input pour-input" rows={existing?.notes && existing.notes.length > 180 ? 12 : 4} placeholder="Anything worth remembering about the recipe itself?" value={d.notes} onInput={input("notes")} />
         </Field>
-        <Field label="Recipe learnings" hint="what to change next time">
-          <textarea class="f-input" rows={3} placeholder="e.g. go coarser, hotter — one lever at a time…" value={d.learnings} onInput={input("learnings")} />
+        <Field label="Ponderings / learnings" hint="what to change next time, weekly notes">
+          <textarea class="f-input" rows={existing?.learnings && existing.learnings.length > 180 ? 8 : 3} placeholder="e.g. go coarser, hotter — one lever at a time…" value={d.learnings} onInput={input("learnings")} />
         </Field>
       </div>
 
