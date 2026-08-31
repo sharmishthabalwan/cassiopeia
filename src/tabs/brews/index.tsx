@@ -34,6 +34,7 @@ export default function BrewsScreen() {
         brewId={view.brewId}
         onBack={toList}
         onRate={() => setView({ kind: "rate", brewId: view.brewId })}
+        onEdit={() => setView({ kind: "form", brewId: view.brewId })}
       />
     );
   }
@@ -60,12 +61,12 @@ export default function BrewsScreen() {
       <BrewForm
         data={data}
         existing={existing}
-        onCancel={toList}
+        onCancel={existing ? () => setView({ kind: "detail", brewId: existing.id }) : toList}
         onUseLog={existing ? undefined : () => setView({ kind: "log" })}
         onSaved={async (brewId) => {
           await refresh();
-          // New brews flow straight into rating; edits return to the list.
-          setView(existing ? { kind: "list" } : { kind: "rate", brewId });
+          // New brews flow into rating; edits return to that brew’s detail.
+          setView(existing ? { kind: "detail", brewId } : { kind: "rate", brewId });
         }}
       />
     );

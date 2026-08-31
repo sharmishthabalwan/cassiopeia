@@ -41,6 +41,8 @@ export interface ParsedBrew {
   totalTime?: string;
   grind?: string;
   pourTechnique?: string;
+  /** Full original note — always stored on Brew.notes so prose isn’t lost. */
+  sourceText?: string;
   notes?: string;
   learnings?: string;
   scores: Scores;
@@ -377,16 +379,20 @@ function extractChips(text: string): string[] {
 function extractNotes(text: string): { notes?: string; learnings?: string; cupLearnings?: string } {
   const approach = section(text, /ratio & approach|ratio and approach|approach|method/i);
   const ponder = section(text, /ponderings|context|for weekly|analysis/i);
+  const sensory = section(text, /tasting notes|sensory notes|drinking experience|cup notes/i);
   const overall = labeled(text, ["Overall impression", "Overall"]);
   const notes = approach
     ?.split("\n")
     .map((l) => l.replace(/^\s*(Target ratio|Method|Hypothesis)\s*[:–—-]\s*/i, "").trim())
     .filter(Boolean)
     .join("\n");
+  // Prefer the whole cup section (includes overall impression) so qualitative
+  // tasting prose isn’t reduced to chips.
+  const cupLearnings = sensory || overall || undefined;
   return {
     notes: notes || undefined,
     learnings: ponder || undefined,
-    cupLearnings: overall || undefined,
+    cupLearnings,
   };
 }
 
@@ -476,6 +482,7 @@ export function parseBrewLog(raw: string, catalog: Catalog, sourceName?: string)
     totalTime,
     grind,
     pourTechnique: pour,
+    sourceText: raw.trim() || undefined,
     notes,
     learnings,
     scores,

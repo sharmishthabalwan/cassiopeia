@@ -138,7 +138,7 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
           totalTime: d.totalTime,
           grind: d.grind,
           pourTechnique: d.pourTechnique,
-          notes: d.notes,
+          notes: d.sourceText || d.notes,
           learnings: d.learnings,
           withFriends: false,
           friendIds: [],
@@ -212,9 +212,11 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
             </button>
           </div>
 
-          <button type="button" class="log-switch" onClick={onUseForm}>
-            or fill the form
-          </button>
+          <div class="log-switch-row">
+            <button type="button" class="log-switch" onClick={onUseForm}>
+              ✎ or fill the form
+            </button>
+          </div>
         </>
       )}
 
@@ -289,6 +291,12 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
                   {p.tastingNotes.map((n) => <span class="chip note-chip">{n}</span>)}
                 </div>
               )}
+              {p.sourceText && (
+                <div class="brew-kv">
+                  <div class="brew-kv-k">Brew note — saved in full</div>
+                  <div class="brew-kv-v log-source">{p.sourceText}</div>
+                </div>
+              )}
               {p.warnings.map((w) => <div class="log-warn">{w}</div>)}
             </div>
           ))}
@@ -296,12 +304,14 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
           <button class="btn brew-log-btn" disabled={missingBag || saving} onClick={save}>
             {saving ? "Saving…" : drafts.length > 1 ? `Log ${drafts.length} brews` : "Log this brew"}
           </button>
-          <button type="button" class="log-switch" onClick={() => { setDrafts(null); setError(null); }}>
-            Choose a different log
-          </button>
-          <button type="button" class="log-switch" onClick={onUseForm}>
-            or fill the form
-          </button>
+          <div class="log-switch-row">
+            <button type="button" class="log-switch" onClick={() => { setDrafts(null); setError(null); }}>
+              Choose a different log
+            </button>
+            <button type="button" class="log-switch" onClick={onUseForm}>
+              ✎ or fill the form
+            </button>
+          </div>
         </>
       )}
     </div>

@@ -65,11 +65,12 @@ function FollowedRecipe({ idea }: { idea: BrewIdea }) {
   );
 }
 
-export function BrewDetail({ data, brewId, onBack, onRate }: {
+export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
   data: BrewsData;
   brewId: ID;
   onBack: () => void;
   onRate: () => void;
+  onEdit: () => void;
 }) {
   const brew = data.brews.find((b) => b.id === brewId);
   const [ratings, setRatings] = useState<Rating[] | null>(null);
@@ -138,8 +139,8 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
           <TextBlock label="Roast date" value={brew.roastDate && fmtDate(brew.roastDate)} />
           {idea && <FollowedRecipe idea={idea} />}
           <TextBlock label="Pour technique" value={brew.pourTechnique} />
-          <TextBlock label="Recipe notes" value={brew.notes} />
-          <TextBlock label="Recipe learnings" value={brew.learnings} />
+          <TextBlock label="Brew notes" value={brew.notes} />
+          <TextBlock label="Ponderings / learnings" value={brew.learnings} />
         </Accordion>
       )}
 
@@ -166,7 +167,8 @@ export function BrewDetail({ data, brewId, onBack, onRate }: {
       )}
 
       <div class="detail-actions">
-        <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit my rating" : "★ Rate this brew"}</button>
+        <button class="btn ghost" onClick={onEdit}>✎ Edit brew</button>
+        <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit rating" : "★ Rate this brew"}</button>
       </div>
     </div>
   );

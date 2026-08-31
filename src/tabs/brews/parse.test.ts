@@ -78,6 +78,10 @@ eq("log2 pour has bloom 48", /48\s*g/.test(b.pourTechnique ?? ""), true);
 eq("log2 unmatched grinder warning", b.warnings.some((w) => /DF83V/i.test(w)), true);
 eq("log2 grind records DF83V", /DF83V/i.test(b.grind ?? ""), true);
 eq("log2 tasting has lime or tea", b.tastingNotes.some((n) => /lime|tea/i.test(n)), true);
+eq("log2 ponderings stored", /Frozen coffee hypothesis/i.test(b.learnings ?? ""), true);
+eq("log2 source kept", /Ponderings/i.test(b.sourceText ?? ""), true);
+eq("log1 source kept", /Brew Parameters/i.test(a.sourceText ?? ""), true);
+eq("log1 cup prose kept", /Slight smokiness/i.test(a.cupLearnings ?? ""), true);
 
 // Don't match "Cold Brew Hario" just because the log says Hario V60.
 eq("log1 not cold brew", a.brewerId, "v60");
