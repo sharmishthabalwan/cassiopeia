@@ -1,0 +1,130 @@
+/* Home tab — featured latest cup + earlier strip. Scoped under .hue-home.
+   Extends theme primitives (.glass/.btn); tokens only. */
+
+.hue-home .home-kicker {
+  font: 600 11.5px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+}
+
+.hue-home .home-empty-cta { justify-content: center; margin-top: 12px; }
+
+/* ---- featured latest cup ---- */
+.hue-home .home-featured {
+  width: 100%;
+  display: block;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 16px;
+}
+.hue-home .home-feat-name {
+  font: 600 22px var(--font-sans);
+  margin-top: 6px;
+  line-height: 1.2;
+}
+.hue-home .home-feat-sub {
+  color: var(--muted);
+  font: 400 13.5px var(--font-sans);
+  margin-top: 3px;
+}
+.hue-home .home-feat-meta {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+}
+.hue-home .home-chip {
+  font-size: 11.5px; color: var(--muted);
+  border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
+  white-space: nowrap;
+}
+.hue-home .home-feat-radar {
+  display: flex; justify-content: center; align-items: center;
+  margin: 4px 0 2px;
+  min-height: 120px;
+}
+.hue-home .home-feat-radar svg { max-width: 100%; height: auto; }
+.hue-home .home-unrated {
+  color: var(--muted);
+  font: 400 13.5px var(--font-sans);
+  padding: 28px 8px;
+  border: 1px dashed var(--brd);
+  border-radius: var(--radius);
+  width: 100%;
+  text-align: center;
+}
+.hue-home .home-peaks {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-top: 4px;
+}
+.hue-home .home-peak {
+  background: var(--field); border: 1px solid var(--brd);
+  border-radius: var(--radius); padding: 9px 6px; text-align: center;
+}
+.hue-home .home-peak-v { font: 600 16px var(--font-sans); font-variant-numeric: tabular-nums; }
+.hue-home .home-peak-k {
+  color: var(--muted); font: 400 11px var(--font-sans);
+  margin-top: 2px; text-transform: uppercase; letter-spacing: .04em;
+}
+.hue-home .home-notes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+/* ---- earlier strip ---- */
+.hue-home .home-earlier { padding-top: 14px; padding-bottom: 8px; }
+.hue-home .home-earlier-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.hue-home .home-seeall {
+  background: none; border: none; color: var(--a1);
+  font: 500 12.5px var(--font-sans); cursor: pointer; padding: 0;
+}
+.hue-home .home-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 11px 0;
+  border: none; border-bottom: 1px solid var(--line);
+  background: none; color: var(--text);
+  font: inherit; text-align: left; cursor: pointer;
+}
+.hue-home .home-row:last-child { border-bottom: none; }
+.hue-home .home-row-date { color: var(--muted); font-size: 12.5px; flex: 0 0 58px; }
+.hue-home .home-row-main {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.hue-home .home-row-name {
+  font: 500 14.5px var(--font-sans);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hue-home .home-row-sub {
+  color: var(--muted); font: 400 12px var(--font-sans);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.hue-home .home-ribbon {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 28px; flex: 0 0 auto;
+}
+.hue-home .home-ribbon-bar {
+  width: 4px; border-radius: 99px;
+  height: calc(var(--h) * 100%);
+  opacity: var(--op);
+  background: linear-gradient(180deg, var(--a1), var(--a2));
+  align-self: flex-end;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hue-home .home-featured:hover,
+  .hue-home .home-row:hover { filter: brightness(1.03); }
+  .hue-home .home-seeall:hover { text-decoration: underline; }
+}
+
+@media (min-width: 1100px) {
+  .hue-home .home-layout {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .hue-home .home-feat-name { font-size: 24px; }
+  .hue-home .home-earlier { margin-bottom: 0; }
+}

@@ -65,12 +65,13 @@ function FollowedRecipe({ idea }: { idea: BrewIdea }) {
   );
 }
 
-export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
+export function BrewDetail({ data, brewId, onBack, onRate, onEdit, readOnly }: {
   data: BrewsData;
   brewId: ID;
   onBack: () => void;
   onRate: () => void;
   onEdit: () => void;
+  readOnly?: boolean;
 }) {
   const brew = data.brews.find((b) => b.id === brewId);
   const [ratings, setRatings] = useState<Rating[] | null>(null);
@@ -79,7 +80,7 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
   if (!brew) {
     return (
       <div>
-        <button class="btn ghost brew-back" onClick={onBack}>‹ Brews</button>
+        <button class="btn ghost brew-back" onClick={onBack}>{readOnly ? "‹ Home" : "‹ Brews"}</button>
         <div class="glass"><div class="sub">Brew not found.</div></div>
       </div>
     );
@@ -110,7 +111,7 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
 
   return (
     <div>
-      <button class="btn ghost brew-back" onClick={onBack}>‹ Brews</button>
+      <button class="btn ghost brew-back" onClick={onBack}>{readOnly ? "‹ Home" : "‹ Brews"}</button>
 
       <div class="glass hero">
         <div class="brew-hero-name" style={bag?.color ? `color:${bag.color}` : undefined}>
@@ -166,10 +167,12 @@ export function BrewDetail({ data, brewId, onBack, onRate, onEdit }: {
         </div>
       )}
 
-      <div class="detail-actions">
-        <button class="btn ghost" onClick={onEdit}>✎ Edit brew</button>
-        <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit rating" : "★ Rate this brew"}</button>
-      </div>
+      {!readOnly && (
+        <div class="detail-actions">
+          <button class="btn ghost" onClick={onEdit}>✎ Edit brew</button>
+          <button class="btn" onClick={onRate}>{hasSelfRating ? "★ Edit rating" : "★ Rate this brew"}</button>
+        </div>
+      )}
     </div>
   );
 }

@@ -71,6 +71,8 @@ Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a
 
 `src/nav.config.ts` lists the 7 tabs (order = FAB stack order) with `enabled` flags. The **liquid FAB** (collapsed `+` → vertical expanding stack of circular tab buttons, `+`→`×`, gooey merge) and the router both read it. Adding a tab = one entry.
 
+Hash is `#/<tab>` with an optional subpath. `currentTab()` reads the first segment only. Home opens a brew via `#/brews/<id>/view` (Brews tab, that brew’s detail, view-only — no edit/rate).
+
 **How a tab ships (Foundation mechanism):** `main.tsx` lazy-loads `src/tabs/<id>/index.tsx` and renders its **default export** as the screen (inside `.screen.hue-<id> > .body`, heading already provided). Until a tab default-exports a component, a Foundation fallback raw-list renders. Tab agents therefore never touch `main.tsx` — just add `export default function <Tab>Screen() {…}` in their folder.
 
 ---
