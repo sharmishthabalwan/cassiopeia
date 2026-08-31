@@ -1,4 +1,4 @@
-/* Cassiopeia — app shell styles (Foundation-owned). Layout + liquid FAB +
+/* Sam Caffeinated — app shell styles (Foundation-owned). Layout + liquid FAB +
    fallback raw-list screens. Tokens live in theme.css — only vars used here. */
 
 #app, .screen { min-height: 100dvh; }
@@ -25,7 +25,7 @@
   z-index: 50;
 }
 .fab-goo, .fab-ui { position: absolute; right: 0; bottom: 0; width: 56px; }
-.fab-goo { filter: url(#cassiopeia-goo); pointer-events: none; }
+.fab-goo { filter: url(#sam-caffeinated-goo); pointer-events: none; }
 .fab-blob, .fab-btn {
   position: absolute; right: 0; bottom: 0;
   width: 56px; height: 56px; border-radius: 50%;
@@ -38,9 +38,10 @@
 .fab-btn {
   display: flex; align-items: center; justify-content: center;
   border: none; background: transparent; color: #fff;
-  font: 400 21px var(--font-sans); cursor: pointer; padding: 0;
+  font: 400 21px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", var(--font-sans);
+  cursor: pointer; padding: 0;
 }
-.fab-btn.main .fab-plus { transition: transform .3s ease; display: block; font-size: 26px; line-height: 1; }
+.fab-btn.main .fab-plus { transition: transform .3s ease; display: block; font-size: 26px; line-height: 1; font-family: var(--font-sans); }
 .fab-wrap.open .fab-btn.main .fab-plus { transform: rotate(45deg); }
 .fab-wrap.open .fab-blob:not(.main), .fab-wrap.open .fab-btn:not(.main) {
   opacity: 1;
@@ -101,7 +102,7 @@
   padding: 4px 8px 18px; font-family: var(--font-sans);
 }
 .rail-logo img { width: 40px; height: 40px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.4)); }
-.rail-wordmark { font: 600 18px var(--font-sans); letter-spacing: .01em; }
+.rail-wordmark { font: 600 15.5px var(--font-sans); letter-spacing: .005em; white-space: nowrap; }
 .rail-tabs { display: flex; flex-direction: column; gap: 4px; }
 .rail-item {
   display: flex; align-items: center; gap: 12px; width: 100%;
@@ -109,7 +110,10 @@
   border-radius: 13px; padding: 11px 12px; font: 500 14.5px var(--font-sans); text-align: left;
   transition: background .15s ease;
 }
-.rail-icon { width: 22px; text-align: center; font-size: 16px; }
+.rail-icon {
+  flex: 0 0 28px; width: 28px; text-align: center; font-size: 18px; line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
 .rail-item:hover { background: var(--field); }
 .rail-item.active { background: linear-gradient(135deg, var(--a1), var(--a2)); color: #fff; }
 

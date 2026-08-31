@@ -1,4 +1,4 @@
-// Cassiopeia — app entry (Foundation).
+// Sam Caffeinated — app entry (Foundation).
 // Boots the router, applies saved Appearance (mode + hue), runs first-run
 // import, renders the current tab + the liquid FAB.
 //
@@ -14,7 +14,7 @@ import "./app.css";
 import { TABS } from "./nav.config";
 import { currentTab, go, onRouteChange } from "./router";
 import { db, APPEARANCE_EVENT } from "./lib/db";
-import type { Appearance } from "./lib/types";
+import { APP_NAME, HOME_HUE, type Appearance } from "./lib/types";
 import { seedFromFiles } from "./lib/import";
 import { Fallback } from "./fallback";
 
@@ -27,9 +27,10 @@ function applyAppearance(a: Appearance) {
   const theme = document.querySelector('meta[name="theme-color"]');
   if (theme) theme.setAttribute("content", a.mode === "light" ? "#F5F1EB" : "#08070A");
   html.classList.toggle("uniform-hue", a.hueMode === "uniform");
-  if (a.hueMode === "uniform" && a.uniform) {
-    html.style.setProperty("--u1", a.uniform.a1);
-    html.style.setProperty("--u2", a.uniform.a2);
+  if (a.hueMode === "uniform") {
+    const u = a.uniform ?? HOME_HUE;
+    html.style.setProperty("--u1", u.a1);
+    html.style.setProperty("--u2", u.a2);
   }
 }
 
@@ -70,7 +71,7 @@ function GooFilter() {
   return (
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
-        <filter id="cassiopeia-goo">
+        <filter id="sam-caffeinated-goo">
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
           <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
           <feComposite in="SourceGraphic" in2="goo" operator="atop" />
@@ -123,12 +124,12 @@ function Fab({ current }: { current: string }) {
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}icon-192.png`;
 
-/** Cassiopeia mark beside the screen heading — always a one-tap route Home.
+/** App mark beside the screen heading — always a one-tap route Home.
  *  Sits inline to the LEFT of <h1> on mobile/tablet; hidden on desktop
  *  (the nav-rail carries its own logo there). */
 function AppLogo() {
   return (
-    <button class="app-logo" aria-label="Cassiopeia — home" onClick={() => go("home")}>
+    <button class="app-logo" aria-label={`${APP_NAME} — home`} onClick={() => go("home")}>
       <img src={LOGO_SRC} alt="" width="30" height="30" />
     </button>
   );
@@ -139,9 +140,9 @@ function AppLogo() {
 function NavRail({ current }: { current: string }) {
   return (
     <nav class="nav-rail" aria-label="Primary">
-      <button class="rail-logo" aria-label="Cassiopeia — home" onClick={() => go("home")}>
+      <button class="rail-logo" aria-label={`${APP_NAME} — home`} onClick={() => go("home")}>
         <img src={LOGO_SRC} alt="" width="40" height="40" />
-        <span class="rail-wordmark">Cassiopeia</span>
+        <span class="rail-wordmark">{APP_NAME}</span>
       </button>
       <div class="rail-tabs">
         {TABS.filter((t) => t.enabled).map((t) => (

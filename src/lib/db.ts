@@ -4,6 +4,7 @@
 // signatures. Tabs must only ever touch data through this module.
 
 import { createStore, get, set } from "idb-keyval";
+import { HOME_HUE } from "./types";
 import type { Bag, Brew, Rating, Person, BrewIdea, GlobalRecipe, Brewer, Grinder, Appearance, ID } from "./types";
 
 export interface DB {
@@ -61,7 +62,11 @@ export function newId(): ID {
   return crypto.randomUUID();
 }
 
-const DEFAULT_APPEARANCE: Appearance = { mode: "light", hueMode: "perTab" };
+const DEFAULT_APPEARANCE: Appearance = {
+  mode: "light",
+  hueMode: "uniform",
+  uniform: { a1: HOME_HUE.a1, a2: HOME_HUE.a2 },
+};
 
 // Fired after setAppearance persists, so the app shell re-applies the theme
 // without tabs needing any channel beyond this module.
@@ -111,7 +116,17 @@ export const db: DB = {
   upsertPerson: (p) => upsert("people", p),
 
   async getAppearance() {
-    return (await get<Appearance>("appearance", store)) ?? DEFAULT_APPEARANCE;
+    const saved = await get<Appearance>("appearance", store);
+    if (!saved) return DEFAULT_APPEARANCE;
+    // Promote the old per-tab default (no custom per-tab colours) to uniform home pink.
+    let next = saved;
+    if (saved.hueMode === "perTab" && !saved.perTab) {
+      next = { ...saved, hueMode: "uniform", uniform: saved.uniform ?? { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } };
+    } else if (saved.hueMode === "uniform" && !saved.uniform) {
+      next = { ...saved, uniform: { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } };
+    }
+    if (next !== saved) await set("appearance", next, store);
+    return next;
   },
   async setAppearance(a) {
     await set("appearance", a, store);

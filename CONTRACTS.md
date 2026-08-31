@@ -1,4 +1,4 @@
-# Cassiopeia — CONTRACTS
+# Sam Caffeinated — CONTRACTS
 
 The single source of truth for the build. **Every agent reads this first.** It defines the stack, data model, design tokens, shared component APIs, file ownership, and the rules of engagement. Companion docs (one level up in the workspace): `Coffee App — Scaffolding & Architecture.md` (the *what*) and `Coffee App — Build Plan for Fable.md` (phases + human-in-the-loop loop) and `Coffee App — Wireframes.html` (the visual reference).
 
@@ -55,7 +55,8 @@ Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a
 
 - Shared primitives already in `theme.css`: `.glass`, `.glass.hero`, `.btn`, `.btn.ghost`. Tabs extend, never redefine.
 - **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform sets `--u1/--u2` on `:root` and adds `html.uniform-hue`; per-tab uses the `hue-*` classes. Persist locally.
-- Default mode = **light**.
+- Default mode = **light**. Default hue = **uniform** home pink (`HOME_HUE` `#B0475F` / `#5A1E32`).
+- Nav icons are colour emoji in `nav.config.ts`, shown in the left rail and FAB.
 
 ---
 
