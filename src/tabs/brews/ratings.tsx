@@ -89,7 +89,7 @@ export function RateBrew({ data, brewId, onDone, onCancel }: {
         <div class="f-section">
           Rate — {brew ? `${bagLabel(data.allBags, brew.bagId)} · ${fmtDate(brew.date)}` : "brew"}
         </div>
-        <div class="rate-hint">Slide only the aspects you tasted for — leave the rest as “—”.</div>
+        <div class="rate-hint">Acidity 5 = lowest (same idea as bitterness); body 5 = lightest. Slide only the aspects you tasted for — leave the rest as “—”.</div>
         {RATING_AXES.map((axis) => {
           const v = scores[axis.key];
           const isSet = v !== undefined;

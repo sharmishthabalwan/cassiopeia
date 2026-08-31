@@ -43,7 +43,7 @@ export const RATING_AXES = [
   { key: "aftertaste", label: "Aftertaste", dir: "5 = highest" },
   { key: "mouthfeel",  label: "Mouthfeel",  dir: "5 = highest" },
   { key: "body",       label: "Body",       dir: "5 = lightest" },
-  { key: "acidity",    label: "Acidity",    dir: "5 = lowest" },
+  { key: "acidity",    label: "Acidity",    dir: "5 = lowest acidity" },
   { key: "bitterness", label: "Bitterness", dir: "5 = lowest" },
 ] as const;
 export type AxisKey = (typeof RATING_AXES)[number]["key"];

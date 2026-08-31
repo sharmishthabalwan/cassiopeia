@@ -310,11 +310,10 @@ function extractPour(text: string): { pour?: string; totalTime?: string } {
   return { pour, totalTime };
 }
 
-function extractScores(text: string): { scores: Scores; invertAcidity: boolean } {
+function extractScores(text: string): Scores {
   const scores: Scores = {};
   const tasting =
     section(text, /tasting notes|sensory notes|drinking experience|cup notes/i) || text;
-  const invertAcidity = !/acidity[^.\n]{0,80}5\s*=\s*lowest/i.test(tasting);
 
   const lineRe =
     /(?:^|\n)\s*(flavour|flavor|fragrance|aroma|sweetness|balance|aftertaste|finish|mouthfeel|body|acidity|bitterness)\s*:\s*(.+)/gi;
@@ -330,13 +329,11 @@ function extractScores(text: string): { scores: Scores; invertAcidity: boolean }
     if (range) n = (parseFloat(range[1]) + parseFloat(range[2])) / 2;
     else if (single) n = parseFloat(single[1]);
     if (n == null || n < 1 || n > 5) continue;
-    n = snapHalf(n);
-    // Notes score acidity as intensity (5 = most acidic); the journal stores
-    // the opposite direction (5 = lowest). Invert so the radar matches.
-    if (axis === "acidity" && invertAcidity) n = snapHalf(6 - n);
-    scores[axis] = n;
+    // Stored as-is on the journal scale: acidity 5 = lowest (same idea as
+    // bitterness 5 = lowest and body 5 = lightest). Do not invert.
+    scores[axis] = snapHalf(n);
   }
-  return { scores, invertAcidity };
+  return scores;
 }
 
 function extractChips(text: string): string[] {
@@ -451,7 +448,7 @@ export function parseBrewLog(raw: string, catalog: Catalog, sourceName?: string)
   if (grinderRaw && !grinder) warnings.push(`Grinder “${grinderRaw.replace(/\s*\(.*$/, "").trim()}” isn’t in Settings — recorded on the grind line.`);
 
   const { pour, totalTime } = extractPour(text);
-  const { scores } = extractScores(text);
+  const scores = extractScores(text);
   const tastingNotes = extractChips(text);
   const { notes, learnings, cupLearnings } = extractNotes(text);
   const grind = grindFrom(text, grinderRaw, grinder);
