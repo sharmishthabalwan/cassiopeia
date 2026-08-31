@@ -92,11 +92,11 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
     parseSources([{ name: "pasted notes", text: paste }]);
   };
 
-  const patch = (i: number, bagId: string) => {
+  const patch = (i: number, fields: Partial<ParsedBrew>) => {
     setDrafts((prev) => {
       if (!prev) return prev;
       const next = [...prev];
-      next[i] = { ...next[i], bagId, bagConfidence: bagId ? "high" : "none" };
+      next[i] = { ...next[i], ...fields };
       return next;
     });
   };
@@ -229,7 +229,14 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
                 {p.sourceName && <span class="f-hint"> · {p.sourceName}</span>}
               </div>
               <Field label="Coffee" hint={p.bagConfidence === "high" ? "matched from the log" : "pick a bag"}>
-                <select class="f-input" value={p.bagId ?? ""} onChange={(e) => patch(i, (e.currentTarget as HTMLSelectElement).value)}>
+                <select
+                  class="f-input"
+                  value={p.bagId ?? ""}
+                  onChange={(e) => {
+                    const bagId = (e.currentTarget as HTMLSelectElement).value;
+                    patch(i, { bagId, bagConfidence: bagId ? "high" : "none" });
+                  }}
+                >
                   <option value="" disabled>Pick a bag…</option>
                   {bagOptionsFor(p).map((b) => (
                     <option value={b.id}>{b.coffeeName} — {b.roaster}{b.finished ? " (finished)" : ""}</option>
@@ -237,15 +244,30 @@ export function BrewLogImport({ data, onCancel, onSaved, onUseForm }: {
                 </select>
               </Field>
               {p.coffeeRaw && !p.bagId && <div class="log-warn">Log said: {p.coffeeRaw}</div>}
-              <div class="stat-grid" style="margin-top:12px">
-                <Stat label="date" value={p.date} />
+              <Field
+                label="Date"
+                hint={!p.dateSource ? "no date in the notes — change if this isn’t today" : undefined}
+              >
+                <input
+                  class="f-input"
+                  type="date"
+                  value={p.date ?? ""}
+                  onInput={(e) => patch(i, { date: (e.currentTarget as HTMLInputElement).value, dateSource: "log" })}
+                />
+              </Field>
+              <div class="stat-grid">
                 <Stat label="dose" value={p.doseG != null ? `${p.doseG}g` : undefined} />
                 <Stat label="water" value={p.waterG != null ? `${p.waterG}g` : undefined} />
                 <Stat label="ratio" value={ratioOf(p.doseG, p.waterG)} />
                 <Stat label="temp" value={p.tempC != null ? `${p.tempC}°C` : undefined} />
                 <Stat label="time" value={p.totalTime} />
-                <Stat label="grind" value={p.grind} />
               </div>
+              {p.grind && (
+                <div class="brew-kv">
+                  <div class="brew-kv-k">Grind</div>
+                  <div class="brew-kv-v">{p.grind}</div>
+                </div>
+              )}
               {p.pourTechnique && (
                 <div class="brew-kv">
                   <div class="brew-kv-k">Pour</div>

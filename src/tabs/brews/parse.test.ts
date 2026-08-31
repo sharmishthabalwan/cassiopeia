@@ -38,6 +38,7 @@ function eq(name: string, got: unknown, want: unknown) {
 const a = parseBrewLog(log1, catalog, "30 Aug 2026 Brew- Sey Wilson Alba.md");
 eq("log1 signal", parseHasSignal(a), true);
 eq("log1 date", a.date, "2026-08-30");
+eq("log1 dateSource", a.dateSource, "filename");
 eq("log1 coffee", a.coffeeHint, "Wilson Alba");
 eq("log1 roaster", a.roasterHint, "Sey");
 eq("log1 bag", a.bagId, "bag-4");
@@ -60,6 +61,7 @@ const catalogNoDf = { ...catalog, grinders: catalog.grinders.filter((g) => g.id 
 const b = parseBrewLog(log2, catalogNoDf, "31 Aug 2026 Brew.md");
 eq("log2 signal", parseHasSignal(b), true);
 eq("log2 date", b.date, "2026-08-31");
+eq("log2 dateSource", b.dateSource, "log");
 eq("log2 unknown coffee no bag", b.bagId, undefined);
 eq("log2 dose", b.doseG, 17.2);
 eq("log2 water", b.waterG, 276);

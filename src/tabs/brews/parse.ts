@@ -23,6 +23,7 @@ export interface BagMatch {
 export interface ParsedBrew {
   sourceName?: string;
   date?: string;
+  dateSource?: "log" | "filename";
   coffeeRaw?: string;
   roasterHint?: string;
   coffeeHint?: string;
@@ -150,7 +151,7 @@ function section(text: string, heading: RegExp): string | undefined {
   return body || undefined;
 }
 
-function parseDate(text: string, filename?: string): string | undefined {
+function parseDate(text: string, filename?: string): { date?: string; source?: "log" | "filename" } {
   const tryMatch = (s: string): string | undefined => {
     const iso = s.match(ISO_DATE_RE);
     if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
@@ -162,7 +163,13 @@ function parseDate(text: string, filename?: string): string | undefined {
     return `${d[3]}-${month}-${day}`;
   };
   const labeledDate = labeled(text, ["Date & Time", "Date", "Brew date"]);
-  return (labeledDate && tryMatch(labeledDate)) || tryMatch(text) || (filename ? tryMatch(filename) : undefined);
+  const fromLabel = labeledDate && tryMatch(labeledDate);
+  if (fromLabel) return { date: fromLabel, source: "log" };
+  const fromBody = tryMatch(text);
+  if (fromBody) return { date: fromBody, source: "log" };
+  const fromFile = filename ? tryMatch(filename) : undefined;
+  if (fromFile) return { date: fromFile, source: "filename" };
+  return {};
 }
 
 function splitCoffee(raw: string): { roaster?: string; coffee?: string } {
@@ -405,7 +412,7 @@ function grindFrom(text: string, grinderRaw?: string, matchedGrinder?: Grinder):
 export function parseBrewLog(raw: string, catalog: Catalog, sourceName?: string): ParsedBrew {
   const text = stripMd(raw);
   const warnings: string[] = [];
-  const date = parseDate(text, sourceName);
+  const { date, source: dateSource } = parseDate(text, sourceName);
   const coffeeLine =
     labeled(text, ["Bag / Coffee", "Coffee", "Bag", "Beans"]) ||
     (sourceName && /sey|prodigal|wilson|alba|dredi|dreyde/i.test(sourceName) ? sourceName.replace(/\.[a-z]+$/i, "").replace(/[_-]+/g, " ") : undefined);
@@ -451,6 +458,7 @@ export function parseBrewLog(raw: string, catalog: Catalog, sourceName?: string)
   return {
     sourceName,
     date,
+    dateSource,
     coffeeRaw: coffeeLine,
     roasterHint: roaster,
     coffeeHint: coffee,
