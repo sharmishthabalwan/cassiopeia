@@ -1,5 +1,6 @@
 // Material 3 dynamic color from the brand key colors (mauve / olive / sage /
-// cream / peach). Per-tab hue only swaps the primary palette; secondary,
+// cream / peach). Light mode pins page surface to white; cream stays on
+// surface-container. Per-tab hue only swaps the primary palette; secondary,
 // tertiary, and neutrals stay on-brand.
 
 import {
@@ -120,14 +121,15 @@ export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLEleme
   }
   // Light mode: keep the brand keys on the roles they were chosen for
   // (MCU would otherwise pick a different tone from each palette).
+  // Page background is white; cream remains on the container steps.
   if (!dark) {
     pinRole(target, "primary", primaryHex);
     pinRole(target, "secondary", BRAND.secondary);
     pinRole(target, "tertiary", BRAND.tertiary);
     target.style.setProperty("--md-sys-color-surface-tint", primaryHex);
-    target.style.setProperty("--md-sys-color-background", BRAND.neutral);
-    target.style.setProperty("--md-sys-color-surface", BRAND.neutral);
-    target.style.setProperty("--md-sys-color-surface-bright", BRAND.neutral);
+    target.style.setProperty("--md-sys-color-background", BRAND.background);
+    target.style.setProperty("--md-sys-color-surface", BRAND.background);
+    target.style.setProperty("--md-sys-color-surface-bright", BRAND.background);
     target.style.setProperty("--md-sys-color-outline-variant", BRAND.neutralVariant);
   }
 }
@@ -142,6 +144,6 @@ export function applyMd3Theme(appearance: Appearance, tabId: string) {
   const theme = document.querySelector('meta[name="theme-color"]');
   if (theme) {
     const surface = getComputedStyle(html).getPropertyValue("--md-sys-color-surface").trim();
-    theme.setAttribute("content", surface || (appearance.mode === "light" ? BRAND.neutral : "#14120e"));
+    theme.setAttribute("content", surface || (appearance.mode === "light" ? BRAND.background : "#14120e"));
   }
 }
