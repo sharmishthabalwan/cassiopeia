@@ -9,7 +9,7 @@ The single source of truth for the build. **Every agent reads this first.** It d
 - **UI:** Vite + Preact + TypeScript. Preact (~4KB) for the reusable Catalog/Radar and per-tab screens.
 - **Styling:** plain CSS with tokens in `src/theme.css`. No CSS framework.
 - **Local-first data:** IndexedDB via `idb-keyval`, behind `src/lib/db.ts`.
-- **Cloud (later phase):** Supabase (Postgres + Auth + Storage), private, row-level security scoped to the user. Layered behind the same `db.ts` API — tabs never change.
+- **Cloud:** Firebase Auth + Cloud Storage (one JSON journal snapshot per user at `users/{uid}/journal.json`). Layered behind the same `db.ts` API — tabs never change. IndexedDB stays the working copy so the app works offline.
 - **iCloud mirror (Phase 6):** `scripts/export_mirror.py` exports the DB to `.xlsx` + `.sqlite` in `iCloud Drive/Cassiopeia/`.
 - **Charts:** hand-rolled SVG radar (`src/lib/radar.tsx`). No chart library.
 - **AI:** frugal, analysis-points only (Insights summaries, note clustering). Cached; never per-log.
@@ -39,13 +39,13 @@ GlobalRecipe ──(saveRecipeAsIdea, row-copy)──> BrewIdea
 
 **Canonical Recipe shape** is shared by `BrewIdea` and `GlobalRecipe`, so save→promote→brew is a row-copy, never a transform.
 
-**Supabase schema (later):** one table per entity mirroring the interfaces; `ratings` FK `brew_id` + `person_id`; RLS `user_id = auth.uid()`. Adding it must not change `db.ts` signatures.
+**Firebase schema:** Cloud Storage object `users/{uid}/journal.json` is a snapshot of every collection (plus appearance). Security rules: only that signed-in user can read or write it. Adding Firebase must not change `db.ts` signatures that tabs already call.
 
 ---
 
 ## `db.ts` — the only data path
 
-Tabs import `{ db }` from `src/lib/db.ts` and use its async methods (see the `DB` interface there). Never read/write storage directly from a tab. Local-first now; the Supabase adapter is added behind this API later. Foundation implements it with `idb-keyval`; `saveRecipeAsIdea` copies a `GlobalRecipe` into a new `BrewIdea` (same fields).
+Tabs import `{ db }` from `src/lib/db.ts` and use its async methods (see the `DB` interface there). Never read/write storage directly from a tab. Local-first now; the Firebase Cloud Storage adapter sits behind this API. Foundation implements IndexedDB with `idb-keyval`; `saveRecipeAsIdea` copies a `GlobalRecipe` into a new `BrewIdea` (same fields). Cloud methods (`signInCloud`, `syncNow`, …) are Settings-only.
 
 ---
 
@@ -77,19 +77,19 @@ Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a
 
 ## Screens (see wireframes v3)
 
-Home · Brews (logger, daily core) · Bags (finished/frozen/peak toggles) · Ideas · Recipes (list with row `+`; pro → recipes → **recipe detail with Save to brew ideas**) · Insights (radar + trends + AI summary) · **Wrapped** (detailed year-in-review: roasters, region, bags, grams, origins, varieties, processes, notes, decaf %, days-since-first-bag, recipes, month timeline + photos) · Settings (brewers, grinders, people+colors, appearance, sync, import, mirror, AI).
+Home · Brews (logger, daily core) · Bags (finished/frozen/peak toggles) · Ideas · Recipes (list with row `+`; pro → recipes → **recipe detail with Save to brew ideas**) · Insights (radar + trends + AI summary) · **Wrapped** (detailed year-in-review: roasters, region, bags, grams, origins, varieties, processes, notes, decaf %, days-since-first-bag, recipes, month timeline + photos) · Settings (brewers, grinders, people+colors, appearance, **Firebase cloud sync**, import, mirror, AI).
 
 ---
 
 ## File ownership map
 
-- **Contract-owned (read-only for tab agents):** `theme.css`, `nav.config.ts`, `lib/types.ts`, `lib/db.ts`, `lib/radar.tsx`, `lib/catalog.tsx`, `lib/import.ts`, `main.tsx`, `router.ts`, `seed/*`, this file.
+- **Contract-owned (read-only for tab agents):** `theme.css`, `nav.config.ts`, `lib/types.ts`, `lib/db.ts`, `lib/radar.tsx`, `lib/catalog.tsx`, `lib/import.ts`, `lib/journal.ts`, `lib/cloud-config.ts`, `lib/firebase.ts`, `lib/sync.ts`, `main.tsx`, `router.ts`, `seed/*`, `storage.rules`, this file.
 - **Per-tab agents own exactly one folder:** `src/tabs/<home|brews|bags|ideas|recipes|insights|settings>/`.
 - Insights owns both the overview and the Wrapped subview.
 
 ## Phase order (from the Build Plan)
 
-0 Contracts (this file + skeleton — done) → 1 Foundation (implement `db.ts`, components, `main`/router, theme wiring, import) — **sequential, not parallel** → (2a Bags ∥ 2b Brews) → 3 Home → 4 Insights+Wrapped → (5a Ideas ∥ 5b Recipes) → 6 Friends + PWA + Supabase + iCloud mirror.
+0 Contracts (this file + skeleton — done) → 1 Foundation (implement `db.ts`, components, `main`/router, theme wiring, import) — **sequential, not parallel** → (2a Bags ∥ 2b Brews) → 3 Home → 4 Insights+Wrapped → (5a Ideas ∥ 5b Recipes) → 6 Friends + PWA + iCloud mirror.
 
 ## Agent rules of engagement
 

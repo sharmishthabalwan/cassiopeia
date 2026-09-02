@@ -1,11 +1,15 @@
 // Cassiopeia — data access (CONTRACT-OWNED API surface).
-// LOCAL-FIRST: everything reads/writes IndexedDB now (idb-keyval). A Supabase
-// adapter gets layered in later (delta sync + storage) WITHOUT changing these
-// signatures. Tabs must only ever touch data through this module.
+// LOCAL-FIRST: everything reads/writes IndexedDB now (idb-keyval). Firebase
+// Cloud Storage layers a per-user journal snapshot on top WITHOUT changing
+// these signatures. Tabs must only ever touch data through this module.
 
 import { createStore, get, set } from "idb-keyval";
 import { HOME_HUE } from "./types";
-import type { Bag, Brew, Rating, Person, BrewIdea, GlobalRecipe, Brewer, Grinder, Appearance, ID } from "./types";
+import type {
+  Bag, Brew, Rating, Person, BrewIdea, GlobalRecipe, Brewer, Grinder, Appearance, ID,
+  CloudStatus,
+} from "./types";
+import { firebaseConfigured } from "./cloud-config";
 
 export interface DB {
   // bags
@@ -33,29 +37,57 @@ export interface DB {
   // settings
   getAppearance(): Promise<Appearance>;
   setAppearance(a: Appearance): Promise<void>;
+  // cloud (Firebase Auth + Cloud Storage snapshot)
+  getCloudStatus(): CloudStatus;
+  subscribeCloudStatus(cb: (s: CloudStatus) => void): () => void;
+  signInCloud(email: string, password: string): Promise<void>;
+  createCloudAccount(email: string, password: string): Promise<void>;
+  signInCloudGoogle(): Promise<void>;
+  signOutCloud(): Promise<void>;
+  syncNow(): Promise<void>;
 }
 
 // One IndexedDB database, one object store; each entity collection lives under
 // a single key as an ordered array. Sized for 1–2 brews/day — whole-collection
-// reads/writes are cheaper than cursors at this scale, and keep the future
-// Supabase delta-sync adapter trivial (snapshot in, snapshot out).
+// reads/writes are cheaper than cursors at this scale, and keep the Firebase
+// snapshot adapter trivial (snapshot in, snapshot out).
 const store = createStore("cassiopeia", "kv");
 
 type CollectionKey =
   | "bags" | "brews" | "ratings" | "ideas" | "recipes"
   | "brewers" | "grinders" | "people";
 
+let applyingRemote = 0;
+
 async function readAll<T extends { id: ID }>(key: CollectionKey): Promise<T[]> {
   return (await get<T[]>(key, store)) ?? [];
 }
-async function writeAll<T extends { id: ID }>(key: CollectionKey, items: T[]): Promise<void> {
+async function persistAll<T extends { id: ID }>(key: CollectionKey, items: T[]): Promise<void> {
   await set(key, items, store);
+}
+async function writeAll<T extends { id: ID }>(key: CollectionKey, items: T[]): Promise<void> {
+  await persistAll(key, items);
+  if (applyingRemote) return;
+  await set("cloudUpdatedAt", Date.now(), store);
+  schedulePush();
 }
 async function upsert<T extends { id: ID }>(key: CollectionKey, item: T): Promise<void> {
   const items = await readAll<T>(key);
   const i = items.findIndex((x) => x.id === item.id);
   if (i >= 0) items[i] = item; else items.push(item);
   await writeAll(key, items);
+}
+
+function schedulePush() {
+  if (!firebaseConfigured()) return;
+  void import("./sync").then((m) => m.schedulePush());
+}
+
+function cloudApi() {
+  return import("./sync").then((m) => {
+    db.getCloudStatus = () => m.getCloudStatus();
+    return m;
+  });
 }
 
 export function newId(): ID {
@@ -71,6 +103,8 @@ const DEFAULT_APPEARANCE: Appearance = {
 // Fired after setAppearance persists, so the app shell re-applies the theme
 // without tabs needing any channel beyond this module.
 export const APPEARANCE_EVENT = "cassiopeia:appearance";
+export const SYNC_EVENT = "cassiopeia:sync";
+export const CLOUD_EVENT = "cassiopeia:cloud";
 
 export const db: DB = {
   async listBags(opts) {
@@ -131,20 +165,72 @@ export const db: DB = {
   async setAppearance(a) {
     await set("appearance", a, store);
     dispatchEvent(new CustomEvent<Appearance>(APPEARANCE_EVENT, { detail: a }));
+    if (!applyingRemote) {
+      await set("cloudUpdatedAt", Date.now(), store);
+      schedulePush();
+    }
+  },
+
+  getCloudStatus() {
+    return {
+      configured: firebaseConfigured(),
+      user: null,
+      state: "idle" as const,
+    };
+  },
+  subscribeCloudStatus(cb) {
+    if (!firebaseConfigured()) {
+      cb({ configured: false, user: null, state: "idle" });
+      return () => {};
+    }
+    let unsub = () => {};
+    let cancelled = false;
+    void cloudApi().then((m) => {
+      if (cancelled) return;
+      unsub = m.subscribeCloud(cb);
+    });
+    return () => { cancelled = true; unsub(); };
+  },
+  async signInCloud(email, password) {
+    const m = await cloudApi();
+    await m.cloudSignIn(email, password);
+  },
+  async createCloudAccount(email, password) {
+    const m = await cloudApi();
+    await m.cloudCreateAccount(email, password);
+  },
+  async signInCloudGoogle() {
+    const m = await cloudApi();
+    await m.cloudSignInGoogle();
+  },
+  async signOutCloud() {
+    const m = await cloudApi();
+    await m.cloudSignOut();
+  },
+  async syncNow() {
+    const m = await cloudApi();
+    await m.syncNow();
   },
 };
 
 // ---------------------------------------------------------------------------
-// Internal seeding surface — used ONLY by lib/import.ts (Foundation-owned).
-// Not part of the DB contract; tabs must never import these.
+// Internal seeding + cloud-apply surface — used ONLY by lib/import.ts and
+// lib/sync.ts (Foundation-owned). Not part of the DB contract; tabs must never
+// import these.
 export const _internal = {
+  store,
+  beginRemoteApply() { applyingRemote += 1; },
+  endRemoteApply() { applyingRemote = Math.max(0, applyingRemote - 1); },
   async isEmpty(): Promise<boolean> {
     const [bags, brews, ideas] = await Promise.all([
       readAll<Bag>("bags"), readAll<Brew>("brews"), readAll<BrewIdea>("ideas"),
     ]);
     return bags.length === 0 && brews.length === 0 && ideas.length === 0;
   },
+  async readCollection<T extends { id: ID }>(key: CollectionKey): Promise<T[]> {
+    return readAll<T>(key);
+  },
   async putCollection<T extends { id: ID }>(key: CollectionKey, items: T[]): Promise<void> {
-    await writeAll(key, items);
+    await persistAll(key, items);
   },
 };

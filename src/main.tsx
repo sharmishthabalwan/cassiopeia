@@ -17,6 +17,7 @@ import { db, APPEARANCE_EVENT } from "./lib/db";
 import { APP_NAME, HOME_HUE, type Appearance } from "./lib/types";
 import { seedFromFiles } from "./lib/import";
 import { Fallback } from "./fallback";
+import { firebaseConfigured } from "./lib/cloud-config";
 
 // ---- appearance -----------------------------------------------------------
 
@@ -198,14 +199,33 @@ function App({ initialAppearance }: { initialAppearance: Appearance }) {
 }
 
 async function boot() {
-  const appearance = await db.getAppearance();
-  applyAppearance(appearance);
   try {
     await seedFromFiles();
   } catch (err) {
     console.error("first-run import failed (app still boots)", err);
   }
+  if (firebaseConfigured()) {
+    try {
+      const { hydrateCloud, wireAuthListener } = await import("./lib/sync");
+      wireAuthListener();
+      await hydrateCloud();
+    } catch (err) {
+      console.error("cloud hydrate failed (app still boots)", err);
+    }
+  }
+  const appearance = await db.getAppearance();
+  applyAppearance(appearance);
   render(<App initialAppearance={appearance} />, document.getElementById("app")!);
+
+  let visTimer: ReturnType<typeof setTimeout> | undefined;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    if (visTimer) clearTimeout(visTimer);
+    visTimer = setTimeout(() => {
+      if (!firebaseConfigured()) return;
+      void import("./lib/sync").then((m) => m.hydrateCloud());
+    }, 400);
+  });
 }
 
 boot();

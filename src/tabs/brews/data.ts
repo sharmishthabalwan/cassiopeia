@@ -1,7 +1,7 @@
 // Brews tab — shared data hook + tiny helpers. All data via lib/db only.
 
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { db } from "../../lib/db";
+import { db, SYNC_EVENT } from "../../lib/db";
 import type { Bag, Brew, BrewIdea, Brewer, Grinder, ID, Person } from "../../lib/types";
 
 export interface BrewsData {
@@ -28,6 +28,11 @@ export function useBrewsData(): { data: BrewsData | null; refresh: () => Promise
     setData({ brews, allBags, brewers, grinders, people, ideas });
   }, []);
   useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    const onSync = () => { void refresh(); };
+    addEventListener(SYNC_EVENT, onSync);
+    return () => removeEventListener(SYNC_EVENT, onSync);
+  }, [refresh]);
   return { data, refresh };
 }
 

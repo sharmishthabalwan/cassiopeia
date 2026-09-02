@@ -1,7 +1,7 @@
 // Bags tab — shared data hook + helpers. All data via lib/db only.
 
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { db } from "../../lib/db";
+import { db, SYNC_EVENT } from "../../lib/db";
 import type { Bag } from "../../lib/types";
 
 export interface BagsData {
@@ -15,6 +15,11 @@ export function useBagsData(): { data: BagsData | null; refresh: () => Promise<v
     setData({ bags: sortBags(bags) });
   }, []);
   useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    const onSync = () => { void refresh(); };
+    addEventListener(SYNC_EVENT, onSync);
+    return () => removeEventListener(SYNC_EVENT, onSync);
+  }, [refresh]);
   return { data, refresh };
 }
 

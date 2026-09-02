@@ -7,7 +7,7 @@
 
 import type { JSX, ComponentChildren } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import { db } from "./lib/db";
+import { db, SYNC_EVENT } from "./lib/db";
 import { go } from "./router";
 import { Radar } from "./lib/radar";
 import { Catalog } from "./lib/catalog";
@@ -22,13 +22,17 @@ interface Data {
 function useData(): Data | null {
   const [data, setData] = useState<Data | null>(null);
   useEffect(() => {
-    (async () => {
+    let live = true;
+    const load = async () => {
       const [bags, brews, ideas, recipes, brewers, grinders, people] = await Promise.all([
         db.listBags({ includeFinished: true }), db.listBrews(), db.listIdeas(),
         db.listRecipes(), db.listBrewers(), db.listGrinders(), db.listPeople(),
       ]);
-      setData({ bags, brews, ideas, recipes, brewers, grinders, people });
-    })();
+      if (live) setData({ bags, brews, ideas, recipes, brewers, grinders, people });
+    };
+    void load();
+    addEventListener(SYNC_EVENT, load);
+    return () => { live = false; removeEventListener(SYNC_EVENT, load); };
   }, []);
   return data;
 }

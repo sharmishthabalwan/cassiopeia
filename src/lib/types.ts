@@ -132,3 +132,19 @@ export interface Appearance {
 export const HOME_HUE = { a1: "#B0475F", a2: "#5A1E32" } as const;
 
 export const APP_NAME = "Sam Caffeinated";
+
+/** Firebase Auth identity for Cloud Storage journal sync. */
+export interface CloudUser {
+  uid: string;
+  email: string | null;
+}
+
+export type CloudState = "idle" | "syncing" | "error";
+
+export interface CloudStatus {
+  configured: boolean;
+  user: CloudUser | null;
+  state: CloudState;
+  lastSyncedAt?: number;
+  error?: string;
+}

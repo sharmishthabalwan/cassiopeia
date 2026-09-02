@@ -7,12 +7,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types src/lib/journal.test.ts",
+    "test:cloud": "node --experimental-strip-types src/lib/cloud.integration.test.ts",
+    "emulators": "npx --yes firebase-tools emulators:start --only auth,storage"
   },
   "dependencies": {
     "preact": "^10.19.0",
     "idb-keyval": "^6.2.1",
-    "@supabase/supabase-js": "^2.45.0"
+    "firebase": "^11.0.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.0",
