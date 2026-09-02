@@ -1,5 +1,5 @@
-// Material 3 dynamic color from the brand key colors (maroon / olive / coral /
-// cream / blush). Per-tab hue only swaps the primary palette; secondary,
+// Material 3 dynamic color from the brand key colors (mauve / olive / sage /
+// cream / peach). Per-tab hue only swaps the primary palette; secondary,
 // tertiary, and neutrals stay on-brand.
 
 import {
@@ -125,6 +125,10 @@ export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLEleme
     pinRole(target, "secondary", BRAND.secondary);
     pinRole(target, "tertiary", BRAND.tertiary);
     target.style.setProperty("--md-sys-color-surface-tint", primaryHex);
+    target.style.setProperty("--md-sys-color-background", BRAND.neutral);
+    target.style.setProperty("--md-sys-color-surface", BRAND.neutral);
+    target.style.setProperty("--md-sys-color-surface-bright", BRAND.neutral);
+    target.style.setProperty("--md-sys-color-outline-variant", BRAND.neutralVariant);
   }
 }
 

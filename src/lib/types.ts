@@ -130,14 +130,14 @@ export interface Appearance {
 
 /** Brand key colors — Material 3 palettes are built from these. */
 export const BRAND = {
-  primary: "#5A333E",        // maroon — buttons / FABs
-  secondary: "#898F5E",      // olive — chips / quieter actions
-  tertiary: "#DF9281",       // coral — warm accent
-  neutral: "#C9C19C",        // cream — background / surface
-  neutralVariant: "#C7ABA7", // blush — outline / surface-variant
+  primary: "#A15D66",        // mauve — buttons / FABs
+  secondary: "#808249",      // olive — chips / quieter actions
+  tertiary: "#DFD6A4",       // sage — light contrasting accent
+  neutral: "#F3EED7",        // cream — background / surface
+  neutralVariant: "#E1B4A1", // peach — outline / surface-variant
 } as const;
 
-/** Default uniform accent (primary maroon + a darker companion). */
-export const HOME_HUE = { a1: BRAND.primary, a2: "#3F242C" } as const;
+/** Default uniform accent (primary mauve + a darker companion). */
+export const HOME_HUE = { a1: BRAND.primary, a2: "#6E3E45" } as const;
 
 export const APP_NAME = "Sam Caffeinated";

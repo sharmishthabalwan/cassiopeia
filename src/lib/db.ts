@@ -125,8 +125,9 @@ export const db: DB = {
     } else if (saved.hueMode === "uniform" && !saved.uniform) {
       next = { ...saved, uniform: { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } };
     }
-    // Previous default was home-pink; move stored uniform onto the maroon brand.
-    if (next.uniform?.a1.toUpperCase() === "#B0475F") {
+    // Previous defaults (home-pink, then maroon); move stored uniform onto mauve.
+    const prev = next.uniform?.a1.toUpperCase();
+    if (prev === "#B0475F" || prev === "#5A333E") {
       next = { ...next, uniform: { a1: BRAND.primary, a2: HOME_HUE.a2 } };
     }
     if (next !== saved) await set("appearance", next, store);
