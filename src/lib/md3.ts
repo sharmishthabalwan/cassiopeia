@@ -1,7 +1,7 @@
 // Material 3 dynamic color from the brand key colors (mauve / olive / sage /
-// cream / peach). Light mode pins page surface to white; cream stays on
-// surface-container. Per-tab hue only swaps the primary palette; secondary,
-// tertiary, and neutrals stay on-brand.
+// cream / peach). Light mode pins page + containers to white / near-white;
+// cream still seeds the palettes. Per-tab hue only swaps the primary palette;
+// secondary, tertiary, and neutrals stay on-brand.
 
 import {
   argbFromHex,
@@ -102,6 +102,20 @@ function pinRole(target: HTMLElement, role: string, hex: string) {
   target.style.setProperty(`--md-sys-color-on-${role}`, contrastingOn(hex));
 }
 
+/** Light-mode page + container ladder. Cream-on-white reads muddy, so
+ *  containers are a warm near-white MD3 step instead of #F3EED7. */
+const LIGHT_SURFACES: Record<string, string> = {
+  background: BRAND.background,
+  surface: BRAND.background,
+  "surface-bright": BRAND.background,
+  "surface-container-lowest": "#FFFFFF",
+  "surface-container-low": "#F7F6F2",
+  "surface-container": "#F3F2ED",
+  "surface-container-high": "#EDECE6",
+  "surface-container-highest": "#E8E6DF",
+  "surface-dim": "#DEDCD4",
+};
+
 export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLElement = document.documentElement) {
   const primaryHex = parseHex(seedHex) ?? BRAND.primary;
   const scheme = new DynamicScheme({
@@ -121,15 +135,15 @@ export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLEleme
   }
   // Light mode: keep the brand keys on the roles they were chosen for
   // (MCU would otherwise pick a different tone from each palette).
-  // Page background is white; cream remains on the container steps.
+  // Page + containers are white / near-white; cream still seeds the palettes.
   if (!dark) {
     pinRole(target, "primary", primaryHex);
     pinRole(target, "secondary", BRAND.secondary);
     pinRole(target, "tertiary", BRAND.tertiary);
     target.style.setProperty("--md-sys-color-surface-tint", primaryHex);
-    target.style.setProperty("--md-sys-color-background", BRAND.background);
-    target.style.setProperty("--md-sys-color-surface", BRAND.background);
-    target.style.setProperty("--md-sys-color-surface-bright", BRAND.background);
+    for (const [role, hex] of Object.entries(LIGHT_SURFACES)) {
+      target.style.setProperty(`--md-sys-color-${role}`, hex);
+    }
     target.style.setProperty("--md-sys-color-outline-variant", BRAND.neutralVariant);
   }
 }

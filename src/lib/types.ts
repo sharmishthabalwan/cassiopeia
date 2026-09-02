@@ -134,7 +134,7 @@ export const BRAND = {
   secondary: "#808249",      // olive — chips / quieter actions
   tertiary: "#DFD6A4",       // sage — light contrasting accent
   background: "#FFFFFF",     // white — light-mode page / surface / surface-bright
-  neutral: "#F3EED7",        // cream — surface-container steps
+  neutral: "#F3EED7",        // cream — MCU palette seed (dark + on-surface warmth)
   neutralVariant: "#E1B4A1", // peach — outline / surface-variant
 } as const;
 

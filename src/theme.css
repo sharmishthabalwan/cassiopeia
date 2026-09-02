@@ -1,7 +1,7 @@
 /* Sam Caffeinated — Material Design 3 tokens (CONTRACT-OWNED).
    Color roles are --md-sys-color-* generated at runtime from brand key colors
    (mauve / olive / sage / cream / peach). Light page surface is white; cream
-   remains on surface-container. Dark + light via <html data-mode>.
+   seeds the palettes, not the page fill. Dark + light via <html data-mode>.
    Per-tab hue swaps only primary; Uniform uses the mauve brand. Legacy aliases
    (--base/--text/--card/--a1/…) map onto MD3 so tabs keep working. */
 
@@ -58,12 +58,12 @@
   --md-sys-color-on-surface-variant: #53443d;
   --md-sys-color-outline: #867068;
   --md-sys-color-outline-variant: #E1B4A1;
-  --md-sys-color-surface-container-lowest: #fffcf4;
-  --md-sys-color-surface-container-low: #f7f2de;
-  --md-sys-color-surface-container: #f1ecd4;
-  --md-sys-color-surface-container-high: #ebe6ce;
-  --md-sys-color-surface-container-highest: #e5e0c8;
-  --md-sys-color-surface-dim: #d5d0b8;
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low: #F7F6F2;
+  --md-sys-color-surface-container: #F3F2ED;
+  --md-sys-color-surface-container-high: #EDECE6;
+  --md-sys-color-surface-container-highest: #E8E6DF;
+  --md-sys-color-surface-dim: #DEDCD4;
   --md-sys-color-surface-bright: #FFFFFF;
   --md-sys-color-inverse-surface: #31302b;
   --md-sys-color-inverse-on-surface: #f4f0e0;
