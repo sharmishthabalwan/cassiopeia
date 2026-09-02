@@ -1,63 +1,177 @@
-/* Sam Caffeinated — design tokens (CONTRACT-OWNED, do not fork in tabs).
-   Aurora frosted-glass system. Dark + light modes via [data-mode].
-   Default mode is light (paper surfaces). Default hue is uniform home pink.
-   Per-tab hue via a `hue-<tab>` class on the screen root; each sets --a1/--a2
-   plus the .body aurora (aurora is derived from --a1/--a2). */
+/* Sam Caffeinated — Material Design 3 tokens (CONTRACT-OWNED).
+   Color roles are --md-sys-color-* (generated at runtime from the seed hue).
+   Dark + light via <html data-mode>. Per-tab hue regenerates the whole scheme
+   from that tab's seed; Uniform uses one seed (default home pink).
+   Legacy aliases (--base/--text/--card/--a1/…) map onto MD3 so tabs keep working. */
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./assets/material-symbols-subset.ttf") format("truetype");
+}
 
 :root {
-  /* expanded palette (Pantone-derived) */
+  --md-ref-typeface-brand: "Roboto", system-ui, sans-serif;
+  --md-ref-typeface-plain: "Roboto", system-ui, sans-serif;
+  --md-ref-typeface-weight-regular: 400;
+  --md-ref-typeface-weight-medium: 500;
+  --md-ref-typeface-weight-bold: 700;
+
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 999px;
+
+  --md-icon-font: "Material Symbols Outlined";
+  --font-sans: var(--md-ref-typeface-plain);
+  --radius: var(--md-sys-shape-corner-large);
+  --radius-card: var(--md-sys-shape-corner-medium);
+
+  /* Baseline light scheme (seed #B0475F) until JS applies dynamic color */
+  --md-sys-color-primary: #8e4a56;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #ffd9de;
+  --md-sys-color-on-primary-container: #3b0715;
+  --md-sys-color-secondary: #75565b;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #ffd9de;
+  --md-sys-color-on-secondary-container: #2b1519;
+  --md-sys-color-tertiary: #785831;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #ffddb8;
+  --md-sys-color-on-tertiary-container: #2b1700;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-background: #fff8f7;
+  --md-sys-color-on-background: #22191b;
+  --md-sys-color-surface: #fff8f7;
+  --md-sys-color-on-surface: #22191b;
+  --md-sys-color-surface-variant: #f3dddf;
+  --md-sys-color-on-surface-variant: #524345;
+  --md-sys-color-outline: #847375;
+  --md-sys-color-outline-variant: #d6c2c4;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #fcf1f1;
+  --md-sys-color-surface-container: #f7ebeb;
+  --md-sys-color-surface-container-high: #f1e5e6;
+  --md-sys-color-surface-container-highest: #ebe0e0;
+  --md-sys-color-surface-dim: #e7d6d7;
+  --md-sys-color-surface-bright: #fff8f7;
+  --md-sys-color-inverse-surface: #382e2f;
+  --md-sys-color-inverse-on-surface: #feeeef;
+  --md-sys-color-inverse-primary: #ffb2be;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-surface-tint: #8e4a56;
+
   --p-ruby:#7B2E3C; --p-berry:#A85A72; --p-oxblood:#4C1D28; --p-mauve:#9F5E70;
   --p-lime:#97992E; --p-cardamom:#6E6B2F; --p-dblue:#8E9DAD;
   --p-cream:#E6E1AC; --p-lemon:#E7E3C4;
-  --radius:16px; --radius-card:22px;
-  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 }
 
-/* mode tokens */
-[data-mode="dark"]{
-  --base:#08070A; --text:#F4EEF0; --muted:#A99BA0;
-  --card:rgba(255,255,255,.065); --brd:rgba(255,255,255,.13);
-  --field:rgba(255,255,255,.07); --line:rgba(255,255,255,.10);
+/* Legacy aliases used by tabs — always follow the active MD3 scheme */
+:root, [data-mode] {
+  --base: var(--md-sys-color-surface);
+  --text: var(--md-sys-color-on-surface);
+  --muted: var(--md-sys-color-on-surface-variant);
+  --card: var(--md-sys-color-surface-container-low);
+  --brd: var(--md-sys-color-outline-variant);
+  --field: var(--md-sys-color-surface-container-highest);
+  --line: var(--md-sys-color-outline-variant);
+  --a1: var(--md-sys-color-primary);
+  --a2: var(--md-sys-color-primary-container);
 }
-[data-mode="light"]{
-  /* Surfaces only — body/muted text keep the existing light-mode tokens.
-     Paper page + solid white cards so glass reads on a light canvas
-     (the old 50% white card / white border vanished on --base #fff). */
-  --base:#F5F1EB; --text:#241019; --muted:#7C6B72;
-  --card:#FFFFFF; --brd:rgba(36,16,25,.14);
-  --field:#EFEAE4; --line:rgba(40,20,30,.10);
-}
-
-/* per-tab accent pairs (used when Appearance.hueMode = perTab).
-   Default is uniform home pink (--a1/--a2 from .hue-home). */
-.hue-home{--a1:#B0475F;--a2:#5A1E32}      /* ruby / home pink */
-.hue-brews{--a1:#A66E4F;--a2:#4A2B1D}     /* roasted coffee brown */
-.hue-bags{--a1:#A3A63A;--a2:#4E5020}      /* olive lime */
-.hue-ideas{--a1:#C05C90;--a2:#55224B}     /* magenta */
-.hue-insights{--a1:#7E97B0;--a2:#45564A}  /* steel blue-green */
-.hue-recipes{--a1:#C4A03C;--a2:#6E3A48}   /* gold over wine */
-.hue-settings{--a1:#A29486;--a2:#4E453D}  /* warm stone */
-
-/* When Appearance = Uniform, JS sets --u1/--u2 on :root and adds .uniform-hue
-   to <html>, which overrides the per-tab pairs below. */
-html.uniform-hue .hue-home,html.uniform-hue .hue-brews,html.uniform-hue .hue-bags,
-html.uniform-hue .hue-ideas,html.uniform-hue .hue-insights,html.uniform-hue .hue-recipes,
-html.uniform-hue .hue-settings{--a1:var(--u1);--a2:var(--u2)}
-
-/* aurora — derived from the active --a1/--a2 so Uniform home-pink washes every tab */
-[data-mode="dark"] .screen .body{background:radial-gradient(135% 58% at 50% 113%,var(--a1) 0%,var(--a2) 32%,rgba(8,7,10,0) 66%),radial-gradient(75% 45% at 12% 106%,color-mix(in srgb,var(--a1) 50%,transparent),transparent 60%),var(--base)}
-[data-mode="light"] .screen .body{background:radial-gradient(135% 58% at 50% 114%,color-mix(in srgb,var(--a1) 34%,transparent),transparent 60%),radial-gradient(70% 42% at 85% 105%,rgba(230,225,172,.4),transparent 60%),var(--base)}
 
 *{box-sizing:border-box}
 html{color-scheme:light}
 [data-mode="dark"]{color-scheme:dark}
-body{margin:0;font-family:var(--font-sans);background:var(--base);color:var(--text)}
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  background:var(--md-sys-color-surface);
+  color:var(--md-sys-color-on-surface);
+}
 
-/* shared primitives (tabs extend, never redefine) */
-.glass{position:relative;border-radius:var(--radius-card);padding:15px;margin-bottom:12px;background:var(--card);border:1px solid var(--brd);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);overflow:hidden}
-[data-mode="light"] .glass{box-shadow:0 8px 24px rgba(36,16,25,.06)}
-[data-mode="light"] .glass.hero{box-shadow:0 12px 28px rgba(36,16,25,.16)}
-.glass::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(155deg,rgba(255,255,255,.18),transparent 42%)}
-.glass.hero{color:#fff;border:1px solid rgba(255,255,255,.28);background:linear-gradient(145deg,var(--a1),var(--a2))}
-.btn{display:flex;align-items:center;gap:10px;width:100%;border:none;border-radius:var(--radius);padding:14px 16px;font:500 15px var(--font-sans);color:#fff;background:linear-gradient(140deg,var(--a1),var(--a2));box-shadow:0 10px 22px rgba(0,0,0,.25);cursor:pointer}
-.btn.ghost{background:var(--card);border:1px solid var(--brd);color:var(--text)}
+md-icon{
+  --md-icon-size: 24px;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Filled card (MD3). Tabs use .glass; do not redefine in tab CSS. */
+.glass{
+  position:relative;
+  border-radius:var(--md-sys-shape-corner-medium);
+  padding:16px;
+  margin-bottom:12px;
+  background:var(--md-sys-color-surface-container-low);
+  border:none;
+  overflow:hidden;
+}
+.glass.hero{
+  color:var(--md-sys-color-on-primary-container);
+  background:var(--md-sys-color-primary-container);
+}
+.glass.hero .btn{
+  background:var(--md-sys-color-primary);
+  color:var(--md-sys-color-on-primary);
+}
+.glass.hero .btn.ghost{
+  background:transparent;
+  color:var(--md-sys-color-on-primary-container);
+  border-color:color-mix(in srgb, var(--md-sys-color-on-primary-container) 40%, transparent);
+}
+
+/* Filled / outlined buttons (MD3). */
+.btn{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  min-height:40px;
+  border:none;
+  border-radius:var(--md-sys-shape-corner-full);
+  padding:10px 24px;
+  font:500 14px/20px var(--font-sans);
+  letter-spacing:.1px;
+  color:var(--md-sys-color-on-primary);
+  background:var(--md-sys-color-primary);
+  cursor:pointer;
+  box-shadow:none;
+}
+.btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:currentColor;
+  opacity:0;
+  pointer-events:none;
+}
+.btn.ghost{
+  background:transparent;
+  border:1px solid var(--md-sys-color-outline);
+  color:var(--md-sys-color-primary);
+}
+.btn:disabled{opacity:.38;cursor:default;pointer-events:none}
+
+/* Filter / assist chips */
+.chip{
+  display:inline-flex;
+  align-items:center;
+  border-radius:var(--md-sys-shape-corner-small);
+  padding:6px 12px;
+  font:500 12px/16px var(--font-sans);
+  color:var(--md-sys-color-on-surface-variant);
+  background:var(--md-sys-color-surface-container-highest);
+  border:1px solid var(--md-sys-color-outline-variant);
+}

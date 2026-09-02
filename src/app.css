@@ -1,178 +1,157 @@
-/* Sam Caffeinated — app shell styles (Foundation-owned). Layout + liquid FAB +
-   fallback raw-list screens. Tokens live in theme.css — only vars used here. */
+/* Sam Caffeinated — Material 3 app shell. Compact: bottom nav bar.
+   Medium/expanded: navigation rail. Tokens live in theme.css. */
 
-#app, .screen { min-height: 100dvh; }
+#app, .screen { min-height: 100dvh; background: var(--md-sys-color-surface); }
 .screen .body {
-  /* Full-width always, with the reading column carved out by centered padding.
-     Keeps the .body aurora background full-bleed at EVERY width (no phone-width
-     strip in the tablet band). Column: 560 (base) → 720 (>=768) → 840 (>=1100). */
   min-height: 100dvh;
-  padding-top: max(18px, env(safe-area-inset-top));
-  padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  padding-top: max(8px, env(safe-area-inset-top));
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
   padding-left: max(16px, calc((100% - 560px) / 2));
   padding-right: max(16px, calc((100% - 560px) / 2));
 }
-.screen-head { display: flex; align-items: center; gap: 10px; margin: 6px 0 16px; }
-.screen h1 { font: 600 26px var(--font-sans); margin: 0; }
-.screen .sub { color: var(--muted); font: 400 13.5px var(--font-sans); }
 
-/* ---- liquid FAB: collapsed "+" → vertical gooey stack of tab circles ---- */
-.fab-wrap {
-  position: fixed;
-  right: max(18px, env(safe-area-inset-right));
-  bottom: max(22px, calc(env(safe-area-inset-bottom) + 14px));
-  width: 56px;
-  z-index: 50;
+/* ---- small top app bar (sits in the reading column) ---- */
+.top-app-bar {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 56px;
+  margin: 0 0 12px;
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
 }
-.fab-goo, .fab-ui { position: absolute; right: 0; bottom: 0; width: 56px; }
-.fab-goo { filter: url(#sam-caffeinated-goo); pointer-events: none; }
-.fab-blob, .fab-btn {
-  position: absolute; right: 0; bottom: 0;
-  width: 56px; height: 56px; border-radius: 50%;
-  transition: transform .38s cubic-bezier(.34,1.4,.44,1), opacity .25s ease;
-  transform: translateY(0) scale(.4);
-  opacity: 0;
+.top-app-bar h1 {
+  margin: 0;
+  font: 400 22px/28px var(--md-ref-typeface-brand);
 }
-.fab-blob { background: linear-gradient(140deg, var(--a1), var(--a2)); }
-.fab-blob.main, .fab-btn.main { transform: none; opacity: 1; }
-.fab-btn {
+.screen .sub { color: var(--md-sys-color-on-surface-variant); font: 400 14px/20px var(--font-sans); }
+
+.app-logo {
+  flex: 0 0 auto; width: 48px; height: 48px; padding: 8px;
+  border: none; background: none; cursor: pointer; border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-logo img { width: 32px; height: 32px; display: block; }
+
+/* ---- compact navigation bar ---- */
+.nav-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+  display: flex; justify-content: space-around; align-items: flex-start;
+  height: calc(80px + env(safe-area-inset-bottom));
+  padding: 12px 4px env(safe-area-inset-bottom);
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.nav-bar-item {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: none; background: none; color: inherit; cursor: pointer;
+  padding: 0; font-family: var(--font-sans);
+}
+.nav-indicator {
+  width: min(64px, 100%); height: 32px; border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
-  border: none; background: transparent; color: #fff;
-  font: 400 21px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", var(--font-sans);
-  cursor: pointer; padding: 0;
 }
-.fab-btn.main .fab-plus { transition: transform .3s ease; display: block; font-size: 26px; line-height: 1; font-family: var(--font-sans); }
-.fab-wrap.open .fab-btn.main .fab-plus { transform: rotate(45deg); }
-.fab-wrap.open .fab-blob:not(.main), .fab-wrap.open .fab-btn:not(.main) {
-  opacity: 1;
-  transform: translateY(calc(var(--i) * -74px - 74px)) scale(1);
+.nav-bar-item.active { color: var(--md-sys-color-on-surface); }
+.nav-bar-item.active .nav-indicator {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
 }
-.fab-btn .fab-label {
-  position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
-  background: var(--card); border: 1px solid var(--brd); color: var(--text);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border-radius: 999px; padding: 5px 12px;
-  font: 500 12.5px var(--font-sans); white-space: nowrap;
-  opacity: 0; transition: opacity .2s ease .15s; pointer-events: none;
+.nav-bar-item.active md-icon { font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24; }
+.nav-label {
+  max-width: 100%;
+  font: 500 11px/16px var(--font-sans);
+  letter-spacing: .4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.fab-wrap.open .fab-btn:not(.main) .fab-label { opacity: 1; }
-.fab-btn.active::after {
-  content: ""; position: absolute; inset: -4px; border-radius: 50%;
-  border: 2px solid var(--a1);
-}
-.fab-scrim { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.38); border: none; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
 
-/* ---- fallback raw-list screens (until each tab agent lands) ---- */
-.raw-item { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font: 400 14px var(--font-sans); }
+/* ---- navigation rail (medium / expanded) ---- */
+.nav-rail {
+  display: none; position: fixed; left: 0; top: 0; bottom: 0; width: 80px; z-index: 45;
+  flex-direction: column; align-items: center;
+  padding: 20px 0 calc(20px + env(safe-area-inset-bottom));
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface-variant);
+  overflow-y: auto;
+}
+.rail-logo {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 56px; height: 56px; margin-bottom: 12px;
+  border: none; background: none; cursor: pointer; border-radius: 16px; padding: 0;
+}
+.rail-logo img { width: 40px; height: 40px; }
+.rail-wordmark { display: none; }
+.rail-tabs { display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center; }
+.rail-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 100%; border: none; background: none; color: inherit; cursor: pointer;
+  padding: 0 4px; font-family: var(--font-sans);
+}
+.rail-item .nav-indicator { width: 56px; }
+.rail-item.active { color: var(--md-sys-color-on-surface); }
+.rail-item.active .nav-indicator {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.rail-item.active md-icon { font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24; }
+.rail-label {
+  font: 500 12px/16px var(--font-sans);
+  max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---- fallback raw-list screens ---- */
+.raw-item { display: flex; gap: 10px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); font: 400 14px/20px var(--font-sans); }
 .raw-item:last-child { border-bottom: none; }
-.raw-item .k { color: var(--muted); font-size: 12.5px; flex: 0 0 auto; }
-.raw-item .flag { margin-left: auto; font-size: 11.5px; color: var(--muted); border: 1px solid var(--brd); border-radius: 999px; padding: 2px 8px; flex: 0 0 auto; }
-.raw-toggle { width: 100%; text-align: left; background: none; border: none; color: var(--text); cursor: pointer; }
-.raw-toggle .chev { margin-left: auto; color: var(--muted); font-size: 12px; flex: 0 0 auto; }
+.raw-item .k { color: var(--md-sys-color-on-surface-variant); font-size: 12px; flex: 0 0 auto; }
+.raw-item .flag { margin-left: auto; font-size: 11px; color: var(--md-sys-color-on-secondary-container); background: var(--md-sys-color-secondary-container); border: none; border-radius: var(--md-sys-shape-corner-small); padding: 4px 8px; flex: 0 0 auto; }
+.raw-toggle { width: 100%; text-align: left; background: none; border: none; color: var(--md-sys-color-on-surface); cursor: pointer; }
+.raw-toggle .chev { margin-left: auto; color: var(--md-sys-color-on-surface-variant); font-size: 12px; flex: 0 0 auto; }
 .raw-item .flag + .chev, .raw-item .flag ~ .flag { margin-left: 6px; }
-.raw-expand { border-bottom: 1px solid var(--line); }
+.raw-expand { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
 .raw-expand:last-child { border-bottom: none; }
 .raw-expand .raw-item { border-bottom: none; }
 .raw-detail { padding: 2px 0 12px; }
-.raw-kv { display: flex; gap: 10px; font: 400 13px var(--font-sans); padding: 3px 0; }
-.raw-kv .k { color: var(--muted); flex: 0 0 110px; font-size: 12.5px; }
+.raw-kv { display: flex; gap: 10px; font: 400 14px/20px var(--font-sans); padding: 4px 0; }
+.raw-kv .k { color: var(--md-sys-color-on-surface-variant); flex: 0 0 110px; font-size: 12px; }
 .raw-kv span:last-child { white-space: pre-wrap; }
-.seg { display: flex; gap: 8px; margin: 10px 0 4px; }
+.seg { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
 .seg .btn { width: auto; padding: 10px 16px; }
-
-/* ---- persistent logo, inline to the LEFT of the heading (mobile/tablet;
-   hidden on desktop where the nav-rail carries its own logo) ---- */
-.app-logo {
-  flex: 0 0 auto; width: 36px; height: 36px; padding: 3px;
-  border: none; background: none; cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.app-logo img { width: 30px; height: 30px; display: block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-
-/* ---- desktop navigation rail (shown >=1100px via the media query below) ---- */
-.nav-rail {
-  display: none; position: fixed; left: 0; top: 0; bottom: 0; width: 224px; z-index: 45;
-  flex-direction: column; padding: 22px 14px calc(22px + env(safe-area-inset-bottom));
-  background: var(--card); border-right: 1px solid var(--brd);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-}
-.rail-logo {
-  display: flex; align-items: center; gap: 11px; width: 100%;
-  border: none; background: none; color: var(--text); cursor: pointer;
-  padding: 4px 8px 18px; font-family: var(--font-sans);
-}
-.rail-logo img { width: 40px; height: 40px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.4)); }
-.rail-wordmark { font: 600 15.5px var(--font-sans); letter-spacing: .005em; white-space: nowrap; }
-.rail-tabs { display: flex; flex-direction: column; gap: 4px; }
-.rail-item {
-  display: flex; align-items: center; gap: 12px; width: 100%;
-  border: none; background: none; color: var(--text); cursor: pointer;
-  border-radius: 13px; padding: 11px 12px; font: 500 14.5px var(--font-sans); text-align: left;
-  transition: background .15s ease;
-}
-.rail-icon {
-  flex: 0 0 28px; width: 28px; text-align: center; font-size: 18px; line-height: 1;
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
-}
-.rail-item:hover { background: var(--field); }
-.rail-item.active { background: linear-gradient(135deg, var(--a1), var(--a2)); color: #fff; }
-
-/* ==== responsive (tablet ≥768px, desktop ≥1100px) — added by responsive agent ====
-   Mobile (<768px) is untouched: everything below sits behind min-width queries.
-   Trick: instead of a capped max-width column (which clips the aurora .body
-   background to a 560px strip on wide screens), the .body goes full-width and
-   the content column is carved out with computed side padding — the gradient
-   spans the whole viewport while text stays centered at 720px / 840px. */
 
 @media (min-width: 768px) {
   .screen .body {
-    padding-left: max(24px, calc((100% - 720px) / 2));
+    padding-left: max(104px, calc((100% - 720px) / 2));
     padding-right: max(24px, calc((100% - 720px) / 2));
+    padding-bottom: 40px;
   }
-  .screen h1 { font-size: 30px; margin: 8px 0 20px; }
-  .screen .sub { font-size: 14px; }
+  .top-app-bar h1 { font-size: 24px; line-height: 32px; }
+  .app-logo { display: none; }
+  .nav-rail { display: flex; }
+  .nav-bar { display: none; }
 }
 
 @media (min-width: 1100px) {
-  /* desktop: nav-rail replaces the floating logo + FAB; content clears the rail
-     (rail width 224px) but the aurora .body stays full-bleed behind it. */
   .screen .body {
-    padding-top: max(40px, env(safe-area-inset-top));
-    padding-left: max(256px, calc((100% - 840px) / 2));
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-left: max(112px, calc((100% - 840px) / 2));
     padding-right: max(32px, calc((100% - 840px) / 2));
   }
-  .screen h1 { font-size: 33px; margin: 10px 0 24px; }
+  .top-app-bar h1 { font-size: 28px; line-height: 36px; }
 
-  /* home fallback: hero + counts card side by side, footnote spans both */
-  .fb-home { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; align-items: start; }
+  .fb-home { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; align-items: start; }
   .fb-home > .sub { grid-column: 1 / -1; }
-
-  /* long fallback lists (bags): two columns of rows inside the one glass card */
   .fb-cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-content: start; }
-  /* row-major 2-col: the item with nothing below it in the other column also
-     drops its divider (matches .raw-expand:last-child) */
   .fb-cols > .raw-expand:nth-last-child(2) { border-bottom: none; }
-
-  .app-logo { display: none; }        /* rail carries the mark on desktop */
-  .nav-rail { display: flex; }
-  .fab-wrap, .fab-scrim { display: none; }  /* rail replaces the FAB */
 }
 
-/* pointer-device hover polish (desktop/laptop only — no effect on touch,
-   and no change to the FAB's mobile geometry: 74px spacing, goo blur 5) */
 @media (hover: hover) and (pointer: fine) {
-  .fab-btn::before {
-    content: ""; position: absolute; inset: 0; border-radius: 50%;
-    background: rgba(255, 255, 255, 0); transition: background .18s ease;
+  .btn:hover::before { opacity: .08; }
+  .btn:focus-visible { outline: 2px solid var(--md-sys-color-secondary); outline-offset: 2px; }
+  .nav-bar-item:hover .nav-indicator,
+  .rail-item:hover .nav-indicator {
+    background: color-mix(in srgb, var(--md-sys-color-on-surface-variant) 8%, transparent);
   }
-  .fab-btn:hover::before { background: rgba(255, 255, 255, .16); }
-  .fab-btn.main:hover .fab-plus { transform: scale(1.12); }
-  .fab-wrap.open .fab-btn.main:hover .fab-plus { transform: rotate(45deg) scale(1.12); }
-  .fab-wrap.open .fab-btn:not(.main):hover {
-    transform: translateY(calc(var(--i) * -74px - 74px)) scale(1.07);
+  .nav-bar-item.active:hover .nav-indicator,
+  .rail-item.active:hover .nav-indicator {
+    background: color-mix(in srgb, var(--md-sys-color-on-secondary-container) 8%, var(--md-sys-color-secondary-container));
   }
-  .btn { transition: filter .15s ease; }
-  .btn:hover { filter: brightness(1.08); }
-  .raw-toggle { transition: color .15s ease; }
-  .raw-toggle:hover .chev { color: var(--text); }
+  .app-logo:hover, .rail-logo:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+  .raw-toggle:hover .chev { color: var(--md-sys-color-on-surface); }
 }

@@ -1,6 +1,6 @@
 # <img src="Logo-bubble.png" width="40" alt="" align="top"> Sam Caffeinated
 
-Personal coffee brew tracker — a lightweight dark/light aurora PWA for iPhone + Mac. Log daily brews, rate them on 9 axes (with friends), track bags, borrow recipes, and see insights + a yearly "Coffee Wrapped."
+Personal coffee brew tracker — a lightweight Material Design 3 PWA for iPhone + Mac. Log daily brews, rate them on 9 axes (with friends), track bags, borrow recipes, and see insights + a yearly "Coffee Wrapped."
 
 **Live demo → [sharmishthabalwan.github.io/cassiopeia](https://sharmishthabalwan.github.io/cassiopeia/)** · seeded with my real brew journal · no backend, everything lives in your browser's IndexedDB
 
@@ -10,7 +10,7 @@ Built with [Claude Code](https://claude.com/claude-code) using a contracts-first
 
 ## Status
 
-Phase 1 (Foundation) complete: `db.ts` (idb-keyval), `radar.tsx`, `catalog.tsx`, `main.tsx` + hash router + liquid FAB, appearance wiring (dark/light, uniform/per-tab hue), and first-run import from `public/seed-data.json` (emitted by `scripts/convert_seed.py` from the workspace xlsx/csv). Tabs render Foundation fallback raw-list screens until each tab agent lands its default export (see CONTRACTS.md §Navigation). Next: (2a Bags ∥ 2b Brews).
+Phase 1 (Foundation) complete: `db.ts` (idb-keyval), `radar.tsx`, `catalog.tsx`, `main.tsx` + hash router + Material 3 navigation, appearance wiring (dark/light, uniform/per-tab dynamic color), and first-run import from `public/seed-data.json` (emitted by `scripts/convert_seed.py` from the workspace xlsx/csv). Tabs render Foundation fallback raw-list screens until each tab agent lands its default export (see CONTRACTS.md §Navigation). Next: (2a Bags ∥ 2b Brews).
 
 ## Getting started
 
@@ -23,7 +23,7 @@ The app boots to a placeholder until Foundation is built.
 
 ## Stack
 
-Vite + Preact + TypeScript · plain CSS tokens (`src/theme.css`) · IndexedDB (`idb-keyval`) local-first · Supabase added later behind `src/lib/db.ts` · hand-rolled SVG radar. No CSS/chart frameworks. Sized for 1–2 brews/day (small-data).
+Vite + Preact + TypeScript · Material 3 tokens (`src/theme.css`) + Material Web icons/typescale · IndexedDB (`idb-keyval`) local-first · Supabase added later behind `src/lib/db.ts` · hand-rolled SVG radar. No CSS/chart frameworks. Sized for 1–2 brews/day (small-data).
 
 ## Layout
 
@@ -33,8 +33,10 @@ index.html
 src/
   main.tsx            entry (Foundation)
   router.ts           hash router (Foundation)
-  theme.css           design tokens — aurora, palette, per-tab hues  [contract-owned]
-  nav.config.ts       7-tab registry + FAB order                     [contract-owned]
+  theme.css           design tokens — Material 3 color, type, shape  [contract-owned]
+  nav.config.ts       7-tab registry + Material Symbol names         [contract-owned]
+  material.ts         Material Web + Roboto / Material Symbols       [contract-owned]
+  lib/md3.ts          dynamic color from seed hue                    [contract-owned]
   lib/
     types.ts          data model + rating axes (with direction)      [contract-owned]
     db.ts             the ONLY data path (local-first → Supabase)     [contract-owned]

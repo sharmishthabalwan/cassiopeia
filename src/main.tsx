@@ -1,6 +1,6 @@
 // Sam Caffeinated — app entry (Foundation).
-// Boots the router, applies saved Appearance (mode + hue), runs first-run
-// import, renders the current tab + the liquid FAB.
+// Boots the router, applies Material 3 appearance (mode + dynamic color seed),
+// runs first-run import, renders the current tab + compact nav bar / rail.
 //
 // Tab mounting: each tabs/<id>/index.tsx is lazy-loaded; if it default-exports
 // a component it is rendered, otherwise the Foundation fallback screen shows a
@@ -9,37 +9,25 @@
 
 import { render, type ComponentType } from "preact";
 import { useEffect, useState } from "preact/hooks";
+import "./material";
 import "./theme.css";
 import "./app.css";
 import { TABS } from "./nav.config";
 import { currentTab, go, onRouteChange } from "./router";
 import { db, APPEARANCE_EVENT } from "./lib/db";
-import { APP_NAME, HOME_HUE, type Appearance } from "./lib/types";
+import { APP_NAME, type Appearance } from "./lib/types";
+import { applyMd3Theme } from "./lib/md3";
 import { seedFromFiles } from "./lib/import";
 import { Fallback } from "./fallback";
 
 // ---- appearance -----------------------------------------------------------
-
-function applyAppearance(a: Appearance) {
-  const html = document.documentElement;
-  html.dataset.mode = a.mode;
-  html.style.colorScheme = a.mode;
-  const theme = document.querySelector('meta[name="theme-color"]');
-  if (theme) theme.setAttribute("content", a.mode === "light" ? "#F5F1EB" : "#08070A");
-  html.classList.toggle("uniform-hue", a.hueMode === "uniform");
-  if (a.hueMode === "uniform") {
-    const u = a.uniform ?? HOME_HUE;
-    html.style.setProperty("--u1", u.a1);
-    html.style.setProperty("--u2", u.a2);
-  }
-}
 
 function useAppearance(initial: Appearance): Appearance {
   const [appearance, setAppearance] = useState(initial);
   useEffect(() => {
     const handler = (e: Event) => {
       const a = (e as CustomEvent<Appearance>).detail;
-      applyAppearance(a);
+      applyMd3Theme(a, currentTab());
       setAppearance(a);
     };
     addEventListener(APPEARANCE_EVENT, handler);
@@ -65,78 +53,57 @@ async function loadTab(id: string): Promise<ComponentType> {
   return () => <Fallback tab={id} />;
 }
 
-// ---- liquid FAB -----------------------------------------------------------
-
-function GooFilter() {
-  return (
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-      <defs>
-        <filter id="sam-caffeinated-goo">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-        </filter>
-      </defs>
-    </svg>
-  );
-}
-
-function Fab({ current }: { current: string }) {
-  const [open, setOpen] = useState(false);
-  const tabs = TABS.filter((t) => t.enabled);
-  const n = tabs.length;
-  // nav.config order = top→bottom of the expanded stack; --i counts from the
-  // main button upward, so the first tab gets the largest lift.
-  const lift = (idx: number) => `--i:${n - 1 - idx}`;
-  const pick = (id: string) => { go(id); setOpen(false); };
-  return (
-    <>
-      {open && <button class="fab-scrim" aria-label="Close menu" onClick={() => setOpen(false)} />}
-      <div class={`fab-wrap${open ? " open" : ""}`}>
-        <div class="fab-goo">
-          {tabs.map((t, i) => <div class={`fab-blob hue-${t.id}`} style={lift(i)} />)}
-          <div class="fab-blob main" />
-        </div>
-        <div class="fab-ui">
-          {tabs.map((t, i) => (
-            <button
-              key={t.id}
-              class={`fab-btn${t.id === current ? " active" : ""} hue-${t.id}`}
-              style={lift(i)}
-              tabIndex={open ? 0 : -1}
-              aria-hidden={!open}
-              onClick={() => pick(t.id)}
-            >
-              {t.icon}
-              <span class="fab-label">{t.label}</span>
-            </button>
-          ))}
-          <button class="fab-btn main" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)}>
-            <span class="fab-plus">+</span>
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
-
-// ---- persistent logo (always) + desktop nav-rail --------------------------
+// ---- persistent logo + Material 3 navigation ------------------------------
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}icon-192.png`;
 
 /** App mark beside the screen heading — always a one-tap route Home.
- *  Sits inline to the LEFT of <h1> on mobile/tablet; hidden on desktop
- *  (the nav-rail carries its own logo there). */
+ *  Shown in the compact top app bar; hidden once the nav rail takes over. */
 function AppLogo() {
   return (
     <button class="app-logo" aria-label={`${APP_NAME} — home`} onClick={() => go("home")}>
-      <img src={LOGO_SRC} alt="" width="30" height="30" />
+      <img src={LOGO_SRC} alt="" width="32" height="32" />
     </button>
   );
 }
 
-/** Desktop-only left navigation rail (>=1100px). Reads nav.config like the FAB;
- *  the FAB is hidden at that width. Logo on top routes Home. */
+function NavItem({
+  id, label, symbol, current, className,
+}: { id: string; label: string; symbol: string; current: string; className: string }) {
+  const active = id === current;
+  return (
+    <button
+      class={`${className}${active ? " active" : ""}`}
+      aria-current={active ? "page" : undefined}
+      onClick={() => go(id)}
+    >
+      <span class="nav-indicator">
+        <md-icon>{symbol}</md-icon>
+      </span>
+      <span class={className === "rail-item" ? "rail-label" : "nav-label"}>{label}</span>
+    </button>
+  );
+}
+
+/** Compact bottom navigation bar. Hidden from 768px up (rail takes over). */
+function NavBar({ current }: { current: string }) {
+  return (
+    <nav class="nav-bar" aria-label="Primary">
+      {TABS.filter((t) => t.enabled).map((t) => (
+        <NavItem
+          key={t.id}
+          id={t.id}
+          label={t.label}
+          symbol={t.symbol}
+          current={current}
+          className="nav-bar-item"
+        />
+      ))}
+    </nav>
+  );
+}
+
+/** Medium/expanded navigation rail. Reads nav.config like the bar. */
 function NavRail({ current }: { current: string }) {
   return (
     <nav class="nav-rail" aria-label="Primary">
@@ -146,15 +113,14 @@ function NavRail({ current }: { current: string }) {
       </button>
       <div class="rail-tabs">
         {TABS.filter((t) => t.enabled).map((t) => (
-          <button
+          <NavItem
             key={t.id}
-            class={`rail-item hue-${t.id}${t.id === current ? " active" : ""}`}
-            aria-current={t.id === current ? "page" : undefined}
-            onClick={() => go(t.id)}
-          >
-            <span class="rail-icon">{t.icon}</span>
-            <span class="rail-label">{t.label}</span>
-          </button>
+            id={t.id}
+            label={t.label}
+            symbol={t.symbol}
+            current={current}
+            className="rail-item"
+          />
         ))}
       </div>
     </nav>
@@ -170,6 +136,9 @@ function App({ initialAppearance }: { initialAppearance: Appearance }) {
 
   useEffect(() => onRouteChange(() => setTab(currentTab())), []);
   useEffect(() => {
+    applyMd3Theme(appearance, tab);
+  }, [appearance, tab]);
+  useEffect(() => {
     let live = true;
     setScreen(null);
     loadTab(tab).then((C) => { if (live) setScreen(() => C); });
@@ -177,29 +146,25 @@ function App({ initialAppearance }: { initialAppearance: Appearance }) {
   }, [tab]);
 
   const def = TABS.find((t) => t.id === tab) ?? TABS[0];
-  // Custom per-tab hue pairs (Appearance.perTab) override the theme defaults.
-  const custom = appearance.hueMode === "perTab" ? appearance.perTab?.[tab] : undefined;
-  const hueStyle = custom ? `--a1:${custom.a1};--a2:${custom.a2}` : undefined;
 
   return (
-    <div class={`screen hue-${tab}`} style={hueStyle}>
+    <div class={`screen hue-${tab}`}>
       <NavRail current={tab} />
       <div class="body">
-        <div class="screen-head">
+        <header class="top-app-bar">
           <AppLogo />
           <h1>{def.label}</h1>
-        </div>
+        </header>
         {Screen && <Screen />}
       </div>
-      <GooFilter />
-      <Fab current={tab} />
+      <NavBar current={tab} />
     </div>
   );
 }
 
 async function boot() {
   const appearance = await db.getAppearance();
-  applyAppearance(appearance);
+  applyMd3Theme(appearance, currentTab());
   try {
     await seedFromFiles();
   } catch (err) {

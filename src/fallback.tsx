@@ -86,13 +86,13 @@ function HomeFallback() {
   return (
     <div class="fb-home">
       <div class="glass hero">
-        <div style="font:600 18px var(--font-sans)">Foundation is up ☕</div>
-        <div style="font:400 13px var(--font-sans);opacity:.85;margin:4px 0 12px">
+        <div class="md-typescale-title-medium">Foundation is up</div>
+        <div class="md-typescale-body-medium" style="margin:4px 0 12px">
           Data imported and readable through db.ts. Tab agents land next.
         </div>
         <div class="seg" style="margin:0">
-          <button class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" onClick={() => go("brews")}>☕ Log a brew</button>
-          <button class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" onClick={() => go("ideas")}>✦ Pick a brew idea</button>
+          <button class="btn" onClick={() => go("brews")}>Log a brew</button>
+          <button class="btn ghost" onClick={() => go("ideas")}>Pick a brew idea</button>
         </div>
       </div>
       <div class="glass">
