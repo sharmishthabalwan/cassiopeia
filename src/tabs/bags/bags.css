@@ -1,0 +1,142 @@
+/* Bags tab — styles scoped under .hue-bags. Extends theme primitives
+   (.glass/.btn); tokens only, no hardcoded colours. */
+
+.hue-bags .bag-toolbar { margin-bottom: 12px; }
+.hue-bags .bag-add-btn {
+  justify-content: center; font-weight: 600; gap: 8px;
+  padding: 10px 16px; font-size: 13.5px;
+}
+.hue-bags .bag-plus {
+  font: 400 22px/1 var(--font-sans); flex: 0 0 auto;
+}
+
+.hue-bags .bag-chips {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 12px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.hue-bags .bag-chips::-webkit-scrollbar { display: none; }
+.hue-bags .bag-chip {
+  flex: 0 0 auto; border: 1px solid var(--brd); background: var(--card);
+  color: var(--text); border-radius: 999px; padding: 8px 14px;
+  font: 500 13px var(--font-sans); cursor: pointer;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.hue-bags .bag-chip.active {
+  background: linear-gradient(140deg, var(--a1), var(--a2));
+  border-color: transparent; color: #fff;
+}
+
+.hue-bags .bag-list { padding-top: 6px; padding-bottom: 6px; }
+.hue-bags .bag-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 12px 0;
+  border: none; border-bottom: 1px solid var(--line);
+  background: none; color: var(--text);
+  font: 400 14.5px var(--font-sans); text-align: left; cursor: pointer;
+}
+.hue-bags .bag-row:last-child { border-bottom: none; }
+.hue-bags .bag-row.finished { opacity: .58; }
+.hue-bags .bag-thumb-wrap {
+  flex: 0 0 40px; width: 40px; height: 40px; position: relative;
+}
+.hue-bags .bag-thumb {
+  width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
+  display: block; background: var(--field);
+}
+.hue-bags .bag-thumb-empty {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--a1), var(--a2));
+  color: #fff; font: 600 15px var(--font-sans);
+}
+.hue-bags .bag-row-meta {
+  flex: 1; min-width: 0;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap;
+}
+.hue-bags .bag-row-name {
+  display: inline-flex; align-items: center; gap: 8px;
+  flex: 1 1 auto; min-width: 0;
+  font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hue-bags .bag-dot {
+  flex: 0 0 8px; width: 8px; height: 8px; border-radius: 50%;
+}
+.hue-bags .bag-dot-lg { width: 12px; height: 12px; flex-basis: 12px; }
+.hue-bags .bag-row-roaster {
+  color: var(--muted); font-size: 12.5px; flex: 0 0 auto;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40%;
+}
+.hue-bags .chip {
+  flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
+  border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
+  white-space: nowrap;
+}
+.hue-bags .chip.peak-peak { color: var(--text); border-color: var(--a1); }
+.hue-bags .chip.peak-resting { opacity: .85; }
+.hue-bags .chip.peak-past { opacity: .7; }
+
+.hue-bags .bag-back { width: auto; margin-bottom: 14px; padding: 9px 14px; }
+.hue-bags .bag-hero-photo {
+  width: 100%; max-height: 220px; object-fit: cover;
+  border-radius: 14px; margin-bottom: 12px; display: block;
+}
+.hue-bags .bag-hero-name {
+  display: flex; align-items: center; gap: 10px;
+  font: 600 20px var(--font-sans);
+}
+.hue-bags .bag-hero-sub { font: 400 13.5px var(--font-sans); opacity: .85; margin-top: 2px; }
+.hue-bags .bag-hero-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hue-bags .hero-chip { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.14); }
+
+.hue-bags .f-section {
+  display: flex; align-items: center; gap: 8px;
+  font: 600 13px var(--font-sans); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin: 2px 0 10px;
+}
+.hue-bags .f-field { display: block; margin-bottom: 10px; min-width: 0; }
+.hue-bags .f-label { display: block; color: var(--muted); font: 500 12px var(--font-sans); margin-bottom: 5px; }
+.hue-bags .f-hint { font-weight: 400; opacity: .8; }
+.hue-bags .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hue-bags .f-input {
+  width: 100%; display: block;
+  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  color: var(--text); padding: 10px 12px; font: 400 14px var(--font-sans);
+  -webkit-appearance: none; appearance: none;
+}
+.hue-bags textarea.f-input { resize: vertical; line-height: 1.45; min-height: 76px; }
+.hue-bags .f-input:focus { outline: none; border-color: var(--a1); }
+
+.hue-bags .bag-kv { padding: 8px 0 2px; }
+.hue-bags .bag-kv-k {
+  color: var(--muted); font: 500 11.5px var(--font-sans);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px;
+}
+.hue-bags .bag-kv-v { font: 400 14px var(--font-sans); white-space: pre-wrap; line-height: 1.45; }
+
+.hue-bags .bag-toggles .btn { width: auto; flex: 1; justify-content: center; padding: 11px 12px; }
+.hue-bags .bag-frozen-fields {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
+}
+.hue-bags .detail-actions { display: flex; gap: 8px; margin: 2px 0 12px; }
+.hue-bags .detail-actions .btn { width: auto; flex: 1; justify-content: center; padding: 11px 14px; }
+
+.hue-bags .bag-color-row { display: flex; align-items: center; gap: 10px; }
+.hue-bags .bag-color-swatch {
+  flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 1px solid var(--brd);
+  border-radius: 12px; background: var(--field); cursor: pointer;
+}
+.hue-bags .bag-form-preview {
+  width: 100%; max-height: 180px; object-fit: cover;
+  border-radius: 14px; margin-bottom: 10px; display: block;
+}
+.hue-bags .bag-photo-btn { justify-content: center; cursor: pointer; }
+.hue-bags .bag-file { display: none; }
+.hue-bags .bag-save-btn { justify-content: center; font-weight: 600; margin-bottom: 14px; }
+.hue-bags .bag-save-btn:disabled { opacity: .5; cursor: default; }
+
+@media (hover: hover) and (pointer: fine) {
+  .hue-bags .bag-chip { transition: filter .15s ease; }
+  .hue-bags .bag-chip:hover { filter: brightness(1.12); }
+  .hue-bags .bag-row { transition: color .15s ease; }
+  .hue-bags .bag-row:hover { filter: brightness(1.04); }
+}
