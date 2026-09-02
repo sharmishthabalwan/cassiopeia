@@ -104,6 +104,8 @@
 .raw-item .k { color: var(--md-sys-color-on-surface-variant); font-size: 12px; flex: 0 0 auto; }
 .raw-item .flag { margin-left: auto; font-size: 11px; color: var(--md-sys-color-on-secondary-container); background: var(--md-sys-color-secondary-container); border: none; border-radius: var(--md-sys-shape-corner-small); padding: 4px 8px; flex: 0 0 auto; }
 .raw-toggle { width: 100%; text-align: left; background: none; border: none; color: var(--md-sys-color-on-surface); cursor: pointer; }
+.raw-item.raw-toggle { border-bottom: 1px solid color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent); }
+.raw-item.raw-toggle:last-child { border-bottom: none; }
 .raw-toggle .chev { margin-left: auto; color: var(--md-sys-color-on-surface-variant); font-size: 12px; flex: 0 0 auto; }
 .raw-item .flag + .chev, .raw-item .flag ~ .flag { margin-left: 6px; }
 .raw-expand { border-bottom: 1px solid color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent); }
