@@ -15,8 +15,8 @@ export interface CatalogProps {
 const CSS = `
 .catalog-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .catalog-chips::-webkit-scrollbar{display:none}
-.catalog-chip{flex:0 0 auto;border:1px solid var(--md-sys-color-outline);background:transparent;color:var(--md-sys-color-on-surface-variant);border-radius:var(--md-sys-shape-corner-small);padding:6px 16px;font:500 14px/20px var(--font-sans);cursor:pointer}
-.catalog-chip.active{background:var(--md-sys-color-secondary-container);border-color:transparent;color:var(--md-sys-color-on-secondary-container)}
+.catalog-chip{flex:0 0 auto;border:none;background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface-variant);border-radius:var(--md-sys-shape-corner-small);padding:6px 16px;font:500 14px/20px var(--font-sans);cursor:pointer}
+.catalog-chip.active{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
 .catalog-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:none;color:var(--md-sys-color-on-surface);padding:0;cursor:pointer;font-family:var(--font-sans)}
 .catalog-avatar{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center;font:500 16px var(--font-sans);overflow:hidden}
 .catalog-avatar img{width:100%;height:100%;object-fit:cover}
@@ -31,7 +31,7 @@ const CSS = `
   .catalog-chips,.catalog-empty{grid-column:1/-1}
 }
 @media (hover:hover) and (pointer:fine){
-  .catalog-chip:hover{background:color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent)}
+  .catalog-chip:hover{background:color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest))}
   .catalog-chip.active:hover{background:color-mix(in srgb, var(--md-sys-color-on-secondary-container) 8%, var(--md-sys-color-secondary-container))}
   .catalog-save:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
 }

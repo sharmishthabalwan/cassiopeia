@@ -22,7 +22,7 @@
 .hue-brews .brew-row {
   display: flex; align-items: baseline; gap: 10px;
   width: 100%; padding: 12px 0;
-  border: none; border-bottom: 1px solid var(--line);
+  border: none; border-bottom: 1px solid color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent);
   background: none; color: var(--text);
   font: 400 14.5px var(--font-sans); text-align: left; cursor: pointer;
 }
@@ -34,7 +34,8 @@
 }
 .hue-brews .chip {
   flex: 0 0 auto; font-size: 11.5px; color: var(--muted);
-  border: 1px solid var(--brd); border-radius: 999px; padding: 2px 9px;
+  border: none; border-radius: 999px; padding: 2px 9px;
+  background: var(--md-sys-color-surface-container-highest);
   white-space: nowrap;
 }
 
@@ -43,7 +44,11 @@
 .hue-brews .brew-hero-name { font: 600 20px var(--font-sans); }
 .hue-brews .brew-hero-sub { font: 400 13.5px var(--font-sans); opacity: .85; margin-top: 2px; }
 .hue-brews .brew-hero-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.hue-brews .hero-chip { color: var(--md-sys-color-on-primary-container); border-color: color-mix(in srgb, var(--md-sys-color-on-primary-container) 35%, transparent); background: color-mix(in srgb, var(--md-sys-color-on-primary-container) 14%, transparent); }
+.hue-brews .hero-chip {
+  color: var(--md-sys-color-on-primary-container);
+  border: none;
+  background: color-mix(in srgb, var(--md-sys-color-on-primary-container) 14%, transparent);
+}
 .hue-brews .stat-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 8px; margin-bottom: 6px;
@@ -72,15 +77,21 @@
 .hue-brews .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .hue-brews .f-input {
   width: 100%; display: block;
-  background: var(--md-sys-color-surface-container-highest); border: 1px solid var(--md-sys-color-outline);
-  border-radius: var(--md-sys-shape-corner-extra-small);
+  background: var(--md-sys-color-surface-container-highest);
+  border: none;
+  border-bottom: 1px solid var(--md-sys-color-on-surface-variant);
+  border-radius: var(--md-sys-shape-corner-extra-small) var(--md-sys-shape-corner-extra-small) 0 0;
   color: var(--text); padding: 12px 16px; font: 400 16px/24px var(--font-sans);
   -webkit-appearance: none; appearance: none;
 }
 .hue-brews textarea.f-input { resize: vertical; line-height: 1.45; min-height: 76px; }
 .hue-brews textarea.pour-input { min-height: 150px; }
 .hue-brews .note-input { padding: 13px 14px; font-size: 15px; }
-.hue-brews .f-input:focus { outline: 2px solid var(--md-sys-color-primary); outline-offset: 0; border-color: var(--md-sys-color-primary); }
+.hue-brews .f-input:focus,
+.hue-brews .f-input:focus-visible {
+  outline: none;
+  border-bottom: 2px solid var(--md-sys-color-primary);
+}
 .hue-brews select.f-input option { color: initial; }
 .hue-brews .brew-log-btn:disabled { opacity: .5; cursor: default; }
 
@@ -113,7 +124,7 @@
   background: var(--md-sys-color-primary);
 }
 .hue-brews .note-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.hue-brews .note-chip { background: var(--md-sys-color-surface-container-highest); color: var(--text); cursor: pointer; padding: 6px 12px; font-size: 12px; border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--md-sys-shape-corner-small); }
+.hue-brews .note-chip { background: var(--md-sys-color-surface-container-highest); color: var(--text); cursor: pointer; padding: 6px 12px; font-size: 12px; border: none; border-radius: var(--md-sys-shape-corner-small); }
 
 /* ---- recipe accordion (detail) ---- */
 .hue-brews .brew-acc { padding: 0; overflow: hidden; }
@@ -126,7 +137,7 @@
 .hue-brews .brew-acc-sub { font: 400 12.5px var(--font-sans); color: var(--muted); opacity: .8; }
 .hue-brews .brew-acc-chev { margin-left: auto; color: var(--muted); font-size: 13px; }
 .hue-brews .brew-acc-body { padding: 0 15px 15px; }
-.hue-brews .brew-idea-block { border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 4px; }
+.hue-brews .brew-idea-block { border-bottom: 1px solid color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent); padding-bottom: 10px; margin-bottom: 4px; }
 .hue-brews .brew-idea-name { font: 500 13.5px var(--font-sans); color: var(--a1); margin-bottom: 10px; }
 
 /* ---- detail action row ---- */
@@ -137,7 +148,7 @@
 .hue-brews .log-file-input { display: none; }
 .hue-brews .log-drop {
   display: block; width: 100%;
-  border: 1px dashed var(--md-sys-color-outline);
+  border: 1px dashed var(--md-sys-color-outline-variant);
   border-radius: var(--md-sys-shape-corner-medium);
   padding: 26px 16px; text-align: center; cursor: pointer;
   background: var(--md-sys-color-surface-container-highest); color: var(--text);
@@ -162,6 +173,7 @@
 .hue-brews .log-error { color: var(--text); font: 400 13.5px var(--font-sans); }
 .hue-brews .log-source {
   max-height: 180px; overflow: auto;
-  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  background: var(--md-sys-color-surface-container-highest); border: none;
+  border-radius: var(--md-sys-shape-corner-medium);
   padding: 10px 12px; font-size: 13px;
 }
