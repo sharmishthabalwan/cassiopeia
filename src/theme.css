@@ -1,7 +1,7 @@
 /* Sam Caffeinated — Material Design 3 tokens (CONTRACT-OWNED).
    Color roles are --md-sys-color-* generated at runtime from brand key colors
-   (maroon / olive / coral / cream / blush). Dark + light via <html data-mode>.
-   Per-tab hue swaps only primary; Uniform uses the maroon brand. Legacy aliases
+   (mauve / olive / sage / cream / peach). Dark + light via <html data-mode>.
+   Per-tab hue swaps only primary; Uniform uses the mauve brand. Legacy aliases
    (--base/--text/--card/--a1/…) map onto MD3 so tabs keep working. */
 
 @font-face {
@@ -13,8 +13,8 @@
 }
 
 :root {
-  --md-ref-typeface-brand: "Roboto", system-ui, sans-serif;
-  --md-ref-typeface-plain: "Roboto", system-ui, sans-serif;
+  --md-ref-typeface-brand: "Roboto Serif", "Roboto", Georgia, serif;
+  --md-ref-typeface-plain: "Roboto Serif", "Roboto", Georgia, serif;
   --md-ref-typeface-weight-regular: 400;
   --md-ref-typeface-weight-medium: 500;
   --md-ref-typeface-weight-bold: 700;

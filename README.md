@@ -35,7 +35,7 @@ src/
   router.ts           hash router (Foundation)
   theme.css           design tokens — Material 3 color, type, shape  [contract-owned]
   nav.config.ts       7-tab registry + Material Symbol names         [contract-owned]
-  material.ts         Material Web + Roboto / Material Symbols       [contract-owned]
+  material.ts         Material Web + Roboto Serif / Material Symbols [contract-owned]
   lib/md3.ts          dynamic color from seed hue                    [contract-owned]
   lib/
     types.ts          data model + rating axes (with direction)      [contract-owned]
