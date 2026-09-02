@@ -51,11 +51,11 @@ Tabs import `{ db }` from `src/lib/db.ts` and use its async methods (see the `DB
 
 ## Design tokens & theme (`src/theme.css`)
 
-Material Design 3. Dark + light via `<html data-mode>`. Color roles are `--md-sys-color-*`, generated at runtime from a seed hue (`src/lib/md3.ts`). **Per-tab hue** regenerates the scheme from that tab's seed; Uniform uses one seed for every tab. Legacy aliases (`--base`, `--text`, `--card`, `--a1`, `--a2`, …) map onto MD3 so existing tab CSS keeps working — use the CSS variables, never hardcode hex in components.
+Material Design 3. Dark + light via `<html data-mode>`. Color roles are `--md-sys-color-*`, generated at runtime from brand key colors in `BRAND` (`src/lib/md3.ts`): maroon primary `#5A333E`, olive secondary `#898F5E`, coral tertiary `#DF9281`, cream neutral `#C9C19C`, blush neutral-variant `#C7ABA7`. **Per-tab hue** swaps only the primary palette; Uniform uses maroon. Legacy aliases (`--base`, `--text`, `--card`, `--a1`, `--a2`, …) map onto MD3 so existing tab CSS keeps working — use the CSS variables, never hardcode hex in components.
 
 - Shared primitives already in `theme.css`: `.glass` (filled card), `.glass.hero` (primary-container), `.btn` (filled), `.btn.ghost` (outlined). Tabs extend, never redefine.
-- **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform seeds from `Appearance.uniform.a1` (default `HOME_HUE`); per-tab seeds from `Appearance.perTab[tab].a1` or the tab default in `TAB_SEEDS`. Persist locally.
-- Default mode = **light**. Default hue = **uniform** home pink (`HOME_HUE` `#B0475F`).
+- **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform seeds primary from `Appearance.uniform.a1` (default `BRAND.primary`); per-tab seeds primary from `Appearance.perTab[tab].a1` or `TAB_SEEDS`. Secondary, tertiary, and neutrals stay on the brand keys. Persist locally.
+- Default mode = **light**. Default hue = **uniform** maroon (`HOME_HUE` / `BRAND.primary` `#5A333E`).
 - Nav icons are Material Symbols (`symbol` in `nav.config.ts`), shown in the compact bottom bar and the medium/expanded navigation rail.
 
 ---

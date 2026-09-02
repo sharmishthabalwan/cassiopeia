@@ -128,7 +128,16 @@ export interface Appearance {
   perTab?: Record<string, { a1: string; a2: string }>;
 }
 
-/** Home-tab ruby/pink — default uniform accent for every tab. */
-export const HOME_HUE = { a1: "#B0475F", a2: "#5A1E32" } as const;
+/** Brand key colors — Material 3 palettes are built from these. */
+export const BRAND = {
+  primary: "#5A333E",        // maroon — buttons / FABs
+  secondary: "#898F5E",      // olive — chips / quieter actions
+  tertiary: "#DF9281",       // coral — warm accent
+  neutral: "#C9C19C",        // cream — background / surface
+  neutralVariant: "#C7ABA7", // blush — outline / surface-variant
+} as const;
+
+/** Default uniform accent (primary maroon + a darker companion). */
+export const HOME_HUE = { a1: BRAND.primary, a2: "#3F242C" } as const;
 
 export const APP_NAME = "Sam Caffeinated";

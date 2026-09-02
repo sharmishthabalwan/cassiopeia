@@ -1,19 +1,23 @@
-// Material 3 dynamic color — seed palettes from the brand / per-tab hues.
-// Tokens are applied as --md-sys-color-* on <html> (Material Web theming).
+// Material 3 dynamic color from the brand key colors (maroon / olive / coral /
+// cream / blush). Per-tab hue only swaps the primary palette; secondary,
+// tertiary, and neutrals stay on-brand.
 
 import {
   argbFromHex,
   hexFromArgb,
+  Contrast,
+  DynamicScheme,
   Hct,
   MaterialDynamicColors,
-  SchemeTonalSpot,
+  TonalPalette,
+  Variant,
   type DynamicColor,
 } from "@material/material-color-utilities";
-import { HOME_HUE, type Appearance } from "./types";
+import { BRAND, HOME_HUE, type Appearance } from "./types";
 
-/** Default seed per tab (matches the previous aurora hue pairs' --a1). */
+/** Default seed per tab (used only for primary when Appearance.hueMode = perTab). */
 export const TAB_SEEDS: Record<string, string> = {
-  home: HOME_HUE.a1,
+  home: BRAND.primary,
   brews: "#A66E4F",
   bags: "#A3A63A",
   ideas: "#C05C90",
@@ -62,23 +66,65 @@ const TOKEN_ROLES: Array<[string, DynamicColor]> = [
   ["surface-container-highest", MaterialDynamicColors.surfaceContainerHighest],
 ];
 
+const palettes = {
+  secondary: TonalPalette.fromInt(argbFromHex(BRAND.secondary)),
+  tertiary: TonalPalette.fromInt(argbFromHex(BRAND.tertiary)),
+  neutral: TonalPalette.fromInt(argbFromHex(BRAND.neutral)),
+  neutralVariant: TonalPalette.fromInt(argbFromHex(BRAND.neutralVariant)),
+};
+
+function parseHex(hex: string): string | undefined {
+  try {
+    argbFromHex(hex);
+    return hex;
+  } catch {
+    return undefined;
+  }
+}
+
 export function seedFor(appearance: Appearance, tabId: string): string {
   if (appearance.hueMode === "uniform") {
-    return appearance.uniform?.a1 ?? HOME_HUE.a1;
+    return parseHex(appearance.uniform?.a1 ?? "") ?? HOME_HUE.a1;
   }
-  return appearance.perTab?.[tabId]?.a1 ?? TAB_SEEDS[tabId] ?? HOME_HUE.a1;
+  return parseHex(appearance.perTab?.[tabId]?.a1 ?? "") ?? TAB_SEEDS[tabId] ?? HOME_HUE.a1;
+}
+
+function contrastingOn(hex: string): string {
+  const tone = Hct.fromInt(argbFromHex(hex)).tone;
+  return Contrast.ratioOfTones(tone, 100) >= Contrast.ratioOfTones(tone, 10)
+    ? "#ffffff"
+    : hexFromArgb(palettes.neutral.tone(10));
+}
+
+function pinRole(target: HTMLElement, role: string, hex: string) {
+  target.style.setProperty(`--md-sys-color-${role}`, hex);
+  target.style.setProperty(`--md-sys-color-on-${role}`, contrastingOn(hex));
 }
 
 export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLElement = document.documentElement) {
-  let argb: number;
-  try {
-    argb = argbFromHex(seedHex);
-  } catch {
-    argb = argbFromHex(HOME_HUE.a1);
-  }
-  const scheme = new SchemeTonalSpot(Hct.fromInt(argb), dark, 0);
+  const primaryHex = parseHex(seedHex) ?? BRAND.primary;
+  const scheme = new DynamicScheme({
+    sourceColorHct: Hct.fromInt(argbFromHex(primaryHex)),
+    variant: Variant.FIDELITY,
+    contrastLevel: 0,
+    isDark: dark,
+    specVersion: "2021",
+    primaryPalette: TonalPalette.fromInt(argbFromHex(primaryHex)),
+    secondaryPalette: palettes.secondary,
+    tertiaryPalette: palettes.tertiary,
+    neutralPalette: palettes.neutral,
+    neutralVariantPalette: palettes.neutralVariant,
+  });
   for (const [token, color] of TOKEN_ROLES) {
     target.style.setProperty(`--md-sys-color-${token}`, hexFromArgb(color.getArgb(scheme)));
+  }
+  // Light mode: keep the brand keys on the roles they were chosen for
+  // (MCU would otherwise pick a different tone from each palette).
+  if (!dark) {
+    pinRole(target, "primary", primaryHex);
+    pinRole(target, "secondary", BRAND.secondary);
+    pinRole(target, "tertiary", BRAND.tertiary);
+    target.style.setProperty("--md-sys-color-surface-tint", primaryHex);
   }
 }
 
@@ -92,6 +138,6 @@ export function applyMd3Theme(appearance: Appearance, tabId: string) {
   const theme = document.querySelector('meta[name="theme-color"]');
   if (theme) {
     const surface = getComputedStyle(html).getPropertyValue("--md-sys-color-surface").trim();
-    theme.setAttribute("content", surface || (appearance.mode === "light" ? "#FFFBFF" : "#141218"));
+    theme.setAttribute("content", surface || (appearance.mode === "light" ? BRAND.neutral : "#14120e"));
   }
 }

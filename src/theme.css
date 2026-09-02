@@ -1,8 +1,8 @@
 /* Sam Caffeinated — Material Design 3 tokens (CONTRACT-OWNED).
-   Color roles are --md-sys-color-* (generated at runtime from the seed hue).
-   Dark + light via <html data-mode>. Per-tab hue regenerates the whole scheme
-   from that tab's seed; Uniform uses one seed (default home pink).
-   Legacy aliases (--base/--text/--card/--a1/…) map onto MD3 so tabs keep working. */
+   Color roles are --md-sys-color-* generated at runtime from brand key colors
+   (maroon / olive / coral / cream / blush). Dark + light via <html data-mode>.
+   Per-tab hue swaps only primary; Uniform uses the maroon brand. Legacy aliases
+   (--base/--text/--card/--a1/…) map onto MD3 so tabs keep working. */
 
 @font-face {
   font-family: "Material Symbols Outlined";
@@ -32,44 +32,44 @@
   --radius: var(--md-sys-shape-corner-large);
   --radius-card: var(--md-sys-shape-corner-medium);
 
-  /* Baseline light scheme (seed #B0475F) until JS applies dynamic color */
-  --md-sys-color-primary: #8e4a56;
+  /* Baseline light scheme from brand keys until JS applies the full palette */
+  --md-sys-color-primary: #5A333E;
   --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #ffd9de;
-  --md-sys-color-on-primary-container: #3b0715;
-  --md-sys-color-secondary: #75565b;
+  --md-sys-color-primary-container: #e8c0c6;
+  --md-sys-color-on-primary-container: #3f242c;
+  --md-sys-color-secondary: #898F5E;
   --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #ffd9de;
-  --md-sys-color-on-secondary-container: #2b1519;
-  --md-sys-color-tertiary: #785831;
-  --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #ffddb8;
-  --md-sys-color-on-tertiary-container: #2b1700;
+  --md-sys-color-secondary-container: #e4e8c2;
+  --md-sys-color-on-secondary-container: #2a2e12;
+  --md-sys-color-tertiary: #DF9281;
+  --md-sys-color-on-tertiary: #3f150e;
+  --md-sys-color-tertiary-container: #ffdbd2;
+  --md-sys-color-on-tertiary-container: #5c2b22;
   --md-sys-color-error: #ba1a1a;
   --md-sys-color-on-error: #ffffff;
   --md-sys-color-error-container: #ffdad6;
   --md-sys-color-on-error-container: #410002;
-  --md-sys-color-background: #fff8f7;
-  --md-sys-color-on-background: #22191b;
-  --md-sys-color-surface: #fff8f7;
-  --md-sys-color-on-surface: #22191b;
-  --md-sys-color-surface-variant: #f3dddf;
-  --md-sys-color-on-surface-variant: #524345;
-  --md-sys-color-outline: #847375;
-  --md-sys-color-outline-variant: #d6c2c4;
-  --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #fcf1f1;
-  --md-sys-color-surface-container: #f7ebeb;
-  --md-sys-color-surface-container-high: #f1e5e6;
-  --md-sys-color-surface-container-highest: #ebe0e0;
-  --md-sys-color-surface-dim: #e7d6d7;
-  --md-sys-color-surface-bright: #fff8f7;
-  --md-sys-color-inverse-surface: #382e2f;
-  --md-sys-color-inverse-on-surface: #feeeef;
-  --md-sys-color-inverse-primary: #ffb2be;
+  --md-sys-color-background: #f4f0dc;
+  --md-sys-color-on-background: #1c1b16;
+  --md-sys-color-surface: #f4f0dc;
+  --md-sys-color-on-surface: #1c1b16;
+  --md-sys-color-surface-variant: #e8d6d2;
+  --md-sys-color-on-surface-variant: #534441;
+  --md-sys-color-outline: #867370;
+  --md-sys-color-outline-variant: #c7aba7;
+  --md-sys-color-surface-container-lowest: #fffffa;
+  --md-sys-color-surface-container-low: #efeacc;
+  --md-sys-color-surface-container: #e9e4c6;
+  --md-sys-color-surface-container-high: #e3debf;
+  --md-sys-color-surface-container-highest: #c9c19c;
+  --md-sys-color-surface-dim: #d5ceb0;
+  --md-sys-color-surface-bright: #f4f0dc;
+  --md-sys-color-inverse-surface: #31302b;
+  --md-sys-color-inverse-on-surface: #f4f0e0;
+  --md-sys-color-inverse-primary: #e8c0c6;
   --md-sys-color-scrim: #000000;
   --md-sys-color-shadow: #000000;
-  --md-sys-color-surface-tint: #8e4a56;
+  --md-sys-color-surface-tint: #5A333E;
 
   --p-ruby:#7B2E3C; --p-berry:#A85A72; --p-oxblood:#4C1D28; --p-mauve:#9F5E70;
   --p-lime:#97992E; --p-cardamom:#6E6B2F; --p-dblue:#8E9DAD;

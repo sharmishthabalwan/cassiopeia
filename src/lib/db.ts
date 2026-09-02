@@ -4,7 +4,7 @@
 // signatures. Tabs must only ever touch data through this module.
 
 import { createStore, get, set } from "idb-keyval";
-import { HOME_HUE } from "./types";
+import { BRAND, HOME_HUE } from "./types";
 import type { Bag, Brew, Rating, Person, BrewIdea, GlobalRecipe, Brewer, Grinder, Appearance, ID } from "./types";
 
 export interface DB {
@@ -118,12 +118,16 @@ export const db: DB = {
   async getAppearance() {
     const saved = await get<Appearance>("appearance", store);
     if (!saved) return DEFAULT_APPEARANCE;
-    // Promote the old per-tab default (no custom per-tab colours) to uniform home pink.
+    // Promote the old per-tab default (no custom per-tab colours) to uniform brand.
     let next = saved;
     if (saved.hueMode === "perTab" && !saved.perTab) {
       next = { ...saved, hueMode: "uniform", uniform: saved.uniform ?? { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } };
     } else if (saved.hueMode === "uniform" && !saved.uniform) {
       next = { ...saved, uniform: { a1: HOME_HUE.a1, a2: HOME_HUE.a2 } };
+    }
+    // Previous default was home-pink; move stored uniform onto the maroon brand.
+    if (next.uniform?.a1.toUpperCase() === "#B0475F") {
+      next = { ...next, uniform: { a1: BRAND.primary, a2: HOME_HUE.a2 } };
     }
     if (next !== saved) await set("appearance", next, store);
     return next;
