@@ -1,0 +1,32 @@
+/* Settings tab — cloud journal + appearance. Tokens only. */
+
+.hue-settings .f-section {
+  display: flex; align-items: center; gap: 8px;
+  font: 600 13px var(--font-sans); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin: 2px 0 10px;
+}
+.hue-settings .f-field { display: block; margin-bottom: 10px; min-width: 0; }
+.hue-settings .f-label { display: block; color: var(--muted); font: 500 12px var(--font-sans); margin-bottom: 5px; }
+.hue-settings .f-input {
+  width: 100%; display: block;
+  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  color: var(--text); padding: 10px 12px; font: 400 14px var(--font-sans);
+  -webkit-appearance: none; appearance: none;
+}
+.hue-settings .f-input:focus { outline: none; border-color: var(--a1); }
+.hue-settings .set-copy {
+  margin: 0 0 12px; font: 400 13.5px var(--font-sans); color: var(--text); line-height: 1.45;
+}
+.hue-settings .set-copy code {
+  font-size: 12px; background: var(--field); border: 1px solid var(--brd);
+  border-radius: 6px; padding: 1px 6px;
+}
+.hue-settings .set-sync-meta { color: var(--muted); font: 400 12.5px var(--font-sans); margin-bottom: 10px; }
+.hue-settings .set-error {
+  background: var(--field); border: 1px solid var(--brd); border-radius: 12px;
+  padding: 10px 12px; margin-bottom: 10px; font: 400 13px var(--font-sans); line-height: 1.4;
+}
+.hue-settings .set-actions { margin: 4px 0 8px; }
+.hue-settings .set-actions .btn { flex: 1; justify-content: center; }
+.hue-settings .set-google { justify-content: center; margin-top: 4px; }
+.hue-settings .btn:disabled { opacity: .5; cursor: default; }
