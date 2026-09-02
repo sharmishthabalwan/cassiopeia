@@ -105,7 +105,7 @@ export function applyMd3Scheme(seedHex: string, dark: boolean, target: HTMLEleme
   const primaryHex = parseHex(seedHex) ?? BRAND.primary;
   const scheme = new DynamicScheme({
     sourceColorHct: Hct.fromInt(argbFromHex(primaryHex)),
-    variant: Variant.FIDELITY,
+    variant: Variant.TONAL_SPOT,
     contrastLevel: 0,
     isDark: dark,
     specVersion: "2021",
