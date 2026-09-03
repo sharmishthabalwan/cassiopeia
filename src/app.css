@@ -140,8 +140,9 @@
 
   .fb-home { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; align-items: start; }
   .fb-home > .sub { grid-column: 1 / -1; }
-  .fb-cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-content: start; }
-  .fb-cols > .raw-expand:nth-last-child(2) { border-bottom: none; }
+
+  /* list screens stay one column (match Brews) */
+  .fb-cols { display: block; }
 }
 
 @media (hover: hover) and (pointer: fine) {

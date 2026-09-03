@@ -26,10 +26,6 @@ const CSS = `
 .catalog-save{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:none;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);font:400 18px/1 var(--font-sans);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .catalog-save:active{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
 .catalog-empty{color:var(--md-sys-color-on-surface-variant);font:400 14px var(--font-sans);text-align:center;padding:24px 0}
-@media (min-width:1100px){
-  .catalog{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;align-items:start}
-  .catalog-chips,.catalog-empty{grid-column:1/-1}
-}
 @media (hover:hover) and (pointer:fine){
   .catalog-chip:hover{background:color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest))}
   .catalog-chip.active:hover{background:color-mix(in srgb, var(--md-sys-color-on-secondary-container) 8%, var(--md-sys-color-secondary-container))}
