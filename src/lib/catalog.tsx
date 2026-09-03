@@ -15,21 +15,21 @@ export interface CatalogProps {
 const CSS = `
 .catalog-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .catalog-chips::-webkit-scrollbar{display:none}
-.catalog-chip{flex:0 0 auto;border:1px solid var(--brd);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:500 13px var(--font-sans);cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.catalog-chip.active{background:linear-gradient(140deg,var(--a1),var(--a2));border-color:transparent;color:#fff}
-.catalog-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:none;color:var(--text);padding:0;cursor:pointer;font-family:var(--font-sans)}
-.catalog-avatar{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:linear-gradient(140deg,var(--a1),var(--a2));color:#fff;display:flex;align-items:center;justify-content:center;font:600 15px var(--font-sans);overflow:hidden}
+.catalog-chip{flex:0 0 auto;border:none;background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface-variant);border-radius:var(--md-sys-shape-corner-small);padding:6px 16px;font:500 14px/20px var(--font-sans);cursor:pointer}
+.catalog-chip.active{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
+.catalog-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:none;color:var(--md-sys-color-on-surface);padding:0;cursor:pointer;font-family:var(--font-sans)}
+.catalog-avatar{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);display:flex;align-items:center;justify-content:center;font:500 16px var(--font-sans);overflow:hidden}
 .catalog-avatar img{width:100%;height:100%;object-fit:cover}
 .catalog-meta{flex:1;min-width:0}
-.catalog-title{font:500 14.5px var(--font-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.catalog-sub{font:400 12.5px var(--font-sans);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.catalog-save{flex:0 0 32px;width:32px;height:32px;border-radius:50%;border:1px solid var(--brd);background:var(--field);color:var(--text);font:400 18px/1 var(--font-sans);cursor:pointer;display:flex;align-items:center;justify-content:center}
-.catalog-save:active{background:linear-gradient(140deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
-.catalog-empty{color:var(--muted);font:400 14px var(--font-sans);text-align:center;padding:24px 0}
+.catalog-title{font:500 16px/24px var(--font-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.catalog-sub{font:400 14px/20px var(--font-sans);color:var(--md-sys-color-on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.catalog-save{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:none;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);font:400 18px/1 var(--font-sans);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.catalog-save:active{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
+.catalog-empty{color:var(--md-sys-color-on-surface-variant);font:400 14px var(--font-sans);text-align:center;padding:24px 0}
 @media (hover:hover) and (pointer:fine){
-  .catalog-chip{transition:filter .15s ease,background .15s ease}
-  .catalog-chip:hover{filter:brightness(1.15)}
-  .catalog-save:hover{background:linear-gradient(140deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
+  .catalog-chip:hover{background:color-mix(in srgb, var(--md-sys-color-on-surface) 8%, var(--md-sys-color-surface-container-highest))}
+  .catalog-chip.active:hover{background:color-mix(in srgb, var(--md-sys-color-on-secondary-container) 8%, var(--md-sys-color-secondary-container))}
+  .catalog-save:hover{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
 }
 `;
 

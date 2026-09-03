@@ -7,7 +7,7 @@ The single source of truth for the build. **Every agent reads this first.** It d
 ## Stack (locked)
 
 - **UI:** Vite + Preact + TypeScript. Preact (~4KB) for the reusable Catalog/Radar and per-tab screens.
-- **Styling:** plain CSS with tokens in `src/theme.css`. No CSS framework.
+- **Styling:** plain CSS with Material 3 tokens in `src/theme.css`. No CSS framework. Material Web (`@material/web`) supplies icons + typescale; dynamic color comes from `@material/material-color-utilities`.
 - **Local-first data:** IndexedDB via `idb-keyval`, behind `src/lib/db.ts`.
 - **Cloud (later phase):** Supabase (Postgres + Auth + Storage), private, row-level security scoped to the user. Layered behind the same `db.ts` API — tabs never change.
 - **iCloud mirror (Phase 6):** `scripts/export_mirror.py` exports the DB to `.xlsx` + `.sqlite` in `iCloud Drive/Cassiopeia/`.
@@ -51,12 +51,12 @@ Tabs import `{ db }` from `src/lib/db.ts` and use its async methods (see the `DB
 
 ## Design tokens & theme (`src/theme.css`)
 
-Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a `hue-<tab>` class on the screen root (sets `--a1/--a2` + the `.body` aurora background). Palette (Pantone-derived) and hue pairs are defined in `theme.css` — use the CSS variables, never hardcode hex in components.
+Material Design 3. Dark + light via `<html data-mode>`. Color roles are `--md-sys-color-*`, generated at runtime from brand key colors in `BRAND` (`src/lib/types.ts`): mauve primary `#A15D66`, olive secondary `#808249`, sage tertiary `#DFD6A4`, white background `#FFFFFF` (light-mode page / surface / surface-bright), cream neutral `#F3EED7` (MCU palette seed; not the light page fill), peach neutral-variant `#E1B4A1`. Light-mode surface-container steps are warm near-white so cards/nav contrast without a cream page. Dark mode keeps generated tones (not forced white). **Per-tab hue** swaps only the primary palette; Uniform uses mauve. Legacy aliases (`--base`, `--text`, `--card`, `--a1`, `--a2`, …) map onto MD3 so existing tab CSS keeps working — use the CSS variables, never hardcode hex in components.
 
-- Shared primitives already in `theme.css`: `.glass`, `.glass.hero`, `.btn`, `.btn.ghost`. Tabs extend, never redefine.
-- **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform sets `--u1/--u2` on `:root` and adds `html.uniform-hue`; per-tab uses the `hue-*` classes. Persist locally.
-- Default mode = **light**. Default hue = **uniform** home pink (`HOME_HUE` `#B0475F` / `#5A1E32`).
-- Nav icons are colour emoji in `nav.config.ts`, shown in the left rail and FAB.
+- Shared primitives already in `theme.css`: `.glass` (filled card), `.glass.hero` (primary-container), `.btn` (filled), `.btn.ghost` (outlined). Tabs extend, never redefine.
+- **Appearance control:** `Appearance.mode` (dark/light) and `Appearance.hueMode` (`uniform` | `perTab`). Uniform seeds primary from `Appearance.uniform.a1` (default `BRAND.primary`); per-tab seeds primary from `Appearance.perTab[tab].a1` or `TAB_SEEDS`. Secondary, tertiary, and neutrals stay on the brand keys. Persist locally.
+- Default mode = **light**. Default hue = **uniform** mauve (`HOME_HUE` / `BRAND.primary` `#A15D66`).
+- Nav icons are Material Symbols (`symbol` in `nav.config.ts`), shown in the compact bottom bar and the medium/expanded navigation rail.
 
 ---
 
@@ -69,7 +69,7 @@ Aurora frosted-glass. Dark + light via `<html data-mode>`. **Per-tab hue** via a
 
 ## Navigation
 
-`src/nav.config.ts` lists the 7 tabs (order = FAB stack order) with `enabled` flags. The **liquid FAB** (collapsed `+` → vertical expanding stack of circular tab buttons, `+`→`×`, gooey merge) and the router both read it. Adding a tab = one entry.
+`src/nav.config.ts` lists the 7 tabs (order = nav bar / rail order) with `enabled` flags. Compact windows use a Material 3 **navigation bar**; medium and expanded windows use a **navigation rail**. The router reads the same registry. Adding a tab = one entry.
 
 **How a tab ships (Foundation mechanism):** `main.tsx` lazy-loads `src/tabs/<id>/index.tsx` and renders its **default export** as the screen (inside `.screen.hue-<id> > .body`, heading already provided). Until a tab default-exports a component, a Foundation fallback raw-list renders. Tab agents therefore never touch `main.tsx` — just add `export default function <Tab>Screen() {…}` in their folder.
 
@@ -83,7 +83,7 @@ Home · Brews (logger, daily core) · Bags (finished/frozen/peak toggles) · Ide
 
 ## File ownership map
 
-- **Contract-owned (read-only for tab agents):** `theme.css`, `nav.config.ts`, `lib/types.ts`, `lib/db.ts`, `lib/radar.tsx`, `lib/catalog.tsx`, `lib/import.ts`, `main.tsx`, `router.ts`, `seed/*`, this file.
+- **Contract-owned (read-only for tab agents):** `theme.css`, `nav.config.ts`, `lib/types.ts`, `lib/db.ts`, `lib/radar.tsx`, `lib/catalog.tsx`, `lib/import.ts`, `lib/md3.ts`, `material.ts`, `main.tsx`, `router.ts`, `seed/*`, this file.
 - **Per-tab agents own exactly one folder:** `src/tabs/<home|brews|bags|ideas|recipes|insights|settings>/`.
 - Insights owns both the overview and the Wrapped subview.
 

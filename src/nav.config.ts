@@ -1,23 +1,24 @@
 // Sam Caffeinated — navigation registry (CONTRACT-OWNED).
-// The liquid FAB and the router both read this. Adding a tab = one entry here.
-// `hue` maps to the `hue-<id>` class in theme.css. `icon` is a colour emoji
-// shown in the nav rail and FAB. Order here = order in the expanded FAB stack.
+// The bottom nav bar, navigation rail, and the router all read this.
+// `symbol` is a Material Symbols Outlined ligature. `icon` is a colour emoji
+// kept as a text fallback. Order here = order in the bar / rail.
 
 export interface TabDef {
-  id: string;        // also the route and the theme hue class suffix
+  id: string;        // also the route and the theme seed key
   label: string;
   icon: string;
+  symbol: string;
   enabled: boolean;  // feature flag
 }
 
 export const TABS: TabDef[] = [
-  { id: "home",     label: "Home",     icon: "🏠", enabled: true },
-  { id: "brews",    label: "Brews",    icon: "☕", enabled: true },
-  { id: "bags",     label: "Bags",     icon: "🛍️", enabled: true },
-  { id: "ideas",    label: "Ideas",    icon: "💡", enabled: true },
-  { id: "insights", label: "Insights", icon: "📊", enabled: true },
-  { id: "recipes",  label: "Recipes",  icon: "📖", enabled: true },
-  { id: "settings", label: "Settings", icon: "⚙️", enabled: true },
+  { id: "home",     label: "Home",     icon: "🏠", symbol: "home",           enabled: true },
+  { id: "brews",    label: "Brews",    icon: "☕", symbol: "coffee",         enabled: true },
+  { id: "bags",     label: "Bags",     icon: "🛍️", symbol: "shopping_bag",   enabled: true },
+  { id: "ideas",    label: "Ideas",    icon: "💡", symbol: "lightbulb",      enabled: true },
+  { id: "insights", label: "Insights", icon: "📊", symbol: "insights",       enabled: true },
+  { id: "recipes",  label: "Recipes",  icon: "📖", symbol: "menu_book",      enabled: true },
+  { id: "settings", label: "Settings", icon: "⚙️", symbol: "settings",       enabled: true },
 ];
 
 export const DEFAULT_TAB = "home";
