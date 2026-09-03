@@ -12,7 +12,7 @@ The single source of truth for the build. **Every agent reads this first.** It d
 - **Cloud (later phase):** Supabase (Postgres + Auth + Storage), private, row-level security scoped to the user. Layered behind the same `db.ts` API — tabs never change.
 - **iCloud mirror (Phase 6):** `scripts/export_mirror.py` exports the DB to `.xlsx` + `.sqlite` in `iCloud Drive/Cassiopeia/`.
 - **Charts:** hand-rolled SVG radar (`src/lib/radar.tsx`). No chart library.
-- **AI:** frugal, analysis-points only (Insights summaries, note clustering). Cached; never per-log.
+- **AI:** brew-note parse only — one call per uploaded/pasted log to fill journal fields. Insights summaries later. Cached; never send the whole journal. The original note is stored on `Brew.journalNote` and shown at the end of the brew, not mixed into recipe notes.
 
 Sized for **1–2 brews/day** → small-data. Do not over-engineer. Images are the only real weight: resize to ~1000px WebP + a thumbnail; lazy-load; full-size on tap.
 
@@ -35,7 +35,7 @@ GlobalRecipe ──(saveRecipeAsIdea, row-copy)──> BrewIdea
 **Rating axes keep direction — 5 is not always best:**
 `flavour/fragrance/sweetness/balance/aftertaste/mouthfeel` 5 = highest · `acidity` 5 = lowest · `bitterness` 5 = lowest · `body` 5 = lightest. Every slider is labeled with its direction. Radar reads scores as-is (a "good" cup is not a big regular polygon — that's expected).
 
-**Two kinds of notes/learnings (don't conflate):** `Brew.notes` + `Brew.learnings` are the **recipe/method** record (captured while brewing — the Brews logger "Recipe" section). `Rating.tastingNotes` + `Rating.learnings` are the **cup** record (captured while tasting — the Brews "Cup"/rating step). `Rating.learnings` was added in Phase 2b; it is additive & optional — Insights/friends radars ignore it.
+**Two kinds of notes/learnings (don't conflate):** `Brew.notes` + `Brew.learnings` are the **recipe/method** record (captured while brewing — the Brews logger "Recipe" section). `Brew.journalNote` is the **original uploaded or pasted brew note**, shown in its own section at the end of the brew. `Rating.tastingNotes` + `Rating.learnings` are the **cup** record (captured while tasting — the Brews "Cup"/rating step). `Rating.learnings` was added in Phase 2b; it is additive & optional — Insights/friends radars ignore it.
 
 **Canonical Recipe shape** is shared by `BrewIdea` and `GlobalRecipe`, so save→promote→brew is a row-copy, never a transform.
 

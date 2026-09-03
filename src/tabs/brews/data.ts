@@ -66,3 +66,20 @@ export function ratioOf(doseG?: number, waterG?: number): string | undefined {
   const r = waterG / doseG;
   return `1:${(Math.round(r * 10) / 10).toFixed(1).replace(/\.0$/, "")}`;
 }
+
+/** Full uploaded/pasted note. Older rows stuffed this into notes. */
+export function looksLikeJournal(s?: string): boolean {
+  if (!s || s.length < 240) return false;
+  return /ponderings|brew parameters|sensory notes|pour schedule|#{1,3}\s|\*\*coffee/i.test(s);
+}
+
+export function brewJournalNote(notes?: string, journalNote?: string): string | undefined {
+  if (journalNote?.trim()) return journalNote;
+  return looksLikeJournal(notes) ? notes : undefined;
+}
+
+export function brewRecipeNotes(notes?: string, journalNote?: string): string | undefined {
+  if (journalNote?.trim()) return notes;
+  if (looksLikeJournal(notes)) return undefined;
+  return notes;
+}
