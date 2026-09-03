@@ -71,6 +71,8 @@ Material Design 3. Dark + light via `<html data-mode>`. Color roles are `--md-sy
 
 `src/nav.config.ts` lists the 7 tabs (order = nav bar / rail order) with `enabled` flags. Compact windows use a Material 3 **navigation bar**; medium and expanded windows use a **navigation rail**. The router reads the same registry. Adding a tab = one entry.
 
+Hash is `#/<tab>` with an optional subpath. `currentTab()` reads the first segment only. Home opens a brew via `#/brews/<id>/view` (Brews tab, that brew’s detail, view-only — no edit/rate).
+
 **How a tab ships (Foundation mechanism):** `main.tsx` lazy-loads `src/tabs/<id>/index.tsx` and renders its **default export** as the screen (inside `.screen.hue-<id> > .body`, heading already provided). Until a tab default-exports a component, a Foundation fallback raw-list renders. Tab agents therefore never touch `main.tsx` — just add `export default function <Tab>Screen() {…}` in their folder.
 
 ---
